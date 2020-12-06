@@ -1,0 +1,38 @@
+name: Docker Image CI
+
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: Prepare dependencies
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout code
+        uses: actions/checkout@v2
+
+      -
+        name: Clone cable theme
+        run: git clone --quiet --single-branch --branch develop https://sagital:${{ secrets.SAGITAL_ACCESS_TOKEN  }}@github.com/sagital/vsf-cable-theme.git ./src/themes/cable
+
+      -
+        name: Login to Sagital Registry
+        uses: docker/login-action@v1
+        with:
+          registry: registry.sagital.ro
+          username: ${{ secrets.SAGITAL_REGISTRY_USERNAME }}
+          password: ${{ secrets.SAGITAl_REGISTRY_PASSWORD }}
+
+      -
+        name: Get the version
+        id: vars
+        run: echo ::set-output name=tag::$(echo ${GITHUB_REF:11}) # or 10 if it's a tag
+
+      -
+        name: Build the tagged Docker image
+        run: docker build . --tag registry.sagital.ro/sagital/vue-storefront:${{steps.vars.outputs.tag}} --tag registry.sagital.ro/sagital/vue-storefront:latest
+
+      -
+        name: Push the latest Docker image
+        run: docker push registry.sagital.ro/sagital/vue-storefront:${{steps.vars.outputs.tag}}
