@@ -14,7 +14,7 @@ jobs:
 
       -
         name: Clone cable theme
-        run: git clone --quiet --single-branch --branch develop https://sagital:${{ secrets.SAGITAL_ACCESS_TOKEN  }}@github.com/sagital/vsf-cable-theme.git ./src/themes/cable
+        run: git clone --quiet --single-branch --branch development https://sagital:${{ secrets.SAGITAL_ACCESS_TOKEN  }}@github.com/sagital/vsf-cable-theme.git ./src/themes/cable
 
       -
         name: Login to Sagital Registry
