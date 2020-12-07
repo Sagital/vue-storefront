@@ -1,7 +1,8 @@
 name: Docker Image CI
 
-
-on: [push, pull_request]
+on:
+  release:
+    types: [published]
 
 jobs:
   build:
@@ -27,7 +28,7 @@ jobs:
       -
         name: Get the version
         id: vars
-        run: echo ::set-output name=tag::$(echo ${GITHUB_REF:11}) # or 10 if it's a tag
+        run: echo ::set-output name=tag::$(echo ${GITHUB_REF:10}) # 11 it's a branch or 10 if it's a tag
 
       -
         name: Build the tagged Docker image
