@@ -1,51 +1,61 @@
 import gql from 'graphql-tag';
 
-export default gql`
-  fragment Children on Category {
+const CHILDREN_CATEGORY_FRAGMENT = gql`
+  fragment CategoryFields on Category {
     id
-    slug(acceptLanguage: $acceptLanguage)
-    name(acceptLanguage: $acceptLanguage)
-    childCount
+    slug
+    name
   }
 
   fragment DefaultCategory on Category {
-    id
-    slug(acceptLanguage: $acceptLanguage)
-    name(acceptLanguage: $acceptLanguage)
-    childCount
-    children {
-      ...Children
-      children {
-        ...Children
-        children {
-          ...Children
+    ...CategoryFields
+    children(first: 100) {
+      edges {
+        node {
+          ...CategoryFields
+          children(first: 100) {
+            edges {
+              node {
+                ...CategoryFields
+                children(first: 100) {
+                  edges {
+                    node {
+                      ...CategoryFields
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }
   }
+`;
 
-  query categories($where: String, $sort: [String!], $limit: Int, $offset: Int, $acceptLanguage: [Locale!]) {
-    categories(where: $where, sort: $sort, limit: $limit, offset: $offset) {
-      offset
-      count
-      total
-      results {
-        id
-        slug(acceptLanguage: $acceptLanguage)
-        name(acceptLanguage: $acceptLanguage)
-        description(acceptLanguage: $acceptLanguage)
-        childCount
+export default gql`
+  ${CHILDREN_CATEGORY_FRAGMENT}
+
+  query Category($slug: String!) {
+    category(slug: $slug) {
+      id
+      name
+      slug
+      parent {
+        ...DefaultCategory
         parent {
           ...DefaultCategory
           parent {
             ...DefaultCategory
-            parent {
-              ...DefaultCategory
-            }
           }
         }
-        children {
-          ...DefaultCategory
+      }
+      # TODO are we going to have a problem with 100?
+      children(first: 100) {
+        edges {
+          node {
+            ...DefaultCategory
+          }
         }
       }
     }

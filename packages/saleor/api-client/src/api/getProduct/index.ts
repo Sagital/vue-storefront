@@ -1,36 +1,39 @@
 import gql from 'graphql-tag';
-import { CustomQueryFn } from '../../index';
-import { ProductQueryResult } from '../../types/GraphQL';
-import defaultQuery from './defaultQuery';
-import { buildProductWhere } from '../../helpers/search';
-import { getCustomQuery } from '../../helpers/queries';
 import ApolloClient from 'apollo-client';
+import { ProductCountableConnection, ProductFilterInput } from '../../';
+import query from './defaultQuery';
 
-export interface ProductData {
-    products: ProductQueryResult;
-}
+const getProduct = async (
+  context,
+  params
+): Promise<ProductCountableConnection> => {
+  const filter: ProductFilterInput = {};
 
-const getProduct = async (context, params, customQueryFn?: CustomQueryFn) => {
-  const { locale, acceptLanguage, currency, country } = context.config;
-  const defaultVariables = {
-    where: buildProductWhere(context.config, params),
-    skus: params.skus,
-    limit: params.limit,
-    offset: params.offset,
-    locale,
-    acceptLanguage,
-    currency,
-    country
+  if (params.catId) {
+    filter.categories = [params.catId];
+  }
+
+  if (params.id) {
+    filter.ids = [params.id];
+  }
+
+  // TODO pagination
+  const variables = {
+    filter,
+    first: 10
   };
-  const { query, variables } = getCustomQuery(customQueryFn, { defaultQuery, defaultVariables });
-  const request = await (context.client as ApolloClient<any>).query<ProductData>({
-    query: gql`${query}`,
+
+  const response = await (context.client as ApolloClient<any>).query({
+    query: gql`
+      ${query}
+    `,
     variables,
     // temporary, seems like bug in apollo:
     // @link: https://github.com/apollographql/apollo-client/issues/3234
     fetchPolicy: 'no-cache'
   });
-  return request;
+
+  return response.data.products;
 };
 
 export default getProduct;

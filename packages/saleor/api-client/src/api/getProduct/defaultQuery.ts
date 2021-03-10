@@ -1,88 +1,45 @@
 import gql from 'graphql-tag';
-import { ProductPriceFragment } from './../../fragments';
+import { DefaultProductVariantFragment } from '../../fragments';
 
 export default gql`
-  ${ProductPriceFragment}
+  ${DefaultProductVariantFragment}
 
-  fragment Images on ProductVariant {
-    images {
-      url
-      label
-    }
-  }
-
-  fragment Price on ProductVariant {
-    price(currency: $currency, country: $country) {
-      ...DefaultProductPrice
-    }
-  }
-
-  fragment Attributes on ProductVariant {
-    attributesRaw {
-      name
-      value
-      attributeDefinition {
-        type {
+  query Products($filter: ProductFilterInput, $first: Int) {
+    products(filter: $filter, first: $first) {
+      edges {
+        node {
+          id
+          seoTitle
+          category {
+            id
+          }
+          seoDescription
           name
-        }
-        label(locale: $locale)
-      }
-    }
-  }
-
-  fragment DefaultVariant on ProductVariant {
-    id
-    sku
-    ...Images
-    ...Price
-    ...Attributes
-  }
-
-  query products(
-    $where: String
-    $sort: [String!]
-    $limit: Int
-    $offset: Int
-    $skus: [String!]
-    $locale: Locale!
-    $acceptLanguage: [Locale!]
-    $currency: Currency!
-    $country: Country!
-  ) {
-    products(
-      where: $where
-      sort: $sort
-      limit: $limit
-      offset: $offset
-      skus: $skus
-    ) {
-      offset
-      count
-      total
-      results {
-        id
-        reviewRatingStatistics {	
-          averageRating,
-          ratingsDistribution,
-          count
-        }
-        masterData {
-          current {
-            slug(acceptLanguage: $acceptLanguage)
-            name(acceptLanguage: $acceptLanguage)
-            metaTitle(acceptLanguage: $acceptLanguage)
-            metaKeywords(acceptLanguage: $acceptLanguage)
-            metaDescription(acceptLanguage: $acceptLanguage)
-            description(acceptLanguage: $acceptLanguage)
-            categoriesRef {
-              id
+          description
+          slug
+          thumbnail {
+            url
+            alt
+          }
+          attributes {
+            attribute {
+              name
             }
-            allVariants {
-              ...DefaultVariant
+            values {
+              name
             }
-            masterVariant {
-              ...DefaultVariant
-            }
+          }
+          updatedAt
+          images {
+            id
+            url
+            alt
+          }
+          variants {
+            ...DefaultProductVariantFragment
+          }
+          defaultVariant {
+            id
           }
         }
       }

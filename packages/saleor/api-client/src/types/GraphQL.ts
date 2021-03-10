@@ -1,6 +1,11 @@
-/* istanbul ignore file */
-
 export type Maybe<T> = T | null;
+export type Exact<T extends { [key: string]: unknown }> = {
+  [K in keyof T]: T[K];
+};
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> &
+  { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> &
+  { [SubKey in K]: Maybe<T[SubKey]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -8,7290 +13,12073 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** The `Long` scalar type represents non-fractional signed whole numeric values.
-   * Long can represent values between -(2^63) and 2^63 - 1.
+  /**
+   * The `DateTime` scalar type represents a DateTime
+   * value as specified by
+   * [iso8601](https://en.wikipedia.org/wiki/ISO_8601).
    */
-  Long: any;
-  /** DateTime is a scalar value that represents an ISO8601 formatted date and time. */
   DateTime: any;
-  /** [ISO 3166-1](http://en.wikipedia.org/wiki/ISO_3166-1) country code. */
-  Country: any;
-  /** Locale is a scalar value represented as a string language tag. */
-  Locale: any;
-  /** DateTime is a scalar value that represents an ISO8601 formatted date. */
-  Date: any;
-  /** Raw JSON value */
-  Json: any;
-  /** Represents a currency. Currencies are identified by their [ISO
-   * 4217](http://www.iso.org/iso/home/standards/currency_codes.htm) currency codes.
+  /**
+   * Allows use of a JSON String for input / output from the GraphQL schema.
+   *
+   * Use of this type is *not recommended* as you lose the benefits of having a defined, static
+   * schema (one of the key benefits of GraphQL).
    */
-  Currency: any;
-  /** A key that references a resource. */
-  KeyReferenceInput: any;
-  /** Search filter. It is represented as a string and has th same format as in REST API: "field:filter_criteria" */
-  SearchFilter: any;
-  /** Search sort */
-  SearchSort: any;
-  /** YearMonth is a scalar value that represents an ISO8601 formatted year and month. */
-  YearMonth: any;
-  /** The `BigDecimal` scalar type represents signed fractional values with arbitrary precision. */
-  BigDecimal: any;
-  /** Time is a scalar value that represents an ISO8601 formatted time. */
-  Time: any;
+  JSONString: any;
+  /**
+   * The `Date` scalar type represents a Date
+   * value as specified by
+   * [iso8601](https://en.wikipedia.org/wiki/ISO_8601).
+   */
+  Date: any;
+  UUID: any;
+  /** Anything */
+  _Any: any;
+  /**
+   * Positive Decimal scalar implementation.
+   *
+   * Should be used in places where value must be positive.
+   */
+  PositiveDecimal: any;
+  WeightScalar: any;
+  /** Variables of this type must be set to null in mutations. They will be replaced with a filename from a following multipart part containing a binary file. See: https://github.com/jaydenseric/graphql-multipart-request-spec. */
+  Upload: any;
+  /**
+   * The `GenericScalar` scalar type represents a generic
+   * GraphQL scalar value that could be:
+   * String, Boolean, Int, Float, List or Object.
+   */
+  GenericScalar: any;
 };
 
-export type AbsoluteDiscountValue = CartDiscountValue &
-  ProductDiscountValue & {
-    __typename?: "AbsoluteDiscountValue";
-    money: Array<Money>;
-    type: Scalars["String"];
-  };
+export type _Entity =
+  | Address
+  | User
+  | Group
+  | ServiceAccount
+  | App
+  | ProductVariant
+  | Product
+  | ProductType
+  | Collection
+  | Category
+  | ProductImage;
 
-export type AbsoluteDiscountValueInput = {
-  money: Array<MoneyInput>;
+export type _Service = {
+  __typename?: '_Service';
+  sdl?: Maybe<Scalars['String']>;
 };
 
-/** A field to access the active cart. */
-export type ActiveCartInterface = {
-  activeCart?: Maybe<Cart>;
+/** Create a new address for the customer. */
+export type AccountAddressCreate = {
+  __typename?: 'AccountAddressCreate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** A user instance for which the address was created. */
+  user?: Maybe<User>;
+  accountErrors: Array<AccountError>;
+  address?: Maybe<Address>;
 };
 
-export type AddAttributeDefinition = {
-  attributeDefinition: AttributeDefinitionDraft;
+/** Delete an address of the logged-in user. */
+export type AccountAddressDelete = {
+  __typename?: 'AccountAddressDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** A user instance for which the address was deleted. */
+  user?: Maybe<User>;
+  accountErrors: Array<AccountError>;
+  address?: Maybe<Address>;
 };
 
-export type AddCartCustomLineItem = {
-  shippingDetails?: Maybe<ItemShippingDetailsDraft>;
-  custom?: Maybe<CustomFieldsDraft>;
-  quantity?: Maybe<Scalars["Long"]>;
-  externalTaxRate?: Maybe<ExternalTaxRateDraft>;
-  taxCategory?: Maybe<ResourceIdentifierInput>;
-  slug: Scalars["String"];
-  money: BaseMoneyInput;
-  name: Array<LocalizedStringItemInputType>;
+/** Updates an address of the logged-in user. */
+export type AccountAddressUpdate = {
+  __typename?: 'AccountAddressUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** A user object for which the address was edited. */
+  user?: Maybe<User>;
+  accountErrors: Array<AccountError>;
+  address?: Maybe<Address>;
 };
 
-export type AddCartDiscountCode = {
-  code: Scalars["String"];
-  validateDuplicates?: Maybe<Scalars["Boolean"]>;
+/** Remove user account. */
+export type AccountDelete = {
+  __typename?: 'AccountDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  accountErrors: Array<AccountError>;
+  user?: Maybe<User>;
 };
 
-export type AddCartItemShippingAddress = {
-  address: AddressInput;
+export type AccountError = {
+  __typename?: 'AccountError';
+  /**
+   * Name of a field that caused the error. A value of `null` indicates that the
+   * error isn't associated with a particular field.
+   */
+  field?: Maybe<Scalars['String']>;
+  /** The error message. */
+  message?: Maybe<Scalars['String']>;
+  /** The error code. */
+  code: AccountErrorCode;
 };
 
-export type AddCartLineItem = {
-  shippingDetails?: Maybe<ItemShippingDetailsDraft>;
-  externalTotalPrice?: Maybe<ExternalLineItemTotalPriceDraft>;
-  externalPrice?: Maybe<BaseMoneyInput>;
-  externalTaxRate?: Maybe<ExternalTaxRateDraft>;
-  custom?: Maybe<CustomFieldsDraft>;
-  catalog?: Maybe<ReferenceInput>;
-  distributionChannel?: Maybe<ResourceIdentifierInput>;
-  supplyChannel?: Maybe<ResourceIdentifierInput>;
-  variantId?: Maybe<Scalars["Int"]>;
-  quantity?: Maybe<Scalars["Long"]>;
-  sku?: Maybe<Scalars["String"]>;
-  productId?: Maybe<Scalars["String"]>;
+/** An enumeration. */
+export enum AccountErrorCode {
+  ActivateOwnAccount = 'ACTIVATE_OWN_ACCOUNT',
+  ActivateSuperuserAccount = 'ACTIVATE_SUPERUSER_ACCOUNT',
+  DuplicatedInputItem = 'DUPLICATED_INPUT_ITEM',
+  DeactivateOwnAccount = 'DEACTIVATE_OWN_ACCOUNT',
+  DeactivateSuperuserAccount = 'DEACTIVATE_SUPERUSER_ACCOUNT',
+  DeleteNonStaffUser = 'DELETE_NON_STAFF_USER',
+  DeleteOwnAccount = 'DELETE_OWN_ACCOUNT',
+  DeleteStaffAccount = 'DELETE_STAFF_ACCOUNT',
+  DeleteSuperuserAccount = 'DELETE_SUPERUSER_ACCOUNT',
+  GraphqlError = 'GRAPHQL_ERROR',
+  Invalid = 'INVALID',
+  InvalidPassword = 'INVALID_PASSWORD',
+  LeftNotManageablePermission = 'LEFT_NOT_MANAGEABLE_PERMISSION',
+  InvalidCredentials = 'INVALID_CREDENTIALS',
+  NotFound = 'NOT_FOUND',
+  OutOfScopeServiceAccount = 'OUT_OF_SCOPE_SERVICE_ACCOUNT',
+  OutOfScopeUser = 'OUT_OF_SCOPE_USER',
+  OutOfScopeGroup = 'OUT_OF_SCOPE_GROUP',
+  OutOfScopePermission = 'OUT_OF_SCOPE_PERMISSION',
+  PasswordEntirelyNumeric = 'PASSWORD_ENTIRELY_NUMERIC',
+  PasswordTooCommon = 'PASSWORD_TOO_COMMON',
+  PasswordTooShort = 'PASSWORD_TOO_SHORT',
+  PasswordTooSimilar = 'PASSWORD_TOO_SIMILAR',
+  Required = 'REQUIRED',
+  Unique = 'UNIQUE',
+  JwtSignatureExpired = 'JWT_SIGNATURE_EXPIRED',
+  JwtInvalidToken = 'JWT_INVALID_TOKEN',
+  JwtDecodeError = 'JWT_DECODE_ERROR',
+  JwtMissingToken = 'JWT_MISSING_TOKEN',
+  JwtInvalidCsrfToken = 'JWT_INVALID_CSRF_TOKEN'
+}
+
+export type AccountInput = {
+  /** Given name. */
+  firstName?: Maybe<Scalars['String']>;
+  /** Family name. */
+  lastName?: Maybe<Scalars['String']>;
+  /** Billing address of the customer. */
+  defaultBillingAddress?: Maybe<AddressInput>;
+  /** Shipping address of the customer. */
+  defaultShippingAddress?: Maybe<AddressInput>;
 };
 
-export type AddCartPayment = {
-  payment: ResourceIdentifierInput;
+/** Register a new user. */
+export type AccountRegister = {
+  __typename?: 'AccountRegister';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Informs whether users need to confirm their email address. */
+  requiresConfirmation?: Maybe<Scalars['Boolean']>;
+  accountErrors: Array<AccountError>;
+  user?: Maybe<User>;
 };
 
-export type AddCartShoppingList = {
-  shoppingList: ResourceIdentifierInput;
-  supplyChannel?: Maybe<ResourceIdentifierInput>;
-  distributionChannel?: Maybe<ResourceIdentifierInput>;
+export type AccountRegisterInput = {
+  /** The email address of the user. */
+  email: Scalars['String'];
+  /** Password. */
+  password: Scalars['String'];
+  /** Base of frontend URL that will be needed to create confirmation URL. */
+  redirectUrl?: Maybe<Scalars['String']>;
 };
 
-export type AddCategoryAsset = {
-  position?: Maybe<Scalars["Int"]>;
-  asset: AssetDraftInput;
+/** Sends an email with the account removal link for the logged-in user. */
+export type AccountRequestDeletion = {
+  __typename?: 'AccountRequestDeletion';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  accountErrors: Array<AccountError>;
 };
 
-export type AddCustomerAddress = {
-  address: AddressInput;
+/** Sets a default address for the authenticated user. */
+export type AccountSetDefaultAddress = {
+  __typename?: 'AccountSetDefaultAddress';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** An updated user instance. */
+  user?: Maybe<User>;
+  accountErrors: Array<AccountError>;
 };
 
-export type AddCustomerBillingAddressId = {
-  addressId: Scalars["String"];
+/** Updates the account of the logged-in user. */
+export type AccountUpdate = {
+  __typename?: 'AccountUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  accountErrors: Array<AccountError>;
+  user?: Maybe<User>;
 };
 
-export type AddCustomerShippingAddressId = {
-  addressId: Scalars["String"];
+/** Updates metadata of the logged-in user. */
+export type AccountUpdateMeta = {
+  __typename?: 'AccountUpdateMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  accountErrors: Array<AccountError>;
+  user?: Maybe<User>;
 };
 
-export type AddCustomerStore = {
-  store: ResourceIdentifierInput;
+/** Represents user address data. */
+export type Address = Node & {
+  __typename?: 'Address';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
+  companyName: Scalars['String'];
+  streetAddress1: Scalars['String'];
+  streetAddress2: Scalars['String'];
+  city: Scalars['String'];
+  cityArea: Scalars['String'];
+  postalCode: Scalars['String'];
+  /** Shop's default country. */
+  country: CountryDisplay;
+  countryArea: Scalars['String'];
+  phone?: Maybe<Scalars['String']>;
+  /** Address is user's default shipping address. */
+  isDefaultShippingAddress?: Maybe<Scalars['Boolean']>;
+  /** Address is user's default billing address. */
+  isDefaultBillingAddress?: Maybe<Scalars['Boolean']>;
 };
 
-export type AddInventoryEntryQuantity = {
-  quantity: Scalars["Long"];
+/** Creates user address. */
+export type AddressCreate = {
+  __typename?: 'AddressCreate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** A user instance for which the address was created. */
+  user?: Maybe<User>;
+  accountErrors: Array<AccountError>;
+  address?: Maybe<Address>;
 };
 
-export type AddLocalizedEnumValue = {
-  attributeName: Scalars["String"];
-  value: LocalizedEnumValueDraft;
-};
-
-export type AddMyCartLineItem = {
-  shippingDetails?: Maybe<ItemShippingDetailsDraft>;
-  custom?: Maybe<CustomFieldsDraft>;
-  catalog?: Maybe<ReferenceInput>;
-  distributionChannel?: Maybe<ResourceIdentifierInput>;
-  supplyChannel?: Maybe<ResourceIdentifierInput>;
-  variantId?: Maybe<Scalars["Int"]>;
-  quantity?: Maybe<Scalars["Long"]>;
-  sku?: Maybe<Scalars["String"]>;
-  productId?: Maybe<Scalars["String"]>;
-};
-
-export type AddOrderDelivery = {
-  items?: Maybe<Array<DeliveryItemDraftType>>;
-  parcels?: Maybe<Array<DeliveryItemDraftType>>;
-  address?: Maybe<AddressInput>;
-};
-
-export type AddOrderItemShippingAddress = {
-  address: AddressInput;
-};
-
-export type AddOrderParcelToDelivery = {
-  deliveryId: Scalars["String"];
-  measurements?: Maybe<ParcelMeasurementsDraftType>;
-  trackingData?: Maybe<TrackingDataDraftType>;
-  items?: Maybe<Array<DeliveryItemDraftType>>;
-};
-
-export type AddOrderPayment = {
-  payment: ResourceIdentifierInput;
-};
-
-export type AddOrderReturnInfo = {
-  items: Array<ReturnItemDraftType>;
-  returnDate?: Maybe<Scalars["DateTime"]>;
-  returnTrackingId?: Maybe<Scalars["String"]>;
-};
-
-export type AddPlainEnumValue = {
-  attributeName: Scalars["String"];
-  value: PlainEnumValueDraft;
-};
-
-export type AddProductAsset = {
-  variantId?: Maybe<Scalars["Int"]>;
-  sku?: Maybe<Scalars["String"]>;
-  catalog?: Maybe<ReferenceInput>;
-  staged?: Maybe<Scalars["Boolean"]>;
-  position?: Maybe<Scalars["Int"]>;
-  asset: AssetDraftInput;
-};
-
-export type AddProductExternalImage = {
-  variantId?: Maybe<Scalars["Int"]>;
-  sku?: Maybe<Scalars["String"]>;
-  image: ImageInput;
-  staged?: Maybe<Scalars["Boolean"]>;
-};
-
-export type AddProductPrice = {
-  variantId?: Maybe<Scalars["Int"]>;
-  sku?: Maybe<Scalars["String"]>;
-  price: ProductPriceDataInput;
-  catalog?: Maybe<ReferenceInput>;
-  staged?: Maybe<Scalars["Boolean"]>;
-};
-
-export type AddProductToCategory = {
-  category: ResourceIdentifierInput;
-  orderHint?: Maybe<Scalars["String"]>;
-  staged?: Maybe<Scalars["Boolean"]>;
-};
-
-export type AddProductVariant = {
-  assets?: Maybe<Array<AssetDraftInput>>;
-  attributes?: Maybe<Array<ProductAttributeInput>>;
-  images?: Maybe<Array<ImageInput>>;
-  prices?: Maybe<Array<ProductPriceDataInput>>;
-  key?: Maybe<Scalars["String"]>;
-  sku?: Maybe<Scalars["String"]>;
-  staged?: Maybe<Scalars["Boolean"]>;
-};
-
-/** An address represents a postal address. */
-export type Address = {
-  __typename?: "Address";
-  id?: Maybe<Scalars["String"]>;
-  title?: Maybe<Scalars["String"]>;
-  salutation?: Maybe<Scalars["String"]>;
-  firstName?: Maybe<Scalars["String"]>;
-  lastName?: Maybe<Scalars["String"]>;
-  streetName?: Maybe<Scalars["String"]>;
-  streetNumber?: Maybe<Scalars["String"]>;
-  additionalStreetInfo?: Maybe<Scalars["String"]>;
-  postalCode?: Maybe<Scalars["String"]>;
-  city?: Maybe<Scalars["String"]>;
-  region?: Maybe<Scalars["String"]>;
-  state?: Maybe<Scalars["String"]>;
-  country: Scalars["Country"];
-  company?: Maybe<Scalars["String"]>;
-  department?: Maybe<Scalars["String"]>;
-  building?: Maybe<Scalars["String"]>;
-  apartment?: Maybe<Scalars["String"]>;
-  pOBox?: Maybe<Scalars["String"]>;
-  contactInfo: AddressContactInfo;
-  additionalAddressInfo?: Maybe<Scalars["String"]>;
-  externalId?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
-  phone?: Maybe<Scalars["String"]>;
-  mobile?: Maybe<Scalars["String"]>;
-  email?: Maybe<Scalars["String"]>;
-  fax?: Maybe<Scalars["String"]>;
-};
-
-export type AddressContactInfo = {
-  __typename?: "AddressContactInfo";
-  phone?: Maybe<Scalars["String"]>;
-  mobile?: Maybe<Scalars["String"]>;
-  email?: Maybe<Scalars["String"]>;
-  fax?: Maybe<Scalars["String"]>;
+/** Deletes an address. */
+export type AddressDelete = {
+  __typename?: 'AddressDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** A user instance for which the address was deleted. */
+  user?: Maybe<User>;
+  accountErrors: Array<AccountError>;
+  address?: Maybe<Address>;
 };
 
 export type AddressInput = {
-  id?: Maybe<Scalars["String"]>;
-  title?: Maybe<Scalars["String"]>;
-  salutation?: Maybe<Scalars["String"]>;
-  firstName?: Maybe<Scalars["String"]>;
-  lastName?: Maybe<Scalars["String"]>;
-  streetName?: Maybe<Scalars["String"]>;
-  streetNumber?: Maybe<Scalars["String"]>;
-  additionalStreetInfo?: Maybe<Scalars["String"]>;
-  postalCode?: Maybe<Scalars["String"]>;
-  city?: Maybe<Scalars["String"]>;
-  region?: Maybe<Scalars["String"]>;
-  state?: Maybe<Scalars["String"]>;
-  country: Scalars["Country"];
-  company?: Maybe<Scalars["String"]>;
-  department?: Maybe<Scalars["String"]>;
-  building?: Maybe<Scalars["String"]>;
-  apartment?: Maybe<Scalars["String"]>;
-  pOBox?: Maybe<Scalars["String"]>;
-  phone?: Maybe<Scalars["String"]>;
-  mobile?: Maybe<Scalars["String"]>;
-  email?: Maybe<Scalars["String"]>;
-  fax?: Maybe<Scalars["String"]>;
-  additionalAddressInfo?: Maybe<Scalars["String"]>;
-  externalId?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
+  /** Given name. */
+  firstName?: Maybe<Scalars['String']>;
+  /** Family name. */
+  lastName?: Maybe<Scalars['String']>;
+  /** Company or organization. */
+  companyName?: Maybe<Scalars['String']>;
+  /** Address. */
+  streetAddress1?: Maybe<Scalars['String']>;
+  /** Address. */
+  streetAddress2?: Maybe<Scalars['String']>;
+  /** City. */
+  city?: Maybe<Scalars['String']>;
+  /** District. */
+  cityArea?: Maybe<Scalars['String']>;
+  /** Postal code. */
+  postalCode?: Maybe<Scalars['String']>;
+  /** Country. */
+  country?: Maybe<CountryCode>;
+  /** State or province. */
+  countryArea?: Maybe<Scalars['String']>;
+  /** Phone number. */
+  phone?: Maybe<Scalars['String']>;
 };
 
-export type AddShippingMethodShippingRate = {
-  zone: ResourceIdentifierInput;
-  shippingRate: ShippingRateDraft;
-};
-
-export type AddShippingMethodZone = {
-  zone: ResourceIdentifierInput;
-};
-
-export type AddShoppingListLineItem = {
-  addedAt?: Maybe<Scalars["DateTime"]>;
-  custom?: Maybe<CustomFieldsDraft>;
-  quantity?: Maybe<Scalars["Int"]>;
-  variantId?: Maybe<Scalars["Int"]>;
-  sku?: Maybe<Scalars["String"]>;
-  productId?: Maybe<Scalars["String"]>;
-};
-
-export type AddShoppingListTextLineItem = {
-  addedAt?: Maybe<Scalars["DateTime"]>;
-  custom?: Maybe<CustomFieldsDraft>;
-  quantity?: Maybe<Scalars["Int"]>;
-  description?: Maybe<Array<LocalizedStringItemInputType>>;
-  name: Array<LocalizedStringItemInputType>;
-};
-
-export type AddZoneLocation = {
-  location: ZoneLocation;
-};
-
-export enum AnonymousCartSignInMode {
-  /** The anonymous cart is used as new active customer cart. No `LineItem`s get merged. */
-  UseAsNewActiveCustomerCart = "UseAsNewActiveCustomerCart",
-  /** `LineItem`s of the anonymous cart will be copied to the customer’s active cart that has been modified most recently.
-   *
-   * The `CartState` of the anonymous cart gets changed to `Merged` while the
-   * `CartState` of the customer’s cart remains `Active`.
-   *
-   * `CustomLineItems` and `CustomFields` of the anonymous cart will not be copied to the customers cart.
-   *
-   * If a `LineItem` in the anonymous cart matches an existing line item in the
-   * customer’s cart (same product ID and variant ID), the maximum quantity of both
-   * LineItems is used as the new quantity. In that case `CustomFields` on the
-   * `LineItem` of the anonymous cart will not be in the resulting `LineItem`.
+/** Sets a default address for the given user. */
+export type AddressSetDefault = {
+  __typename?: 'AddressSetDefault';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
    */
-  MergeWithExistingCustomerCart = "MergeWithExistingCustomerCart"
+  errors: Array<Error>;
+  /** An updated user instance. */
+  user?: Maybe<User>;
+  accountErrors: Array<AccountError>;
+};
+
+/** An enumeration. */
+export enum AddressTypeEnum {
+  Billing = 'BILLING',
+  Shipping = 'SHIPPING'
 }
 
-/** API Clients can be used to obtain OAuth 2 access tokens */
-export type ApiClientWithoutSecret = {
-  __typename?: "APIClientWithoutSecret";
-  id: Scalars["String"];
-  name: Scalars["String"];
-  scope: Scalars["String"];
-  createdAt?: Maybe<Scalars["DateTime"]>;
-  lastUsedAt?: Maybe<Scalars["Date"]>;
-};
-
-export type ApiClientWithoutSecretQueryResult = {
-  __typename?: "APIClientWithoutSecretQueryResult";
-  offset: Scalars["Int"];
-  count: Scalars["Int"];
-  total: Scalars["Long"];
-  results: Array<ApiClientWithoutSecret>;
-};
-
-/** API Clients can be used to obtain OAuth 2 access tokens. The secret is only
- * shown once in the response of creating the API Client.
- */
-export type ApiClientWithSecret = {
-  __typename?: "APIClientWithSecret";
-  id: Scalars["String"];
-  name: Scalars["String"];
-  scope: Scalars["String"];
-  createdAt?: Maybe<Scalars["DateTime"]>;
-  lastUsedAt?: Maybe<Scalars["Date"]>;
-  secret: Scalars["String"];
-};
-
-export type ApplyCartDeltaToCustomLineItemShippingDetailsTargets = {
-  customLineItemId: Scalars["String"];
-  targetsDelta: Array<ShippingTargetDraft>;
-};
-
-export type ApplyCartDeltaToLineItemShippingDetailsTargets = {
-  lineItemId: Scalars["String"];
-  targetsDelta: Array<ShippingTargetDraft>;
-};
-
-export type Asset = {
-  __typename?: "Asset";
-  id: Scalars["String"];
-  key?: Maybe<Scalars["String"]>;
-  sources: Array<AssetSource>;
-  name?: Maybe<Scalars["String"]>;
-  nameAllLocales: Array<LocalizedString>;
-  description?: Maybe<Scalars["String"]>;
-  descriptionAllLocales?: Maybe<Array<LocalizedString>>;
-  tags: Array<Scalars["String"]>;
-  /** This field contains non-typed data. Consider using `customFields` as a typed alternative. */
-  customFieldsRaw?: Maybe<Array<RawCustomField>>;
-  /** This field would contain type data */
-  customFields?: Maybe<Type>;
-  custom?: Maybe<CustomFieldsType>;
-  /** Custom fields are returned as a list instead of an object structure. */
-  customFieldList?: Maybe<Array<CustomField>>;
-};
-
-export type AssetNameArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
-};
-
-export type AssetDescriptionArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
-};
-
-export type AssetCustomFieldsRawArgs = {
-  includeNames?: Maybe<Array<Scalars["String"]>>;
-  excludeNames?: Maybe<Array<Scalars["String"]>>;
-};
-
-export type AssetCustomFieldListArgs = {
-  includeNames?: Maybe<Array<Scalars["String"]>>;
-  excludeNames?: Maybe<Array<Scalars["String"]>>;
-};
-
-export type AssetDimensions = {
-  __typename?: "AssetDimensions";
-  width: Scalars["Int"];
-  height: Scalars["Int"];
-};
-
-export type AssetDimensionsInput = {
-  width: Scalars["Int"];
-  height: Scalars["Int"];
-};
-
-export type AssetDraftInput = {
-  key?: Maybe<Scalars["String"]>;
-  name: Array<LocalizedStringItemInputType>;
-  description?: Maybe<Array<LocalizedStringItemInputType>>;
-  custom?: Maybe<CustomFieldsDraft>;
-  sources?: Maybe<Array<AssetSourceInput>>;
-  tags?: Maybe<Array<Scalars["String"]>>;
-  type?: Maybe<ResourceIdentifierInput>;
-};
-
-export type AssetSource = {
-  __typename?: "AssetSource";
-  uri: Scalars["String"];
-  key?: Maybe<Scalars["String"]>;
-  dimensions?: Maybe<AssetDimensions>;
-  contentType?: Maybe<Scalars["String"]>;
-};
-
-export type AssetSourceInput = {
-  uri: Scalars["String"];
-  key?: Maybe<Scalars["String"]>;
-  dimensions?: Maybe<AssetDimensionsInput>;
-  contentType?: Maybe<Scalars["String"]>;
-};
-
-export type Attribute = {
-  name: Scalars["String"];
-};
-
-export enum AttributeConstraint {
-  /** No constraints are applied to the attribute */
-  None = "None",
-  /** Attribute value should be different in each variant */
-  Unique = "Unique",
-  /** A set of attributes, that have this constraint, should have different combinations in each variant */
-  CombinationUnique = "CombinationUnique",
-  /** Attribute value should be the same in all variants */
-  SameForAll = "SameForAll"
-}
-
-export type AttributeDefinition = {
-  __typename?: "AttributeDefinition";
-  type: AttributeDefinitionType;
-  name: Scalars["String"];
-  label?: Maybe<Scalars["String"]>;
-  isRequired: Scalars["Boolean"];
-  attributeConstraint: AttributeConstraint;
-  inputTip?: Maybe<Scalars["String"]>;
-  inputHint: TextInputHint;
-  isSearchable: Scalars["Boolean"];
-  labelAllLocales: Array<LocalizedString>;
-  inputTipAllLocales?: Maybe<Array<LocalizedString>>;
-};
-
-export type AttributeDefinitionLabelArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
-};
-
-export type AttributeDefinitionInputTipArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
-};
-
-export type AttributeDefinitionDraft = {
-  type: AttributeTypeDraft;
-  name: Scalars["String"];
-  label: Array<LocalizedStringItemInputType>;
-  isRequired: Scalars["Boolean"];
-  attributeConstraint?: Maybe<AttributeConstraint>;
-  inputTip?: Maybe<Array<LocalizedStringItemInputType>>;
-  inputHint?: Maybe<TextInputHint>;
-  isSearchable: Scalars["Boolean"];
-};
-
-export type AttributeDefinitionResult = {
-  __typename?: "AttributeDefinitionResult";
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
-  total: Scalars["Int"];
-  results: Array<AttributeDefinition>;
-};
-
-/** (https://dev.commercetools.com/http-api-projects-productTypes.html#attributetype)[https://dev.commercetools.com/http-api-projects-productTypes.html#attributetype] */
-export type AttributeDefinitionType = {
-  name: Scalars["String"];
-};
-
-export type AttributeSetElementTypeDraft = {
-  text?: Maybe<SimpleAttributeTypeDraft>;
-  number?: Maybe<SimpleAttributeTypeDraft>;
-  money?: Maybe<SimpleAttributeTypeDraft>;
-  date?: Maybe<SimpleAttributeTypeDraft>;
-  time?: Maybe<SimpleAttributeTypeDraft>;
-  datetime?: Maybe<SimpleAttributeTypeDraft>;
-  boolean?: Maybe<SimpleAttributeTypeDraft>;
-  reference?: Maybe<ReferenceTypeDefinitionDraft>;
-  enum?: Maybe<EnumTypeDraft>;
-  lenum?: Maybe<LocalizableEnumTypeDraft>;
-  ltext?: Maybe<SimpleAttributeTypeDraft>;
-};
-
-export type AttributeSetTypeDraft = {
-  elementType: AttributeSetElementTypeDraft;
-};
-
-export type AttributeTypeDraft = {
-  set?: Maybe<AttributeSetTypeDraft>;
-  text?: Maybe<SimpleAttributeTypeDraft>;
-  number?: Maybe<SimpleAttributeTypeDraft>;
-  money?: Maybe<SimpleAttributeTypeDraft>;
-  date?: Maybe<SimpleAttributeTypeDraft>;
-  time?: Maybe<SimpleAttributeTypeDraft>;
-  datetime?: Maybe<SimpleAttributeTypeDraft>;
-  boolean?: Maybe<SimpleAttributeTypeDraft>;
-  reference?: Maybe<ReferenceTypeDefinitionDraft>;
-  enum?: Maybe<EnumTypeDraft>;
-  lenum?: Maybe<LocalizableEnumTypeDraft>;
-  ltext?: Maybe<SimpleAttributeTypeDraft>;
-};
-
-export type BaseMoney = {
-  type: Scalars["String"];
-  currencyCode: Scalars["Currency"];
-  centAmount: Scalars["Long"];
-  fractionDigits: Scalars["Int"];
-};
-
-export type BaseMoneyInput = {
-  centPrecision?: Maybe<MoneyInput>;
-  highPrecision?: Maybe<HighPrecisionMoneyInput>;
-};
-
-export type BaseSearchKeywordInput = {
-  whitespace?: Maybe<WhitespaceSuggestTokenizerInput>;
-  custom?: Maybe<CustomSuggestTokenizerInput>;
-};
-
-export type BooleanAttribute = Attribute & {
-  __typename?: "BooleanAttribute";
-  value: Scalars["Boolean"];
-  name: Scalars["String"];
-};
-
-export type BooleanAttributeDefinitionType = AttributeDefinitionType & {
-  __typename?: "BooleanAttributeDefinitionType";
-  name: Scalars["String"];
-};
-
-export type BooleanField = CustomField & {
-  __typename?: "BooleanField";
-  value: Scalars["Boolean"];
-  name: Scalars["String"];
-};
-
-export type BooleanType = FieldType & {
-  __typename?: "BooleanType";
-  name: Scalars["String"];
-};
-
-/** A shopping cart holds product variants and can be ordered. Each cart either
- * belongs to a registered customer or is an anonymous cart.
- */
-export type Cart = Versioned & {
-  __typename?: "Cart";
-  customerId?: Maybe<Scalars["String"]>;
-  customer?: Maybe<Customer>;
-  customerEmail?: Maybe<Scalars["String"]>;
-  anonymousId?: Maybe<Scalars["String"]>;
-  lineItems: Array<LineItem>;
-  customLineItems: Array<CustomLineItem>;
-  totalPrice: Money;
-  taxedPrice?: Maybe<TaxedPrice>;
-  shippingAddress?: Maybe<Address>;
-  billingAddress?: Maybe<Address>;
-  inventoryMode: InventoryMode;
-  taxMode: TaxMode;
-  taxRoundingMode: RoundingMode;
-  taxCalculationMode: TaxCalculationMode;
-  customerGroup?: Maybe<CustomerGroup>;
-  customerGroupRef?: Maybe<Reference>;
-  country?: Maybe<Scalars["Country"]>;
-  shippingInfo?: Maybe<ShippingInfo>;
-  discountCodes: Array<DiscountCodeInfo>;
-  refusedGifts: Array<CartDiscount>;
-  refusedGiftsRefs: Array<Reference>;
-  paymentInfo?: Maybe<PaymentInfo>;
-  locale?: Maybe<Scalars["Locale"]>;
-  shippingRateInput?: Maybe<ShippingRateInput>;
-  origin: CartOrigin;
-  storeRef?: Maybe<KeyReference>;
-  store?: Maybe<Store>;
-  itemShippingAddresses: Array<Address>;
-  cartState: CartState;
-  /** This field contains non-typed data. Consider using `customFields` as a typed alternative. */
-  customFieldsRaw?: Maybe<Array<RawCustomField>>;
-  /** This field would contain type data */
-  customFields?: Maybe<Type>;
-  custom?: Maybe<CustomFieldsType>;
-  deleteDaysAfterLastModification?: Maybe<Scalars["Int"]>;
-  id: Scalars["String"];
-  version: Scalars["Long"];
-  createdAt: Scalars["DateTime"];
-  lastModifiedAt: Scalars["DateTime"];
-  createdBy?: Maybe<Initiator>;
-  lastModifiedBy?: Maybe<Initiator>;
-  /** Custom fields are returned as a list instead of an object structure. */
-  customFieldList?: Maybe<Array<CustomField>>;
-};
-
-/** A shopping cart holds product variants and can be ordered. Each cart either
- * belongs to a registered customer or is an anonymous cart.
- */
-export type CartCustomFieldsRawArgs = {
-  includeNames?: Maybe<Array<Scalars["String"]>>;
-  excludeNames?: Maybe<Array<Scalars["String"]>>;
-};
-
-/** A shopping cart holds product variants and can be ordered. Each cart either
- * belongs to a registered customer or is an anonymous cart.
- */
-export type CartCustomFieldListArgs = {
-  includeNames?: Maybe<Array<Scalars["String"]>>;
-  excludeNames?: Maybe<Array<Scalars["String"]>>;
-};
-
-export type CartClassificationInput = {
-  values: Array<LocalizedEnumValueInput>;
-};
-
-export type CartClassificationType = ShippingRateInputType & {
-  __typename?: "CartClassificationType";
-  values: Array<ShippingRateInputLocalizedEnumValue>;
-  type: Scalars["String"];
-};
-
-/** Cart discounts are recalculated every time LineItems or CustomLineItems are
- * added or removed from the Cart or an order is created from the cart.
- *
- * The number of active cart discounts that do not require a discount code
- * (isActive=true and requiresDiscountCode=false) is limited to 100.
- */
-export type CartDiscount = Versioned & {
-  __typename?: "CartDiscount";
-  cartPredicate: Scalars["String"];
-  validFrom?: Maybe<Scalars["DateTime"]>;
-  validUntil?: Maybe<Scalars["DateTime"]>;
-  stackingMode: StackingMode;
-  isActive: Scalars["Boolean"];
-  requiresDiscountCode: Scalars["Boolean"];
-  sortOrder: Scalars["String"];
-  key?: Maybe<Scalars["String"]>;
-  name?: Maybe<Scalars["String"]>;
-  description?: Maybe<Scalars["String"]>;
-  nameAllLocales: Array<LocalizedString>;
-  descriptionAllLocales?: Maybe<Array<LocalizedString>>;
-  /** This field contains non-typed data. Consider using `customFields` as a typed alternative. */
-  customFieldsRaw?: Maybe<Array<RawCustomField>>;
-  /** This field would contain type data */
-  customFields?: Maybe<Type>;
-  custom?: Maybe<CustomFieldsType>;
-  value: CartDiscountValue;
-  target?: Maybe<CartDiscountTarget>;
-  id: Scalars["String"];
-  version: Scalars["Long"];
-  createdAt: Scalars["DateTime"];
-  lastModifiedAt: Scalars["DateTime"];
-  createdBy?: Maybe<Initiator>;
-  lastModifiedBy?: Maybe<Initiator>;
-  /** Custom fields are returned as a list instead of an object structure. */
-  customFieldList?: Maybe<Array<CustomField>>;
-};
-
-/** Cart discounts are recalculated every time LineItems or CustomLineItems are
- * added or removed from the Cart or an order is created from the cart.
- *
- * The number of active cart discounts that do not require a discount code
- * (isActive=true and requiresDiscountCode=false) is limited to 100.
- */
-export type CartDiscountNameArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
-};
-
-/** Cart discounts are recalculated every time LineItems or CustomLineItems are
- * added or removed from the Cart or an order is created from the cart.
- *
- * The number of active cart discounts that do not require a discount code
- * (isActive=true and requiresDiscountCode=false) is limited to 100.
- */
-export type CartDiscountDescriptionArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
-};
-
-/** Cart discounts are recalculated every time LineItems or CustomLineItems are
- * added or removed from the Cart or an order is created from the cart.
- *
- * The number of active cart discounts that do not require a discount code
- * (isActive=true and requiresDiscountCode=false) is limited to 100.
- */
-export type CartDiscountCustomFieldsRawArgs = {
-  includeNames?: Maybe<Array<Scalars["String"]>>;
-  excludeNames?: Maybe<Array<Scalars["String"]>>;
-};
-
-/** Cart discounts are recalculated every time LineItems or CustomLineItems are
- * added or removed from the Cart or an order is created from the cart.
- *
- * The number of active cart discounts that do not require a discount code
- * (isActive=true and requiresDiscountCode=false) is limited to 100.
- */
-export type CartDiscountCustomFieldListArgs = {
-  includeNames?: Maybe<Array<Scalars["String"]>>;
-  excludeNames?: Maybe<Array<Scalars["String"]>>;
-};
-
-export type CartDiscountDraft = {
-  value: CartDiscountValueInput;
-  cartPredicate: Scalars["String"];
-  target?: Maybe<CartDiscountTargetInput>;
-  sortOrder: Scalars["String"];
-  name: Array<LocalizedStringItemInputType>;
-  description?: Maybe<Array<LocalizedStringItemInputType>>;
-  validFrom?: Maybe<Scalars["DateTime"]>;
-  validUntil?: Maybe<Scalars["DateTime"]>;
-  stackingMode?: Maybe<StackingMode>;
-  requiresDiscountCode?: Maybe<Scalars["Boolean"]>;
-  isActive?: Maybe<Scalars["Boolean"]>;
-  custom?: Maybe<CustomFieldsDraft>;
-  key?: Maybe<Scalars["String"]>;
-};
-
-export type CartDiscountQueryResult = {
-  __typename?: "CartDiscountQueryResult";
-  offset: Scalars["Int"];
-  count: Scalars["Int"];
-  total: Scalars["Long"];
-  results: Array<CartDiscount>;
-};
-
-export type CartDiscountTarget = {
-  type: Scalars["String"];
-};
-
-export type CartDiscountTargetInput = {
-  lineItems?: Maybe<LineItemsTargetInput>;
-  customLineItems?: Maybe<CustomLineItemsTargetInput>;
-  shipping?: Maybe<ShippingTargetInput>;
-  multiBuyLineItems?: Maybe<MultiBuyLineItemsTargetInput>;
-  multiBuyCustomLineItems?: Maybe<MultiBuyCustomLineItemsTargetInput>;
-};
-
-export type CartDiscountUpdateAction = {
-  changeCartPredicate?: Maybe<ChangeCartDiscountCartPredicate>;
-  changeIsActive?: Maybe<ChangeCartDiscountIsActive>;
-  changeName?: Maybe<ChangeCartDiscountName>;
-  changeRequiresDiscountCode?: Maybe<ChangeCartDiscountRequiresDiscountCode>;
-  changeSortOrder?: Maybe<ChangeCartDiscountSortOrder>;
-  changeStackingMode?: Maybe<ChangeCartDiscountStackingMode>;
-  changeTarget?: Maybe<ChangeCartDiscountTarget>;
-  changeValue?: Maybe<ChangeCartDiscountValue>;
-  setCustomField?: Maybe<SetCartDiscountCustomField>;
-  setCustomType?: Maybe<SetCartDiscountCustomType>;
-  setDescription?: Maybe<SetCartDiscountDescription>;
-  setKey?: Maybe<SetCartDiscountKey>;
-  setValidFrom?: Maybe<SetCartDiscountValidFrom>;
-  setValidFromAndUntil?: Maybe<SetCartDiscountValidFromAndUntil>;
-  setValidUntil?: Maybe<SetCartDiscountValidUntil>;
-};
-
-export type CartDiscountValue = {
-  type: Scalars["String"];
-};
-
-export type CartDiscountValueInput = {
-  relative?: Maybe<RelativeDiscountValueInput>;
-  absolute?: Maybe<AbsoluteDiscountValueInput>;
-  giftLineItem?: Maybe<GiftLineItemValueInput>;
-};
-
-export type CartDraft = {
-  currency: Scalars["Currency"];
-  country?: Maybe<Scalars["Country"]>;
-  inventoryMode?: Maybe<InventoryMode>;
-  custom?: Maybe<CustomFieldsDraft>;
-  customerEmail?: Maybe<Scalars["String"]>;
-  shippingAddress?: Maybe<AddressInput>;
-  billingAddress?: Maybe<AddressInput>;
-  shippingMethod?: Maybe<ResourceIdentifierInput>;
-  taxMode?: Maybe<TaxMode>;
-  locale?: Maybe<Scalars["Locale"]>;
-  deleteDaysAfterLastModification?: Maybe<Scalars["Int"]>;
-  itemShippingAddresses?: Maybe<Array<AddressInput>>;
-  discountCodes?: Maybe<Array<Scalars["String"]>>;
-  lineItems?: Maybe<Array<LineItemDraft>>;
-  customLineItems?: Maybe<Array<CustomLineItemDraft>>;
-  customerId?: Maybe<Scalars["String"]>;
-  externalTaxRateForShippingMethod?: Maybe<ExternalTaxRateDraft>;
-  anonymousId?: Maybe<Scalars["String"]>;
-  taxRoundingMode?: Maybe<RoundingMode>;
-  taxCalculationMode?: Maybe<TaxCalculationMode>;
-  customerGroup?: Maybe<ResourceIdentifierInput>;
-  shippingRateInput?: Maybe<ShippingRateInputDraft>;
-  origin?: Maybe<CartOrigin>;
-  store?: Maybe<ResourceIdentifierInput>;
-};
-
-export enum CartOrigin {
-  /** The cart was created by the merchant on behalf of the customer */
-  Merchant = "Merchant",
-  /** The cart was created by the customer. This is the default value */
-  Customer = "Customer"
-}
-
-/** Fields to access carts. Includes direct access to a single cart and searching for carts. */
-export type CartQueryInterface = {
-  cart?: Maybe<Cart>;
-  carts: CartQueryResult;
-};
-
-/** Fields to access carts. Includes direct access to a single cart and searching for carts. */
-export type CartQueryInterfaceCartArgs = {
-  id: Scalars["String"];
-};
-
-/** Fields to access carts. Includes direct access to a single cart and searching for carts. */
-export type CartQueryInterfaceCartsArgs = {
-  where?: Maybe<Scalars["String"]>;
-  sort?: Maybe<Array<Scalars["String"]>>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
-};
-
-export type CartQueryResult = {
-  __typename?: "CartQueryResult";
-  offset: Scalars["Int"];
-  count: Scalars["Int"];
-  total: Scalars["Long"];
-  results: Array<Cart>;
-};
-
-export type CartScoreInput = {
-  dummy?: Maybe<Scalars["String"]>;
-};
-
-export type CartScoreType = ShippingRateInputType & {
-  __typename?: "CartScoreType";
-  type: Scalars["String"];
-};
-
-export enum CartState {
-  /** The cart was ordered. No further operations on the cart are allowed. */
-  Ordered = "Ordered",
-  /** Anonymous cart whose content was merged into a customers cart on signin. No further operations on the cart are allowed. */
-  Merged = "Merged",
-  /** The cart can be updated and ordered. It is the default state. */
-  Active = "Active"
-}
-
-export type CartUpdateAction = {
-  addCustomLineItem?: Maybe<AddCartCustomLineItem>;
-  addDiscountCode?: Maybe<AddCartDiscountCode>;
-  addItemShippingAddress?: Maybe<AddCartItemShippingAddress>;
-  addLineItem?: Maybe<AddCartLineItem>;
-  addPayment?: Maybe<AddCartPayment>;
-  addShoppingList?: Maybe<AddCartShoppingList>;
-  applyDeltaToCustomLineItemShippingDetailsTargets?: Maybe<
-    ApplyCartDeltaToCustomLineItemShippingDetailsTargets
-  >;
-  applyDeltaToLineItemShippingDetailsTargets?: Maybe<
-    ApplyCartDeltaToLineItemShippingDetailsTargets
-  >;
-  changeCustomLineItemMoney?: Maybe<ChangeCartCustomLineItemMoney>;
-  changeCustomLineItemQuantity?: Maybe<ChangeCartCustomLineItemQuantity>;
-  changeLineItemQuantity?: Maybe<ChangeCartLineItemQuantity>;
-  changeTaxCalculationMode?: Maybe<ChangeCartTaxCalculationMode>;
-  changeTaxMode?: Maybe<ChangeCartTaxMode>;
-  changeTaxRoundingMode?: Maybe<ChangeCartTaxRoundingMode>;
-  recalculate?: Maybe<RecalculateCart>;
-  removeCustomLineItem?: Maybe<RemoveCartCustomLineItem>;
-  removeDiscountCode?: Maybe<RemoveCartDiscountCode>;
-  removeItemShippingAddress?: Maybe<RemoveCartItemShippingAddress>;
-  removeLineItem?: Maybe<RemoveCartLineItem>;
-  removePayment?: Maybe<RemoveCartPayment>;
-  setAnonymousId?: Maybe<SetCartAnonymousId>;
-  setBillingAddress?: Maybe<SetCartBillingAddress>;
-  setCartTotalTax?: Maybe<SetCartTotalTax>;
-  setCountry?: Maybe<SetCartCountry>;
-  setCustomField?: Maybe<SetCartCustomField>;
-  setCustomLineItemCustomField?: Maybe<SetCartCustomLineItemCustomField>;
-  setCustomLineItemCustomType?: Maybe<SetCartCustomLineItemCustomType>;
-  setCustomLineItemShippingDetails?: Maybe<
-    SetCartCustomLineItemShippingDetails
-  >;
-  setCustomLineItemTaxAmount?: Maybe<SetCartCustomLineItemTaxAmount>;
-  setCustomLineItemTaxRate?: Maybe<SetCartCustomLineItemTaxRate>;
-  setCustomShippingMethod?: Maybe<SetCartCustomShippingMethod>;
-  setCustomType?: Maybe<SetCartCustomType>;
-  setCustomerEmail?: Maybe<SetCartCustomerEmail>;
-  setCustomerGroup?: Maybe<SetCartCustomerGroup>;
-  setCustomerId?: Maybe<SetCartCustomerId>;
-  setDeleteDaysAfterLastModification?: Maybe<
-    SetCartDeleteDaysAfterLastModification
-  >;
-  setLineItemCustomField?: Maybe<SetCartLineItemCustomField>;
-  setLineItemCustomType?: Maybe<SetCartLineItemCustomType>;
-  setLineItemPrice?: Maybe<SetCartLineItemPrice>;
-  setLineItemShippingDetails?: Maybe<SetCartLineItemShippingDetails>;
-  setLineItemTaxAmount?: Maybe<SetCartLineItemTaxAmount>;
-  setLineItemTaxRate?: Maybe<SetCartLineItemTaxRate>;
-  setLineItemTotalPrice?: Maybe<SetCartLineItemTotalPrice>;
-  setLocale?: Maybe<SetCartLocale>;
-  setShippingAddress?: Maybe<SetCartShippingAddress>;
-  setShippingMethod?: Maybe<SetCartShippingMethod>;
-  setShippingMethodTaxAmount?: Maybe<SetCartShippingMethodTaxAmount>;
-  setShippingMethodTaxRate?: Maybe<SetCartShippingMethodTaxRate>;
-  setShippingRateInput?: Maybe<SetCartShippingRateInput>;
-  updateItemShippingAddress?: Maybe<UpdateCartItemShippingAddress>;
-};
-
-export type CartValueInput = {
-  dummy?: Maybe<Scalars["String"]>;
-};
-
-export type CartValueType = ShippingRateInputType & {
-  __typename?: "CartValueType";
-  type: Scalars["String"];
-};
-
-export type Category = Versioned & {
-  __typename?: "Category";
-  id: Scalars["String"];
-  key?: Maybe<Scalars["String"]>;
-  version: Scalars["Long"];
-  name?: Maybe<Scalars["String"]>;
-  nameAllLocales: Array<LocalizedString>;
-  description?: Maybe<Scalars["String"]>;
-  descriptionAllLocales?: Maybe<Array<LocalizedString>>;
-  slug?: Maybe<Scalars["String"]>;
-  slugAllLocales: Array<LocalizedString>;
-  ancestorsRef: Array<Reference>;
-  ancestors: Array<Category>;
-  parentRef?: Maybe<Reference>;
-  parent?: Maybe<Category>;
-  orderHint: Scalars["String"];
-  externalId?: Maybe<Scalars["String"]>;
-  metaTitle?: Maybe<Scalars["String"]>;
-  metaKeywords?: Maybe<Scalars["String"]>;
-  metaDescription?: Maybe<Scalars["String"]>;
-  /** Number of a products in the category subtree. */
-  productCount: Scalars["Int"];
-  /** Number of staged products in the category subtree. */
-  stagedProductCount: Scalars["Int"];
-  /** Number of direct child categories. */
-  childCount: Scalars["Int"];
-  /** Direct child categories. */
-  children?: Maybe<Array<Category>>;
-  createdAt: Scalars["DateTime"];
-  lastModifiedAt: Scalars["DateTime"];
-  assets: Array<Asset>;
-  /** This field contains non-typed data. Consider using `customFields` as a typed alternative. */
-  customFieldsRaw?: Maybe<Array<RawCustomField>>;
-  /** This field would contain type data */
-  customFields?: Maybe<Type>;
-  custom?: Maybe<CustomFieldsType>;
-  createdBy?: Maybe<Initiator>;
-  lastModifiedBy?: Maybe<Initiator>;
-  /** Custom fields are returned as a list instead of an object structure. */
-  customFieldList?: Maybe<Array<CustomField>>;
-};
-
-export type CategoryNameArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
-};
-
-export type CategoryDescriptionArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
-};
-
-export type CategorySlugArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
-};
-
-export type CategoryMetaTitleArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
-};
-
-export type CategoryMetaKeywordsArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
-};
-
-export type CategoryMetaDescriptionArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
-};
-
-export type CategoryCustomFieldsRawArgs = {
-  includeNames?: Maybe<Array<Scalars["String"]>>;
-  excludeNames?: Maybe<Array<Scalars["String"]>>;
-};
-
-export type CategoryCustomFieldListArgs = {
-  includeNames?: Maybe<Array<Scalars["String"]>>;
-  excludeNames?: Maybe<Array<Scalars["String"]>>;
-};
-
-export type CategoryDraft = {
-  key?: Maybe<Scalars["String"]>;
-  name: Array<LocalizedStringItemInputType>;
-  description?: Maybe<Array<LocalizedStringItemInputType>>;
-  custom?: Maybe<CustomFieldsDraft>;
-  slug: Array<LocalizedStringItemInputType>;
-  externalId?: Maybe<Scalars["String"]>;
-  metaTitle?: Maybe<Array<LocalizedStringItemInputType>>;
-  metaDescription?: Maybe<Array<LocalizedStringItemInputType>>;
-  metaKeywords?: Maybe<Array<LocalizedStringItemInputType>>;
-  orderHint?: Maybe<Scalars["String"]>;
-  parent?: Maybe<ResourceIdentifierInput>;
-  assets?: Maybe<Array<AssetDraftInput>>;
-};
-
-export type CategoryOrderHint = {
-  __typename?: "CategoryOrderHint";
-  categoryId: Scalars["String"];
-  orderHint: Scalars["String"];
-};
-
-export type CategoryOrderHintInput = {
-  uuid: Scalars["String"];
-  orderHint: Scalars["String"];
-};
-
-export type CategoryQueryResult = {
-  __typename?: "CategoryQueryResult";
-  offset: Scalars["Int"];
-  count: Scalars["Int"];
-  total: Scalars["Long"];
-  results: Array<Category>;
-};
-
-export type CategorySearch = {
-  __typename?: "CategorySearch";
-  id: Scalars["String"];
-  key?: Maybe<Scalars["String"]>;
-  version: Scalars["Long"];
-  name?: Maybe<Scalars["String"]>;
-  nameAllLocales: Array<LocalizedString>;
-  description?: Maybe<Scalars["String"]>;
-  descriptionAllLocales?: Maybe<Array<LocalizedString>>;
-  slug?: Maybe<Scalars["String"]>;
-  slugAllLocales: Array<LocalizedString>;
-  ancestorsRef: Array<Reference>;
-  ancestors: Array<CategorySearch>;
-  parentRef?: Maybe<Reference>;
-  parent?: Maybe<CategorySearch>;
-  externalId?: Maybe<Scalars["String"]>;
-  productCount: Scalars["Int"];
-  stagedProductCount: Scalars["Int"];
-  childCount: Scalars["Int"];
-  productTypeNames: Array<Scalars["String"]>;
-  /** Direct child categories. */
-  children: Array<CategorySearch>;
-  createdAt: Scalars["DateTime"];
-  lastModifiedAt: Scalars["DateTime"];
-  orderHint: Scalars["String"];
-  assets: Array<Asset>;
-  /** This field contains non-typed data. Consider using `customFields` as a typed alternative. */
-  customFieldsRaw?: Maybe<Array<RawCustomField>>;
-  /** This field would contain type data */
-  customFields?: Maybe<Type>;
-  custom?: Maybe<CustomFieldsType>;
-  /** Custom fields are returned as a list instead of an object structure. */
-  customFieldList?: Maybe<Array<CustomField>>;
-};
-
-export type CategorySearchNameArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
-};
-
-export type CategorySearchDescriptionArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
-};
-
-export type CategorySearchSlugArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
-};
-
-export type CategorySearchCustomFieldsRawArgs = {
-  includeNames?: Maybe<Array<Scalars["String"]>>;
-  excludeNames?: Maybe<Array<Scalars["String"]>>;
-};
-
-export type CategorySearchCustomFieldListArgs = {
-  includeNames?: Maybe<Array<Scalars["String"]>>;
-  excludeNames?: Maybe<Array<Scalars["String"]>>;
-};
-
-export type CategorySearchResult = {
-  __typename?: "CategorySearchResult";
-  offset: Scalars["Int"];
-  count: Scalars["Int"];
-  total: Scalars["Int"];
-  results: Array<CategorySearch>;
-};
-
-export type CategoryUpdateAction = {
-  addAsset?: Maybe<AddCategoryAsset>;
-  changeAssetName?: Maybe<ChangeCategoryAssetName>;
-  changeAssetOrder?: Maybe<ChangeCategoryAssetOrder>;
-  changeName?: Maybe<ChangeCategoryName>;
-  changeOrderHint?: Maybe<ChangeCategoryOrderHint>;
-  changeSlug?: Maybe<ChangeCategorySlug>;
-  changeParent?: Maybe<ChangeCategoryParent>;
-  removeAsset?: Maybe<RemoveCategoryAsset>;
-  setAssetCustomField?: Maybe<SetCategoryAssetCustomField>;
-  setAssetCustomType?: Maybe<SetCategoryAssetCustomType>;
-  setAssetDescription?: Maybe<SetCategoryAssetDescription>;
-  setAssetKey?: Maybe<SetCategoryAssetKey>;
-  setAssetSources?: Maybe<SetCategoryAssetSources>;
-  setAssetTags?: Maybe<SetCategoryAssetTags>;
-  setCustomField?: Maybe<SetCategoryCustomField>;
-  setCustomType?: Maybe<SetCategoryCustomType>;
-  setDescription?: Maybe<SetCategoryDescription>;
-  setKey?: Maybe<SetCategoryKey>;
-  setMetaDescription?: Maybe<SetCategoryMetaDescription>;
-  setMetaKeywords?: Maybe<SetCategoryMetaKeywords>;
-  setMetaTitle?: Maybe<SetCategoryMetaTitle>;
-  setExternalId?: Maybe<SetCategoryExternalId>;
-};
-
-export type ChangeAttributeName = {
-  attributeName: Scalars["String"];
-  newAttributeName: Scalars["String"];
-};
-
-export type ChangeAttributeOrder = {
-  attributeDefinitions: Array<AttributeDefinitionDraft>;
-};
-
-export type ChangeAttributeOrderByName = {
-  attributeNames: Array<Scalars["String"]>;
-};
-
-export type ChangeCartCustomLineItemMoney = {
-  customLineItemId: Scalars["String"];
-  money: BaseMoneyInput;
-};
-
-export type ChangeCartCustomLineItemQuantity = {
-  customLineItemId: Scalars["String"];
-  quantity: Scalars["Long"];
-};
-
-export type ChangeCartDiscountCartPredicate = {
-  cartPredicate: Scalars["String"];
-};
-
-export type ChangeCartDiscountIsActive = {
-  isActive: Scalars["Boolean"];
-};
-
-export type ChangeCartDiscountName = {
-  name: Array<LocalizedStringItemInputType>;
-};
-
-export type ChangeCartDiscountRequiresDiscountCode = {
-  requiresDiscountCode: Scalars["Boolean"];
-};
-
-export type ChangeCartDiscountSortOrder = {
-  sortOrder: Scalars["String"];
-};
-
-export type ChangeCartDiscountStackingMode = {
-  stackingMode: StackingMode;
-};
-
-export type ChangeCartDiscountTarget = {
-  target: CartDiscountTargetInput;
-};
-
-export type ChangeCartDiscountValue = {
-  value: CartDiscountValueInput;
-};
-
-export type ChangeCartLineItemQuantity = {
-  lineItemId: Scalars["String"];
-  quantity: Scalars["Long"];
-  externalPrice?: Maybe<BaseMoneyInput>;
-  externalTotalPrice?: Maybe<ExternalLineItemTotalPriceDraft>;
-};
-
-export type ChangeCartTaxCalculationMode = {
-  taxCalculationMode: TaxCalculationMode;
-};
-
-export type ChangeCartTaxMode = {
-  taxMode: TaxMode;
-};
-
-export type ChangeCartTaxRoundingMode = {
-  taxRoundingMode: RoundingMode;
-};
-
-export type ChangeCategoryAssetName = {
-  name: Array<LocalizedStringItemInputType>;
-  assetKey?: Maybe<Scalars["String"]>;
-  assetId?: Maybe<Scalars["String"]>;
-};
-
-export type ChangeCategoryAssetOrder = {
-  assetOrder: Array<Scalars["String"]>;
-};
-
-export type ChangeCategoryName = {
-  name: Array<LocalizedStringItemInputType>;
-};
-
-export type ChangeCategoryOrderHint = {
-  orderHint: Scalars["String"];
-};
-
-export type ChangeCategoryParent = {
-  parent: ResourceIdentifierInput;
-};
-
-export type ChangeCategorySlug = {
-  slug: Array<LocalizedStringItemInputType>;
-};
-
-export type ChangeCustomerAddress = {
-  addressId: Scalars["String"];
-  address: AddressInput;
-};
-
-export type ChangeCustomerEmail = {
-  email: Scalars["String"];
-};
-
-export type ChangeCustomerGroupName = {
-  name: Scalars["String"];
-};
-
-export type ChangeDescription = {
-  description: Scalars["String"];
-};
-
-export type ChangeDiscountCodeCartDiscounts = {
-  cartDiscounts: Array<ReferenceInput>;
-};
-
-export type ChangeDiscountCodeGroups = {
-  groups: Array<Scalars["String"]>;
-};
-
-export type ChangeDiscountCodeIsActive = {
-  isActive: Scalars["Boolean"];
-};
-
-export type ChangeEnumKey = {
-  attributeName: Scalars["String"];
-  key: Scalars["String"];
-  newKey: Scalars["String"];
-};
-
-export type ChangeInputHint = {
-  attributeName: Scalars["String"];
-  newValue: TextInputHint;
-};
-
-export type ChangeInventoryEntryQuantity = {
-  quantity: Scalars["Long"];
-};
-
-export type ChangeIsSearchable = {
-  attributeName: Scalars["String"];
-  isSearchable: Scalars["Boolean"];
-};
-
-export type ChangeLabel = {
-  attributeName: Scalars["String"];
-  label: Array<LocalizedStringItemInputType>;
-};
-
-export type ChangeLocalizedEnumValueLabel = {
-  attributeName: Scalars["String"];
-  newValue: LocalizedEnumValueDraft;
-};
-
-export type ChangeLocalizedEnumValueOrder = {
-  attributeName: Scalars["String"];
-  values: Array<LocalizedEnumValueDraft>;
-};
-
-export type ChangeMyCartTaxMode = {
-  taxMode: TaxMode;
-};
-
-export type ChangeName = {
-  name: Scalars["String"];
-};
-
-export type ChangeOrderPaymentState = {
-  paymentState: PaymentState;
-};
-
-export type ChangeOrderShipmentState = {
-  shipmentState: ShipmentState;
-};
-
-export type ChangeOrderState = {
-  orderState: OrderState;
-};
-
-export type ChangePlainEnumValueLabel = {
-  attributeName: Scalars["String"];
-  newValue: PlainEnumValueDraft;
-};
-
-export type ChangePlainEnumValueOrder = {
-  attributeName: Scalars["String"];
-  values: Array<PlainEnumValueDraft>;
-};
-
-export type ChangeProductAssetName = {
-  variantId?: Maybe<Scalars["Int"]>;
-  sku?: Maybe<Scalars["String"]>;
-  catalog?: Maybe<ReferenceInput>;
-  staged?: Maybe<Scalars["Boolean"]>;
-  name: Array<LocalizedStringItemInputType>;
-  assetKey?: Maybe<Scalars["String"]>;
-  assetId?: Maybe<Scalars["String"]>;
-};
-
-export type ChangeProductAssetOrder = {
-  variantId?: Maybe<Scalars["Int"]>;
-  sku?: Maybe<Scalars["String"]>;
-  catalog?: Maybe<ReferenceInput>;
-  staged?: Maybe<Scalars["Boolean"]>;
-  assetOrder: Array<Scalars["String"]>;
-};
-
-export type ChangeProductDiscountIsActive = {
-  isActive: Scalars["Boolean"];
-};
-
-export type ChangeProductDiscountName = {
-  name: Array<LocalizedStringItemInputType>;
-};
-
-export type ChangeProductDiscountPredicate = {
-  predicate: Scalars["String"];
-};
-
-export type ChangeProductDiscountSortOrder = {
-  sortOrder: Scalars["String"];
-};
-
-export type ChangeProductDiscountValue = {
-  value: ProductDiscountValueInput;
-};
-
-export type ChangeProductImageLabel = {
-  variantId?: Maybe<Scalars["Int"]>;
-  sku?: Maybe<Scalars["String"]>;
-  imageUrl: Scalars["String"];
-  label?: Maybe<Scalars["String"]>;
-  staged?: Maybe<Scalars["Boolean"]>;
-};
-
-export type ChangeProductMasterVariant = {
-  variantId?: Maybe<Scalars["Int"]>;
-  sku?: Maybe<Scalars["String"]>;
-  staged?: Maybe<Scalars["Boolean"]>;
-};
-
-export type ChangeProductName = {
-  name: Array<LocalizedStringItemInputType>;
-  staged?: Maybe<Scalars["Boolean"]>;
-};
-
-export type ChangeProductPrice = {
-  priceId?: Maybe<Scalars["String"]>;
-  variantId?: Maybe<Scalars["Int"]>;
-  sku?: Maybe<Scalars["String"]>;
-  price: ProductPriceDataInput;
-  catalog?: Maybe<ReferenceInput>;
-  staged?: Maybe<Scalars["Boolean"]>;
-};
-
-export type ChangeProductSlug = {
-  slug: Array<LocalizedStringItemInputType>;
-  staged?: Maybe<Scalars["Boolean"]>;
-};
-
-export type ChangeProjectSettingsCountries = {
-  countries: Array<Scalars["Country"]>;
-};
-
-export type ChangeProjectSettingsCurrencies = {
-  currencies: Array<Scalars["Currency"]>;
-};
-
-export type ChangeProjectSettingsLanguages = {
-  languages: Array<Scalars["Locale"]>;
-};
-
-export type ChangeProjectSettingsMessagesConfiguration = {
-  messagesConfiguration: MessagesConfigurationDraft;
-};
-
-export type ChangeProjectSettingsMessagesEnabled = {
-  messagesEnabled: Scalars["Boolean"];
-};
-
-export type ChangeProjectSettingsName = {
-  name: Scalars["String"];
-};
-
-export type ChangeShippingMethodIsDefault = {
-  isDefault: Scalars["Boolean"];
-};
-
-export type ChangeShippingMethodName = {
-  name: Scalars["String"];
-};
-
-export type ChangeShippingMethodTaxCategory = {
-  taxCategory: ResourceIdentifierInput;
-};
-
-export type ChangeShoppingListLineItemQuantity = {
-  lineItemId: Scalars["String"];
-  quantity: Scalars["Int"];
-};
-
-export type ChangeShoppingListLineItemsOrder = {
-  lineItemOrder: Array<Scalars["String"]>;
-};
-
-export type ChangeShoppingListName = {
-  name: Array<LocalizedStringItemInputType>;
-};
-
-export type ChangeShoppingListTextLineItemName = {
-  textLineItemId: Scalars["String"];
-  name: Array<LocalizedStringItemInputType>;
-};
-
-export type ChangeShoppingListTextLineItemQuantity = {
-  textLineItemId: Scalars["String"];
-  quantity: Scalars["Int"];
-};
-
-export type ChangeShoppingListTextLineItemsOrder = {
-  textLineItemOrder: Array<Scalars["String"]>;
-};
-
-export type ChangeZoneName = {
-  name: Scalars["String"];
-};
-
-export type Channel = Versioned & {
-  __typename?: "Channel";
-  id: Scalars["String"];
-  version: Scalars["Long"];
-  key: Scalars["String"];
-  roles: Array<ChannelRole>;
-  name?: Maybe<Scalars["String"]>;
-  nameAllLocales?: Maybe<Array<LocalizedString>>;
-  description?: Maybe<Scalars["String"]>;
-  descriptionAllLocales?: Maybe<Array<LocalizedString>>;
-  address?: Maybe<Address>;
-  geoLocation?: Maybe<Geometry>;
-  createdAt: Scalars["DateTime"];
-  lastModifiedAt: Scalars["DateTime"];
-  /** This field contains non-typed data. Consider using `customFields` as a typed alternative. */
-  customFieldsRaw?: Maybe<Array<RawCustomField>>;
-  /** This field would contain type data */
-  customFields?: Maybe<Type>;
-  custom?: Maybe<CustomFieldsType>;
-  createdBy?: Maybe<Initiator>;
-  lastModifiedBy?: Maybe<Initiator>;
-};
-
-export type ChannelNameArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
-};
-
-export type ChannelDescriptionArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
-};
-
-export type ChannelCustomFieldsRawArgs = {
-  includeNames?: Maybe<Array<Scalars["String"]>>;
-  excludeNames?: Maybe<Array<Scalars["String"]>>;
-};
-
-export type ChannelQueryResult = {
-  __typename?: "ChannelQueryResult";
-  offset: Scalars["Int"];
-  count: Scalars["Int"];
-  total: Scalars["Long"];
-  results: Array<Channel>;
-};
-
-export type ChannelReferenceIdentifier = {
-  __typename?: "ChannelReferenceIdentifier";
-  typeId: Scalars["String"];
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
-};
-
-export enum ChannelRole {
-  /** Role tells that this channel can be used to track inventory entries.Channels with this role can be treated as warehouses */
-  InventorySupply = "InventorySupply",
-  /** Role tells that this channel can be used to expose products to a specific
-   * distribution channel. It can be used by the cart to select a product price.
+/** Updates an address. */
+export type AddressUpdate = {
+  __typename?: 'AddressUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
    */
-  ProductDistribution = "ProductDistribution",
-  /** Role tells that this channel can be used to track order export activities. */
-  OrderExport = "OrderExport",
-  /** Role tells that this channel can be used to track order import activities. */
-  OrderImport = "OrderImport",
-  /** This role can be combined with some other roles (e.g. with `InventorySupply`)
-   * to represent the fact that this particular channel is the primary/master
-   * channel among the channels of the same type.
-   */
-  Primary = "Primary"
-}
-
-export type ClassificationShippingRateInput = ShippingRateInput & {
-  __typename?: "ClassificationShippingRateInput";
-  key: Scalars["String"];
-  type: Scalars["String"];
-  labelAllLocales: Array<LocalizedString>;
-  label?: Maybe<Scalars["String"]>;
-};
-
-export type ClassificationShippingRateInputLabelArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
-};
-
-export type ClassificationShippingRateInputDraft = {
-  key: Scalars["String"];
-};
-
-export type CreateApiClient = {
-  name: Scalars["String"];
-  scope: Scalars["String"];
-};
-
-export type CreateStore = {
-  key: Scalars["String"];
-  name?: Maybe<Array<LocalizedStringItemInputType>>;
-  languages?: Maybe<Array<Scalars["Locale"]>>;
-};
-
-export type CreateZone = {
-  name: Scalars["String"];
-  key?: Maybe<Scalars["String"]>;
-  description?: Maybe<Scalars["String"]>;
-  locations?: Maybe<Array<ZoneLocation>>;
-};
-
-/** A customer is a person purchasing products. Carts, Orders and Reviews can be associated to a customer. */
-export type Customer = Versioned & {
-  __typename?: "Customer";
-  customerNumber?: Maybe<Scalars["String"]>;
-  email: Scalars["String"];
-  password: Scalars["String"];
-  addresses: Array<Address>;
-  defaultShippingAddressId?: Maybe<Scalars["String"]>;
-  defaultBillingAddressId?: Maybe<Scalars["String"]>;
-  shippingAddressIds: Array<Scalars["String"]>;
-  billingAddressIds: Array<Scalars["String"]>;
-  isEmailVerified: Scalars["Boolean"];
-  customerGroupRef?: Maybe<Reference>;
-  externalId?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
-  firstName?: Maybe<Scalars["String"]>;
-  lastName?: Maybe<Scalars["String"]>;
-  middleName?: Maybe<Scalars["String"]>;
-  title?: Maybe<Scalars["String"]>;
-  locale?: Maybe<Scalars["Locale"]>;
-  salutation?: Maybe<Scalars["String"]>;
-  dateOfBirth?: Maybe<Scalars["Date"]>;
-  companyName?: Maybe<Scalars["String"]>;
-  vatId?: Maybe<Scalars["String"]>;
-  customerGroup?: Maybe<CustomerGroup>;
-  defaultShippingAddress?: Maybe<Address>;
-  defaultBillingAddress?: Maybe<Address>;
-  shippingAddresses: Array<Address>;
-  billingAddresses: Array<Address>;
-  storesRef: Array<KeyReference>;
-  stores: Array<Store>;
-  /** This field contains non-typed data. Consider using `customFields` as a typed alternative. */
-  customFieldsRaw?: Maybe<Array<RawCustomField>>;
-  /** This field would contain type data */
-  customFields?: Maybe<Type>;
-  custom?: Maybe<CustomFieldsType>;
-  id: Scalars["String"];
-  version: Scalars["Long"];
-  createdAt: Scalars["DateTime"];
-  lastModifiedAt: Scalars["DateTime"];
-  createdBy?: Maybe<Initiator>;
-  lastModifiedBy?: Maybe<Initiator>;
-  /** Custom fields are returned as a list instead of an object structure. */
-  customFieldList?: Maybe<Array<CustomField>>;
-};
-
-/** A customer is a person purchasing products. Carts, Orders and Reviews can be associated to a customer. */
-export type CustomerCustomFieldsRawArgs = {
-  includeNames?: Maybe<Array<Scalars["String"]>>;
-  excludeNames?: Maybe<Array<Scalars["String"]>>;
-};
-
-/** A customer is a person purchasing products. Carts, Orders and Reviews can be associated to a customer. */
-export type CustomerCustomFieldListArgs = {
-  includeNames?: Maybe<Array<Scalars["String"]>>;
-  excludeNames?: Maybe<Array<Scalars["String"]>>;
-};
-
-/** A field to access a customer's active cart. */
-export type CustomerActiveCartInterface = {
-  customerActiveCart?: Maybe<Cart>;
-};
-
-/** A field to access a customer's active cart. */
-export type CustomerActiveCartInterfaceCustomerActiveCartArgs = {
-  customerId: Scalars["String"];
-};
-
-/** A customer can be a member in a customer group (e.g. reseller, gold member). A
- * customer group can be used in price calculations with special prices being
- * assigned to certain customer groups.
- */
-export type CustomerGroup = Versioned & {
-  __typename?: "CustomerGroup";
-  id: Scalars["String"];
-  version: Scalars["Long"];
-  name: Scalars["String"];
-  key?: Maybe<Scalars["String"]>;
-  createdAt: Scalars["DateTime"];
-  lastModifiedAt: Scalars["DateTime"];
-  /** This field contains non-typed data. Consider using `customFields` as a typed alternative. */
-  customFieldsRaw?: Maybe<Array<RawCustomField>>;
-  /** This field would contain type data */
-  customFields?: Maybe<Type>;
-  custom?: Maybe<CustomFieldsType>;
-  createdBy?: Maybe<Initiator>;
-  lastModifiedBy?: Maybe<Initiator>;
-  /** Custom fields are returned as a list instead of an object structure. */
-  customFieldList?: Maybe<Array<CustomField>>;
-};
-
-/** A customer can be a member in a customer group (e.g. reseller, gold member). A
- * customer group can be used in price calculations with special prices being
- * assigned to certain customer groups.
- */
-export type CustomerGroupCustomFieldsRawArgs = {
-  includeNames?: Maybe<Array<Scalars["String"]>>;
-  excludeNames?: Maybe<Array<Scalars["String"]>>;
-};
-
-/** A customer can be a member in a customer group (e.g. reseller, gold member). A
- * customer group can be used in price calculations with special prices being
- * assigned to certain customer groups.
- */
-export type CustomerGroupCustomFieldListArgs = {
-  includeNames?: Maybe<Array<Scalars["String"]>>;
-  excludeNames?: Maybe<Array<Scalars["String"]>>;
-};
-
-export type CustomerGroupDraft = {
-  groupName: Scalars["String"];
-  key?: Maybe<Scalars["String"]>;
-  custom?: Maybe<CustomFieldsDraft>;
-};
-
-export type CustomerGroupQueryResult = {
-  __typename?: "CustomerGroupQueryResult";
-  offset: Scalars["Int"];
-  count: Scalars["Int"];
-  total: Scalars["Long"];
-  results: Array<CustomerGroup>;
-};
-
-export type CustomerGroupUpdateAction = {
-  changeName?: Maybe<ChangeCustomerGroupName>;
-  setKey?: Maybe<SetCustomerGroupKey>;
-  setCustomType?: Maybe<SetCustomerGroupCustomType>;
-  setCustomField?: Maybe<SetCustomerGroupCustomField>;
-};
-
-/** Fields to access customer accounts. Includes direct access to a single customer and searching for customers. */
-export type CustomerQueryInterface = {
-  customer?: Maybe<Customer>;
-  customers: CustomerQueryResult;
-};
-
-/** Fields to access customer accounts. Includes direct access to a single customer and searching for customers. */
-export type CustomerQueryInterfaceCustomerArgs = {
-  emailToken?: Maybe<Scalars["String"]>;
-  passwordToken?: Maybe<Scalars["String"]>;
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
-};
-
-/** Fields to access customer accounts. Includes direct access to a single customer and searching for customers. */
-export type CustomerQueryInterfaceCustomersArgs = {
-  where?: Maybe<Scalars["String"]>;
-  sort?: Maybe<Array<Scalars["String"]>>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
-};
-
-export type CustomerQueryResult = {
-  __typename?: "CustomerQueryResult";
-  offset: Scalars["Int"];
-  count: Scalars["Int"];
-  total: Scalars["Long"];
-  results: Array<Customer>;
-};
-
-export type CustomerSignInDraft = {
-  email: Scalars["String"];
-  password: Scalars["String"];
-  anonymousCartId?: Maybe<Scalars["String"]>;
-  anonymousCartSignInMode?: Maybe<AnonymousCartSignInMode>;
-  anonymousId?: Maybe<Scalars["String"]>;
-  updateProductData?: Maybe<Scalars["Boolean"]>;
-};
-
-export type CustomerSignInResult = {
-  __typename?: "CustomerSignInResult";
-  customer: Customer;
-  cart?: Maybe<Cart>;
-};
-
-export type CustomerSignMeInDraft = {
-  email: Scalars["String"];
-  password: Scalars["String"];
-  activeCartSignInMode?: Maybe<AnonymousCartSignInMode>;
-  updateProductData?: Maybe<Scalars["Boolean"]>;
-};
-
-export type CustomerSignMeUpDraft = {
-  email: Scalars["String"];
-  password: Scalars["String"];
-  firstName?: Maybe<Scalars["String"]>;
-  lastName?: Maybe<Scalars["String"]>;
-  middleName?: Maybe<Scalars["String"]>;
-  title?: Maybe<Scalars["String"]>;
-  dateOfBirth?: Maybe<Scalars["Date"]>;
-  companyName?: Maybe<Scalars["String"]>;
-  vatId?: Maybe<Scalars["String"]>;
-  addresses?: Maybe<Array<AddressInput>>;
-  /** The index of the address in the `addresses` list. The
-   * `defaultBillingAddressId` of the customer will be set to the ID of that address.
-   */
-  defaultBillingAddress?: Maybe<Scalars["Int"]>;
-  /** The index of the address in the `addresses` list. The
-   * `defaultShippingAddressId` of the customer will be set to the ID of that address.
-   */
-  defaultShippingAddress?: Maybe<Scalars["Int"]>;
-  /** The indices of the shipping addresses in the `addresses` list. The
-   * `shippingAddressIds` of the `Customer` will be set to the IDs of that addresses.
-   */
-  shippingAddresses?: Maybe<Array<Scalars["Int"]>>;
-  /** The indices of the billing addresses in the `addresses` list. The
-   * `billingAddressIds` of the customer will be set to the IDs of that addresses.
-   */
-  billingAddresses?: Maybe<Array<Scalars["Int"]>>;
-  custom?: Maybe<CustomFieldsDraft>;
-  locale?: Maybe<Scalars["Locale"]>;
-  salutation?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
-  stores?: Maybe<Array<ResourceIdentifierInput>>;
-};
-
-export type CustomerSignUpDraft = {
-  email: Scalars["String"];
-  password: Scalars["String"];
-  firstName?: Maybe<Scalars["String"]>;
-  lastName?: Maybe<Scalars["String"]>;
-  middleName?: Maybe<Scalars["String"]>;
-  title?: Maybe<Scalars["String"]>;
-  dateOfBirth?: Maybe<Scalars["Date"]>;
-  companyName?: Maybe<Scalars["String"]>;
-  vatId?: Maybe<Scalars["String"]>;
-  addresses?: Maybe<Array<AddressInput>>;
-  /** The index of the address in the `addresses` list. The
-   * `defaultBillingAddressId` of the customer will be set to the ID of that address.
-   */
-  defaultBillingAddress?: Maybe<Scalars["Int"]>;
-  /** The index of the address in the `addresses` list. The
-   * `defaultShippingAddressId` of the customer will be set to the ID of that address.
-   */
-  defaultShippingAddress?: Maybe<Scalars["Int"]>;
-  /** The indices of the shipping addresses in the `addresses` list. The
-   * `shippingAddressIds` of the `Customer` will be set to the IDs of that addresses.
-   */
-  shippingAddresses?: Maybe<Array<Scalars["Int"]>>;
-  /** The indices of the billing addresses in the `addresses` list. The
-   * `billingAddressIds` of the customer will be set to the IDs of that addresses.
-   */
-  billingAddresses?: Maybe<Array<Scalars["Int"]>>;
-  custom?: Maybe<CustomFieldsDraft>;
-  locale?: Maybe<Scalars["Locale"]>;
-  salutation?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
-  stores?: Maybe<Array<ResourceIdentifierInput>>;
-  customerNumber?: Maybe<Scalars["String"]>;
-  anonymousCartId?: Maybe<Scalars["String"]>;
-  externalId?: Maybe<Scalars["String"]>;
-  customerGroup?: Maybe<ResourceIdentifierInput>;
-  isEmailVerified?: Maybe<Scalars["Boolean"]>;
-  anonymousId?: Maybe<Scalars["String"]>;
-};
-
-export type CustomerToken = {
-  __typename?: "CustomerToken";
-  id: Scalars["String"];
-  customerId: Scalars["String"];
-  createdAt: Scalars["DateTime"];
-  expiresAt: Scalars["DateTime"];
-  value: Scalars["String"];
-};
-
-export type CustomerUpdateAction = {
-  addAddress?: Maybe<AddCustomerAddress>;
-  addBillingAddressId?: Maybe<AddCustomerBillingAddressId>;
-  addShippingAddressId?: Maybe<AddCustomerShippingAddressId>;
-  addStore?: Maybe<AddCustomerStore>;
-  changeAddress?: Maybe<ChangeCustomerAddress>;
-  changeEmail?: Maybe<ChangeCustomerEmail>;
-  removeAddress?: Maybe<RemoveCustomerAddress>;
-  removeBillingAddressId?: Maybe<RemoveCustomerBillingAddressId>;
-  removeShippingAddressId?: Maybe<RemoveCustomerShippingAddressId>;
-  removeStore?: Maybe<RemoveCustomerStore>;
-  setCompanyName?: Maybe<SetCustomerCompanyName>;
-  setCustomField?: Maybe<SetCustomerCustomField>;
-  setCustomType?: Maybe<SetCustomerCustomType>;
-  setCustomerGroup?: Maybe<SetCustomerGroup>;
-  setKey?: Maybe<SetCustomerKey>;
-  setLocale?: Maybe<SetCustomerLocale>;
-  setCustomerNumber?: Maybe<SetCustomerNumber>;
-  setDateOfBirth?: Maybe<SetCustomerDateOfBirth>;
-  setDefaultBillingAddress?: Maybe<SetCustomerDefaultBillingAddress>;
-  setDefaultShippingAddress?: Maybe<SetCustomerDefaultShippingAddress>;
-  setExternalId?: Maybe<SetCustomerExternalId>;
-  setFirstName?: Maybe<SetCustomerFirstName>;
-  setLastName?: Maybe<SetCustomerLastName>;
-  setMiddleName?: Maybe<SetCustomerMiddleName>;
-  setSalutation?: Maybe<SetCustomerSalutation>;
-  setStores?: Maybe<SetCustomerStores>;
-  setTitle?: Maybe<SetCustomerTitle>;
-  setVatId?: Maybe<SetCustomerVatId>;
-};
-
-export type CustomField = {
-  name: Scalars["String"];
-};
-
-/** A key-value pair representing the field name and value of one single custom field.
- *
- * The value of this custom field consists of escaped JSON based on the FieldDefinition of the Type.
- *
- * Examples for `value`:
- *
- * * FieldType `String`: `"\"This is a string\""`
- * * FieldType `DateTimeType`: `"\"2001-09-11T14:00:00.000Z\""`
- * * FieldType `Number`: `"4"`
- * * FieldType `Set` with an elementType of `String`: `"[\"This is a string\", \"This is another string\"]"`
- * * FieldType `Reference`: `"{\"id\", \"b911b62d-353a-4388-93ee-8d488d9af962\", \"typeId\", \"product\"}"`
- */
-export type CustomFieldInput = {
-  name: Scalars["String"];
-  /** The value of this custom field consists of escaped JSON based on the FieldDefinition of the Type.
-   *
-   * Examples for `value`:
-   *
-   * * FieldType `String`: `"\"This is a string\""`
-   * * FieldType `DateTimeType`: `"\"2001-09-11T14:00:00.000Z\""`
-   * * FieldType `Number`: `"4"`
-   * * FieldType `Set` with an elementType of `String`: `"[\"This is a string\", \"This is another string\"]"`
-   * * FieldType `Reference`: `"{\"id\", \"b911b62d-353a-4388-93ee-8d488d9af962\", \"typeId\", \"product\"}"`
-   */
-  value: Scalars["String"];
-};
-
-export type CustomFieldsDraft = {
-  typeId?: Maybe<Scalars["String"]>;
-  typeKey?: Maybe<Scalars["String"]>;
-  type?: Maybe<ResourceIdentifierInput>;
-  fields?: Maybe<Array<CustomFieldInput>>;
-};
-
-export type CustomFieldsType = {
-  __typename?: "CustomFieldsType";
-  typeRef: Reference;
-  type?: Maybe<TypeDefinition>;
-  /** This field contains non-typed data. For a typed alternative, have a look at `customFields`. */
-  customFieldsRaw?: Maybe<Array<RawCustomField>>;
-  /** This field would contain type data */
-  customFields: Type;
-  /** Custom fields are returned as a list instead of an object structure. */
-  customFieldList?: Maybe<Array<CustomField>>;
-};
-
-export type CustomFieldsTypeCustomFieldsRawArgs = {
-  includeNames?: Maybe<Array<Scalars["String"]>>;
-  excludeNames?: Maybe<Array<Scalars["String"]>>;
-};
-
-export type CustomFieldsTypeCustomFieldListArgs = {
-  includeNames?: Maybe<Array<Scalars["String"]>>;
-  excludeNames?: Maybe<Array<Scalars["String"]>>;
-};
-
-/** A custom line item is a generic item that can be added to the cart but is not
- * bound to a product. You can use it for discounts (negative money), vouchers,
- * complex cart rules, additional services or fees. You control the lifecycle of this item.
- */
-export type CustomLineItem = {
-  __typename?: "CustomLineItem";
-  id: Scalars["String"];
-  name?: Maybe<Scalars["String"]>;
-  nameAllLocales: Array<LocalizedString>;
-  money: BaseMoney;
-  totalPrice: Money;
-  slug: Scalars["String"];
-  quantity: Scalars["Long"];
-  state: Array<ItemState>;
-  taxCategory?: Maybe<TaxCategory>;
-  taxCategoryRef?: Maybe<Reference>;
-  taxRate?: Maybe<TaxRate>;
-  discountedPricePerQuantity: Array<DiscountedLineItemPriceForQuantity>;
-  /** This field contains non-typed data. Consider using `customFields` as a typed alternative. */
-  customFieldsRaw?: Maybe<Array<RawCustomField>>;
-  /** This field would contain type data */
-  customFields?: Maybe<Type>;
-  custom?: Maybe<CustomFieldsType>;
-  shippingDetails?: Maybe<ItemShippingDetails>;
-  /** Custom fields are returned as a list instead of an object structure. */
-  customFieldList?: Maybe<Array<CustomField>>;
-};
-
-/** A custom line item is a generic item that can be added to the cart but is not
- * bound to a product. You can use it for discounts (negative money), vouchers,
- * complex cart rules, additional services or fees. You control the lifecycle of this item.
- */
-export type CustomLineItemNameArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
-};
-
-/** A custom line item is a generic item that can be added to the cart but is not
- * bound to a product. You can use it for discounts (negative money), vouchers,
- * complex cart rules, additional services or fees. You control the lifecycle of this item.
- */
-export type CustomLineItemCustomFieldsRawArgs = {
-  includeNames?: Maybe<Array<Scalars["String"]>>;
-  excludeNames?: Maybe<Array<Scalars["String"]>>;
-};
-
-/** A custom line item is a generic item that can be added to the cart but is not
- * bound to a product. You can use it for discounts (negative money), vouchers,
- * complex cart rules, additional services or fees. You control the lifecycle of this item.
- */
-export type CustomLineItemCustomFieldListArgs = {
-  includeNames?: Maybe<Array<Scalars["String"]>>;
-  excludeNames?: Maybe<Array<Scalars["String"]>>;
-};
-
-export type CustomLineItemDraft = {
-  name: Array<LocalizedStringItemInputType>;
-  money: BaseMoneyInput;
-  slug: Scalars["String"];
-  taxCategory?: Maybe<ReferenceInput>;
-  externalTaxRate?: Maybe<ExternalTaxRateDraft>;
-  quantity?: Maybe<Scalars["Long"]>;
-  custom?: Maybe<CustomFieldsDraft>;
-  shippingDetails?: Maybe<ItemShippingDetailsDraft>;
-};
-
-export type CustomLineItemReturnItem = ReturnItem & {
-  __typename?: "CustomLineItemReturnItem";
-  type: Scalars["String"];
-  customLineItemId: Scalars["String"];
-  id: Scalars["String"];
-  quantity: Scalars["Long"];
-  comment?: Maybe<Scalars["String"]>;
-  shipmentState: ReturnShipmentState;
-  paymentState: ReturnPaymentState;
-  lastModifiedAt: Scalars["DateTime"];
-  createdAt: Scalars["DateTime"];
-};
-
-export type CustomLineItemsTarget = CartDiscountTarget & {
-  __typename?: "CustomLineItemsTarget";
-  predicate: Scalars["String"];
-  type: Scalars["String"];
-};
-
-export type CustomLineItemsTargetInput = {
-  predicate: Scalars["String"];
-};
-
-export type CustomSuggestTokenizerInput = {
-  text: Scalars["String"];
-  suggestTokenizer?: Maybe<BaseSearchKeywordInput>;
-};
-
-export type DateAttribute = Attribute & {
-  __typename?: "DateAttribute";
-  value: Scalars["Date"];
-  name: Scalars["String"];
-};
-
-export type DateAttributeDefinitionType = AttributeDefinitionType & {
-  __typename?: "DateAttributeDefinitionType";
-  name: Scalars["String"];
-};
-
-export type DateField = CustomField & {
-  __typename?: "DateField";
-  value: Scalars["Date"];
-  name: Scalars["String"];
-};
-
-export type DateTimeAttribute = Attribute & {
-  __typename?: "DateTimeAttribute";
-  value: Scalars["DateTime"];
-  name: Scalars["String"];
-};
-
-export type DateTimeAttributeDefinitionType = AttributeDefinitionType & {
-  __typename?: "DateTimeAttributeDefinitionType";
-  name: Scalars["String"];
-};
-
-export type DateTimeField = CustomField & {
-  __typename?: "DateTimeField";
-  value: Scalars["DateTime"];
-  name: Scalars["String"];
-};
-
-export type DateTimeType = FieldType & {
-  __typename?: "DateTimeType";
-  name: Scalars["String"];
-};
-
-export type DateType = FieldType & {
-  __typename?: "DateType";
-  name: Scalars["String"];
-};
-
-export type Delivery = {
-  __typename?: "Delivery";
-  id: Scalars["String"];
-  createdAt: Scalars["DateTime"];
-  items: Array<DeliveryItem>;
-  parcels: Array<Parcel>;
+  errors: Array<Error>;
+  /** A user object for which the address was edited. */
+  user?: Maybe<User>;
+  accountErrors: Array<AccountError>;
   address?: Maybe<Address>;
 };
 
-export type DeliveryItem = {
-  __typename?: "DeliveryItem";
-  id: Scalars["String"];
-  quantity: Scalars["Long"];
+export type AddressValidationData = {
+  __typename?: 'AddressValidationData';
+  countryCode?: Maybe<Scalars['String']>;
+  countryName?: Maybe<Scalars['String']>;
+  addressFormat?: Maybe<Scalars['String']>;
+  addressLatinFormat?: Maybe<Scalars['String']>;
+  allowedFields?: Maybe<Array<Maybe<Scalars['String']>>>;
+  requiredFields?: Maybe<Array<Maybe<Scalars['String']>>>;
+  upperFields?: Maybe<Array<Maybe<Scalars['String']>>>;
+  countryAreaType?: Maybe<Scalars['String']>;
+  countryAreaChoices?: Maybe<Array<Maybe<ChoiceValue>>>;
+  cityType?: Maybe<Scalars['String']>;
+  cityChoices?: Maybe<Array<Maybe<ChoiceValue>>>;
+  cityAreaType?: Maybe<Scalars['String']>;
+  cityAreaChoices?: Maybe<Array<Maybe<ChoiceValue>>>;
+  postalCodeType?: Maybe<Scalars['String']>;
+  postalCodeMatchers?: Maybe<Array<Maybe<Scalars['String']>>>;
+  postalCodeExamples?: Maybe<Array<Maybe<Scalars['String']>>>;
+  postalCodePrefix?: Maybe<Scalars['String']>;
 };
 
-export type DeliveryItemDraftType = {
-  id: Scalars["String"];
-  quantity: Scalars["Long"];
+/** Represents allocation. */
+export type Allocation = Node & {
+  __typename?: 'Allocation';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  /** Quantity allocated for orders. */
+  quantity: Scalars['Int'];
+  /** The warehouse were items were allocated. */
+  warehouse: Warehouse;
 };
 
-export type Dimensions = {
-  __typename?: "Dimensions";
-  width: Scalars["Int"];
-  height: Scalars["Int"];
-};
-
-export type DimensionsInput = {
-  width: Scalars["Int"];
-  height: Scalars["Int"];
-};
-
-/** With discount codes it is possible to give specific cart discounts to an
- * eligible amount of users. They are defined by a string value which can be added
- * to a cart so that specific cart discounts can be applied to the cart.
- */
-export type DiscountCode = Versioned & {
-  __typename?: "DiscountCode";
-  code: Scalars["String"];
-  isActive: Scalars["Boolean"];
-  maxApplications?: Maybe<Scalars["Long"]>;
-  maxApplicationsPerCustomer?: Maybe<Scalars["Long"]>;
-  cartPredicate?: Maybe<Scalars["String"]>;
-  applicationVersion?: Maybe<Scalars["Long"]>;
-  validFrom?: Maybe<Scalars["DateTime"]>;
-  validUntil?: Maybe<Scalars["DateTime"]>;
-  groups: Array<Scalars["String"]>;
-  name?: Maybe<Scalars["String"]>;
-  description?: Maybe<Scalars["String"]>;
-  cartDiscounts: Array<CartDiscount>;
-  nameAllLocales?: Maybe<Array<LocalizedString>>;
-  descriptionAllLocales?: Maybe<Array<LocalizedString>>;
-  /** This field contains non-typed data. Consider using `customFields` as a typed alternative. */
-  customFieldsRaw?: Maybe<Array<RawCustomField>>;
-  /** This field would contain type data */
-  customFields?: Maybe<Type>;
-  custom?: Maybe<CustomFieldsType>;
-  /** How many times this discount code was applied (only applications that were part of a successful checkout are considered) */
-  applicationCount: Scalars["Long"];
-  cartDiscountRefs: Array<Reference>;
-  id: Scalars["String"];
-  version: Scalars["Long"];
-  createdAt: Scalars["DateTime"];
-  lastModifiedAt: Scalars["DateTime"];
-  createdBy?: Maybe<Initiator>;
-  lastModifiedBy?: Maybe<Initiator>;
-  /** Custom fields are returned as a list instead of an object structure. */
-  customFieldList?: Maybe<Array<CustomField>>;
-};
-
-/** With discount codes it is possible to give specific cart discounts to an
- * eligible amount of users. They are defined by a string value which can be added
- * to a cart so that specific cart discounts can be applied to the cart.
- */
-export type DiscountCodeNameArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
-};
-
-/** With discount codes it is possible to give specific cart discounts to an
- * eligible amount of users. They are defined by a string value which can be added
- * to a cart so that specific cart discounts can be applied to the cart.
- */
-export type DiscountCodeDescriptionArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
-};
-
-/** With discount codes it is possible to give specific cart discounts to an
- * eligible amount of users. They are defined by a string value which can be added
- * to a cart so that specific cart discounts can be applied to the cart.
- */
-export type DiscountCodeCustomFieldsRawArgs = {
-  includeNames?: Maybe<Array<Scalars["String"]>>;
-  excludeNames?: Maybe<Array<Scalars["String"]>>;
-};
-
-/** With discount codes it is possible to give specific cart discounts to an
- * eligible amount of users. They are defined by a string value which can be added
- * to a cart so that specific cart discounts can be applied to the cart.
- */
-export type DiscountCodeCustomFieldListArgs = {
-  includeNames?: Maybe<Array<Scalars["String"]>>;
-  excludeNames?: Maybe<Array<Scalars["String"]>>;
-};
-
-export type DiscountCodeDraft = {
-  code: Scalars["String"];
-  name?: Maybe<Array<LocalizedStringItemInputType>>;
-  description?: Maybe<Array<LocalizedStringItemInputType>>;
-  cartDiscounts: Array<ReferenceInput>;
-  isActive?: Maybe<Scalars["Boolean"]>;
-  maxApplications?: Maybe<Scalars["Long"]>;
-  maxApplicationsPerCustomer?: Maybe<Scalars["Long"]>;
-  cartPredicate?: Maybe<Scalars["String"]>;
-  custom?: Maybe<CustomFieldsDraft>;
-  validFrom?: Maybe<Scalars["DateTime"]>;
-  validUntil?: Maybe<Scalars["DateTime"]>;
-  groups?: Maybe<Array<Scalars["String"]>>;
-};
-
-export type DiscountCodeInfo = {
-  __typename?: "DiscountCodeInfo";
-  discountCodeRef: Reference;
-  state?: Maybe<DiscountCodeState>;
-  discountCode?: Maybe<DiscountCode>;
-};
-
-export type DiscountCodeQueryResult = {
-  __typename?: "DiscountCodeQueryResult";
-  offset: Scalars["Int"];
-  count: Scalars["Int"];
-  total: Scalars["Long"];
-  results: Array<DiscountCode>;
-};
-
-export enum DiscountCodeState {
-  /** The discount code is active and none of the discounts were applied because the
-   * discount application was stopped by one discount that has the StackingMode of
-   * StopAfterThisDiscount defined
-   */
-  ApplicationStoppedByPreviousDiscount = "ApplicationStoppedByPreviousDiscount",
-  /** The discount code is not valid or it does not contain any valid cart
-   * discounts. Validity is determined based on the validFrom and validUntil dates
-   */
-  NotValid = "NotValid",
-  /** maxApplications or maxApplicationsPerCustomer for discountCode has been reached. */
-  MaxApplicationReached = "MaxApplicationReached",
-  /** The discount code is active and it contains at least one active and valid
-   * CartDiscount. The discount code cartPredicate matches the cart and at least
-   * one of the contained active discount’s cart predicates matches the cart.
-   */
-  MatchesCart = "MatchesCart",
-  /** The discount code is active and it contains at least one active and valid
-   * CartDiscount. But its cart predicate does not match the cart or none of the
-   * contained active discount’s cart predicates match the cart
-   */
-  DoesNotMatchCart = "DoesNotMatchCart",
-  /** The discount code is not active or it does not contain any active cart discounts. */
-  NotActive = "NotActive"
-}
-
-export type DiscountCodeUpdateAction = {
-  changeCartDiscounts?: Maybe<ChangeDiscountCodeCartDiscounts>;
-  changeGroups?: Maybe<ChangeDiscountCodeGroups>;
-  changeIsActive?: Maybe<ChangeDiscountCodeIsActive>;
-  setCartPredicate?: Maybe<SetDiscountCodeCartPredicate>;
-  setCustomField?: Maybe<SetDiscountCodeCustomField>;
-  setCustomType?: Maybe<SetDiscountCodeCustomType>;
-  setDescription?: Maybe<SetDiscountCodeDescription>;
-  setMaxApplications?: Maybe<SetDiscountCodeMaxApplications>;
-  setMaxApplicationsPerCustomer?: Maybe<
-    SetDiscountCodeMaxApplicationsPerCustomer
-  >;
-  setName?: Maybe<SetDiscountCodeName>;
-  setValidFrom?: Maybe<SetDiscountCodeValidFrom>;
-  setValidFromAndUntil?: Maybe<SetDiscountCodeValidFromAndUntil>;
-  setValidUntil?: Maybe<SetDiscountCodeValidUntil>;
-};
-
-export type DiscountedLineItemPortion = {
-  __typename?: "DiscountedLineItemPortion";
-  discount?: Maybe<CartDiscount>;
-  discountRef: Reference;
-  discountedAmount: BaseMoney;
-};
-
-export type DiscountedLineItemPrice = {
-  __typename?: "DiscountedLineItemPrice";
-  value: BaseMoney;
-  includedDiscounts: Array<DiscountedLineItemPortion>;
-};
-
-export type DiscountedLineItemPriceForQuantity = {
-  __typename?: "DiscountedLineItemPriceForQuantity";
-  quantity: Scalars["Long"];
-  discountedPrice: DiscountedLineItemPrice;
-};
-
-export type DiscountedProductPriceValue = {
-  __typename?: "DiscountedProductPriceValue";
-  value: BaseMoney;
-  discountRef: Reference;
-  discount?: Maybe<ProductDiscount>;
-  /** Temporal. Will be renamed some time in the future. Please use 'discount'. */
-  discountRel?: Maybe<ProductDiscount>;
-};
-
-export type DiscountedProductPriceValueInput = {
-  value: BaseMoneyInput;
-  discount: ReferenceInput;
-};
-
-export type EnumAttribute = Attribute & {
-  __typename?: "EnumAttribute";
-  key: Scalars["String"];
-  label: Scalars["String"];
-  name: Scalars["String"];
-};
-
-export type EnumAttributeDefinitionType = AttributeDefinitionType & {
-  __typename?: "EnumAttributeDefinitionType";
-  values: PlainEnumValueResult;
-  name: Scalars["String"];
-};
-
-export type EnumAttributeDefinitionTypeValuesArgs = {
-  includeKeys?: Maybe<Array<Scalars["String"]>>;
-  excludeKeys?: Maybe<Array<Scalars["String"]>>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
-  sort?: Maybe<Array<Scalars["String"]>>;
-};
-
-export type EnumField = CustomField & {
-  __typename?: "EnumField";
-  key: Scalars["String"];
-  name: Scalars["String"];
-};
-
-export type EnumType = FieldType & {
-  __typename?: "EnumType";
-  values: Array<EnumValue>;
-  name: Scalars["String"];
-};
-
-export type EnumTypeDraft = {
-  values: Array<PlainEnumValueDraft>;
-};
-
-export type EnumValue = {
-  __typename?: "EnumValue";
-  key: Scalars["String"];
-  label: Scalars["String"];
-};
-
-export type ExternalDiscountValue = ProductDiscountValue & {
-  __typename?: "ExternalDiscountValue";
-  type: Scalars["String"];
-};
-
-export type ExternalDiscountValueInput = {
-  dummy?: Maybe<Scalars["String"]>;
-};
-
-export type ExternalLineItemTotalPriceDraft = {
-  price: BaseMoneyInput;
-  totalPrice: MoneyInput;
-};
-
-export type ExternalOAuth = {
-  __typename?: "ExternalOAuth";
-  url: Scalars["String"];
-  authorizationHeader: Scalars["String"];
-};
-
-export type ExternalOAuthDraft = {
-  url: Scalars["String"];
-  authorizationHeader: Scalars["String"];
-};
-
-export type ExternalTaxAmountDraft = {
-  totalGross: MoneyInput;
-  taxRate: ExternalTaxRateDraft;
-};
-
-export type ExternalTaxRateDraft = {
-  name: Scalars["String"];
-  amount: Scalars["Float"];
-  country: Scalars["Country"];
-  state?: Maybe<Scalars["String"]>;
-  subRates?: Maybe<Array<SubRateDraft>>;
-  includedInPrice?: Maybe<Scalars["Boolean"]>;
-};
-
-/** Field definitions describe custom fields and allow you to define some meta-information associated with the field. */
-export type FieldDefinition = {
-  __typename?: "FieldDefinition";
-  name: Scalars["String"];
-  required: Scalars["Boolean"];
-  inputHint: TextInputHint;
-  label?: Maybe<Scalars["String"]>;
-  labelAllLocales: Array<LocalizedString>;
-  type: FieldType;
-};
-
-/** Field definitions describe custom fields and allow you to define some meta-information associated with the field. */
-export type FieldDefinitionLabelArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
-};
-
-export type FieldType = {
-  name: Scalars["String"];
-};
-
-export type Geometry = {
-  type: Scalars["String"];
-};
-
-export type GiftLineItemValue = CartDiscountValue & {
-  __typename?: "GiftLineItemValue";
-  type: Scalars["String"];
-  variantId: Scalars["Int"];
-  productRef: ProductReferenceIdentifier;
-  distributionChannelRef?: Maybe<ChannelReferenceIdentifier>;
-  supplyChannelRef?: Maybe<ChannelReferenceIdentifier>;
-};
-
-export type GiftLineItemValueInput = {
-  product: ResourceIdentifierInput;
-  variantId: Scalars["Int"];
-  distributionChannel?: Maybe<ResourceIdentifierInput>;
-  supplyChannel?: Maybe<ResourceIdentifierInput>;
-};
-
-export type HighPrecisionMoney = BaseMoney & {
-  __typename?: "HighPrecisionMoney";
-  type: Scalars["String"];
-  currencyCode: Scalars["Currency"];
-  preciseAmount: Scalars["Long"];
-  centAmount: Scalars["Long"];
-  fractionDigits: Scalars["Int"];
-};
-
-export type HighPrecisionMoneyInput = {
-  currencyCode: Scalars["Currency"];
-  preciseAmount: Scalars["Long"];
-  fractionDigits: Scalars["Int"];
-  centAmount?: Maybe<Scalars["Long"]>;
-};
-
-export type Image = {
-  __typename?: "Image";
-  url: Scalars["String"];
-  dimensions: Dimensions;
-  label?: Maybe<Scalars["String"]>;
-};
-
-export type ImageInput = {
-  url: Scalars["String"];
-  label?: Maybe<Scalars["String"]>;
-  dimensions: DimensionsInput;
-};
-
-export type ImportOrderCustomLineItemState = {
-  customLineItemId: Scalars["String"];
-  state: Array<ItemStateDraftType>;
-};
-
-export type ImportOrderLineItemState = {
-  lineItemId: Scalars["String"];
-  state: Array<ItemStateDraftType>;
-};
-
-export type Initiator = {
-  __typename?: "Initiator";
-  isPlatformClient?: Maybe<Scalars["Boolean"]>;
-  user?: Maybe<Reference>;
-  externalUserId?: Maybe<Scalars["String"]>;
-  customer?: Maybe<Reference>;
-  anonymousId?: Maybe<Scalars["String"]>;
-  clientId?: Maybe<Scalars["String"]>;
-};
-
-export type InStore = CartQueryInterface &
-  CustomerActiveCartInterface &
-  OrderQueryInterface &
-  CustomerQueryInterface &
-  ShippingMethodsByCartInterface &
-  MeFieldInterface & {
-    __typename?: "InStore";
-    /** This field can only be used with an access token created with the password flow or with an anonymous session.
-     *
-     * It gives access to the data that is specific to the customer or the anonymous session linked to the access token.
+/** Represents app data. */
+export type App = Node &
+  ObjectWithMetadata & {
+    __typename?: 'App';
+    /** The ID of the object. */
+    id: Scalars['ID'];
+    /** Name of the app. */
+    name?: Maybe<Scalars['String']>;
+    /** The date and time when the app was created. */
+    created?: Maybe<Scalars['DateTime']>;
+    /** Determine if app will be set active or not. */
+    isActive?: Maybe<Scalars['Boolean']>;
+    /** List of the app's permissions. */
+    permissions?: Maybe<Array<Maybe<Permission>>>;
+    /** Last 4 characters of the tokens. */
+    tokens?: Maybe<Array<Maybe<AppToken>>>;
+    /** List of private metadata items.Requires proper staff permissions to access. */
+    privateMetadata: Array<Maybe<MetadataItem>>;
+    /** List of public metadata items. Can be accessed without permissions. */
+    metadata: Array<Maybe<MetadataItem>>;
+    /**
+     * List of privately stored metadata namespaces.
+     * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
      */
-    me: InStoreMe;
-    shippingMethodsByCart: Array<ShippingMethod>;
-    customer?: Maybe<Customer>;
-    customers: CustomerQueryResult;
-    cart?: Maybe<Cart>;
-    carts: CartQueryResult;
-    customerActiveCart?: Maybe<Cart>;
-    order?: Maybe<Order>;
-    orders: OrderQueryResult;
+    privateMeta: Array<Maybe<MetaStore>>;
+    /**
+     * List of publicly stored metadata namespaces.
+     * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
+     */
+    meta: Array<Maybe<MetaStore>>;
+    /** Type of the app. */
+    type?: Maybe<AppTypeEnum>;
+    /** List of webhooks assigned to this app. */
+    webhooks?: Maybe<Array<Maybe<Webhook>>>;
+    /** Description of this app. */
+    aboutApp?: Maybe<Scalars['String']>;
+    /** Description of the data privacy defined for this app. */
+    dataPrivacy?: Maybe<Scalars['String']>;
+    /** Url to details about the privacy policy on the app owner page. */
+    dataPrivacyUrl?: Maybe<Scalars['String']>;
+    /** Homepage of the app. */
+    homepageUrl?: Maybe<Scalars['String']>;
+    /** Support page for the app. */
+    supportUrl?: Maybe<Scalars['String']>;
+    /** Url to iframe with the configuration for the app. */
+    configurationUrl?: Maybe<Scalars['String']>;
+    /** Url to iframe with the app. */
+    appUrl?: Maybe<Scalars['String']>;
+    /** Version number of the app. */
+    version?: Maybe<Scalars['String']>;
+    /** JWT token used to authenticate by thridparty app. */
+    accessToken?: Maybe<Scalars['String']>;
   };
 
-export type InStoreShippingMethodsByCartArgs = {
-  id: Scalars["String"];
-};
-
-export type InStoreCustomerArgs = {
-  emailToken?: Maybe<Scalars["String"]>;
-  passwordToken?: Maybe<Scalars["String"]>;
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
-};
-
-export type InStoreCustomersArgs = {
-  where?: Maybe<Scalars["String"]>;
-  sort?: Maybe<Array<Scalars["String"]>>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
-};
-
-export type InStoreCartArgs = {
-  id: Scalars["String"];
-};
-
-export type InStoreCartsArgs = {
-  where?: Maybe<Scalars["String"]>;
-  sort?: Maybe<Array<Scalars["String"]>>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
-};
-
-export type InStoreCustomerActiveCartArgs = {
-  customerId: Scalars["String"];
-};
-
-export type InStoreOrderArgs = {
-  id?: Maybe<Scalars["String"]>;
-  orderNumber?: Maybe<Scalars["String"]>;
-};
-
-export type InStoreOrdersArgs = {
-  where?: Maybe<Scalars["String"]>;
-  sort?: Maybe<Array<Scalars["String"]>>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
-};
-
-export type InStoreMe = MeQueryInterface & {
-  __typename?: "InStoreMe";
-  customer?: Maybe<Customer>;
-  cart?: Maybe<Cart>;
-  carts: CartQueryResult;
-  activeCart?: Maybe<Cart>;
-  order?: Maybe<Order>;
-  orders: OrderQueryResult;
-  shoppingList?: Maybe<ShoppingList>;
-  shoppingLists: ShoppingListQueryResult;
-};
-
-export type InStoreMeCartArgs = {
-  id: Scalars["String"];
-};
-
-export type InStoreMeCartsArgs = {
-  where?: Maybe<Scalars["String"]>;
-  sort?: Maybe<Array<Scalars["String"]>>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
-};
-
-export type InStoreMeOrderArgs = {
-  id?: Maybe<Scalars["String"]>;
-  orderNumber?: Maybe<Scalars["String"]>;
-};
-
-export type InStoreMeOrdersArgs = {
-  where?: Maybe<Scalars["String"]>;
-  sort?: Maybe<Array<Scalars["String"]>>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
-};
-
-export type InStoreMeShoppingListArgs = {
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
-};
-
-export type InStoreMeShoppingListsArgs = {
-  where?: Maybe<Scalars["String"]>;
-  sort?: Maybe<Array<Scalars["String"]>>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
-};
-
-export type InterfaceInteractionsRaw = {
-  __typename?: "InterfaceInteractionsRaw";
-  typeRef: Reference;
-  type?: Maybe<TypeDefinition>;
-  fields: Array<RawCustomField>;
-};
-
-export type InterfaceInteractionsRawFieldsArgs = {
-  includeNames?: Maybe<Array<Scalars["String"]>>;
-  excludeNames?: Maybe<Array<Scalars["String"]>>;
-};
-
-export type InterfaceInteractionsRawResult = {
-  __typename?: "InterfaceInteractionsRawResult";
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
-  total: Scalars["Int"];
-  results: Array<InterfaceInteractionsRaw>;
-};
-
-/** Inventory allows you to track stock quantity per SKU and optionally per supply channel */
-export type InventoryEntry = Versioned & {
-  __typename?: "InventoryEntry";
-  sku: Scalars["String"];
-  supplyChannel?: Maybe<Reference>;
-  quantityOnStock: Scalars["Long"];
-  availableQuantity: Scalars["Long"];
-  restockableInDays?: Maybe<Scalars["Int"]>;
-  expectedDelivery?: Maybe<Scalars["DateTime"]>;
-  /** This field contains non-typed data. Consider using `customFields` as a typed alternative. */
-  customFieldsRaw?: Maybe<Array<RawCustomField>>;
-  /** This field would contain type data */
-  customFields?: Maybe<Type>;
-  custom?: Maybe<CustomFieldsType>;
-  id: Scalars["String"];
-  version: Scalars["Long"];
-  createdAt: Scalars["DateTime"];
-  lastModifiedAt: Scalars["DateTime"];
-  createdBy?: Maybe<Initiator>;
-  lastModifiedBy?: Maybe<Initiator>;
-  /** Custom fields are returned as a list instead of an object structure. */
-  customFieldList?: Maybe<Array<CustomField>>;
-};
-
-/** Inventory allows you to track stock quantity per SKU and optionally per supply channel */
-export type InventoryEntryCustomFieldsRawArgs = {
-  includeNames?: Maybe<Array<Scalars["String"]>>;
-  excludeNames?: Maybe<Array<Scalars["String"]>>;
-};
-
-/** Inventory allows you to track stock quantity per SKU and optionally per supply channel */
-export type InventoryEntryCustomFieldListArgs = {
-  includeNames?: Maybe<Array<Scalars["String"]>>;
-  excludeNames?: Maybe<Array<Scalars["String"]>>;
-};
-
-export type InventoryEntryDraft = {
-  sku: Scalars["String"];
-  quantityOnStock?: Maybe<Scalars["Long"]>;
-  restockableInDays?: Maybe<Scalars["Int"]>;
-  expectedDelivery?: Maybe<Scalars["DateTime"]>;
-  supplyChannel?: Maybe<ResourceIdentifierInput>;
-  custom?: Maybe<CustomFieldsDraft>;
-};
-
-export type InventoryEntryQueryResult = {
-  __typename?: "InventoryEntryQueryResult";
-  offset: Scalars["Int"];
-  count: Scalars["Int"];
-  total: Scalars["Long"];
-  results: Array<InventoryEntry>;
-};
-
-export type InventoryEntryUpdateAction = {
-  addQuantity?: Maybe<AddInventoryEntryQuantity>;
-  changeQuantity?: Maybe<ChangeInventoryEntryQuantity>;
-  removeQuantity?: Maybe<RemoveInventoryEntryQuantity>;
-  setRestockableInDays?: Maybe<SetInventoryEntryRestockableInDays>;
-  setExpectedDelivery?: Maybe<SetInventoryEntryExpectedDelivery>;
-  setSupplyChannel?: Maybe<SetInventoryEntrySupplyChannel>;
-  setCustomType?: Maybe<SetInventoryEntryCustomType>;
-  setCustomField?: Maybe<SetInventoryEntryCustomField>;
-};
-
-export enum InventoryMode {
-  /** Adding items to cart and ordering is independent of inventory. No inventory checks or modifications.
-   * This is the default mode for a new cart.
+/** Activate the app. */
+export type AppActivate = {
+  __typename?: 'AppActivate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
    */
-  None = "None",
-  /** Creating an order will fail with an OutOfStock error if an unavailable line item exists. Line items in the cart
-   * are only reserved for the duration of the ordering transaction.
+  errors: Array<Error>;
+  appErrors: Array<AppError>;
+  app?: Maybe<App>;
+};
+
+export type AppCountableConnection = {
+  __typename?: 'AppCountableConnection';
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  edges: Array<AppCountableEdge>;
+  /** A total count of items in the collection. */
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type AppCountableEdge = {
+  __typename?: 'AppCountableEdge';
+  /** The item at the end of the edge. */
+  node: App;
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+};
+
+/** Creates a new app. */
+export type AppCreate = {
+  __typename?: 'AppCreate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
    */
-  ReserveOnOrder = "ReserveOnOrder",
-  /** Orders are tracked on inventory. That means, ordering a LineItem will decrement the available quantity on the
-   * respective InventoryEntry. Creating an order will succeed even if the line item’s available quantity is zero or
-   * negative. But creating an order will fail with an OutOfStock error if no matching inventory entry exists for a
-   * line item.
+  errors: Array<Error>;
+  /** The newly created authentication token. */
+  authToken?: Maybe<Scalars['String']>;
+  appErrors: Array<AppError>;
+  app?: Maybe<App>;
+};
+
+/** Deactivate the app. */
+export type AppDeactivate = {
+  __typename?: 'AppDeactivate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
    */
-  TrackOnly = "TrackOnly"
+  errors: Array<Error>;
+  appErrors: Array<AppError>;
+  app?: Maybe<App>;
+};
+
+/** Deletes an app. */
+export type AppDelete = {
+  __typename?: 'AppDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  appErrors: Array<AppError>;
+  app?: Maybe<App>;
+};
+
+/** Delete failed installation. */
+export type AppDeleteFailedInstallation = {
+  __typename?: 'AppDeleteFailedInstallation';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  appErrors: Array<AppError>;
+  appInstallation?: Maybe<AppInstallation>;
+};
+
+export type AppError = {
+  __typename?: 'AppError';
+  /**
+   * Name of a field that caused the error. A value of `null` indicates that the
+   * error isn't associated with a particular field.
+   */
+  field?: Maybe<Scalars['String']>;
+  /** The error message. */
+  message?: Maybe<Scalars['String']>;
+  /** The error code. */
+  code: AppErrorCode;
+  /** List of permissions which causes the error. */
+  permissions?: Maybe<Array<PermissionEnum>>;
+};
+
+/** An enumeration. */
+export enum AppErrorCode {
+  Forbidden = 'FORBIDDEN',
+  GraphqlError = 'GRAPHQL_ERROR',
+  Invalid = 'INVALID',
+  InvalidStatus = 'INVALID_STATUS',
+  InvalidPermission = 'INVALID_PERMISSION',
+  InvalidUrlFormat = 'INVALID_URL_FORMAT',
+  InvalidManifestFormat = 'INVALID_MANIFEST_FORMAT',
+  ManifestUrlCantConnect = 'MANIFEST_URL_CANT_CONNECT',
+  NotFound = 'NOT_FOUND',
+  Required = 'REQUIRED',
+  Unique = 'UNIQUE',
+  OutOfScopeApp = 'OUT_OF_SCOPE_APP',
+  OutOfScopePermission = 'OUT_OF_SCOPE_PERMISSION'
 }
 
-export type IOsUserType = Type & {
-  __typename?: "iOSUserType";
-  typeRef: Reference;
-  type: TypeDefinition;
-  apnsToken?: Maybe<StringField>;
-  myStore?: Maybe<ReferenceField>;
+/** Fetch and validate manifest. */
+export type AppFetchManifest = {
+  __typename?: 'AppFetchManifest';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  manifest?: Maybe<Manifest>;
+  appErrors: Array<AppError>;
 };
 
-export type ItemShippingDetails = {
-  __typename?: "ItemShippingDetails";
-  targets: Array<ItemShippingTarget>;
-  valid: Scalars["Boolean"];
+export type AppFilterInput = {
+  search?: Maybe<Scalars['String']>;
+  isActive?: Maybe<Scalars['Boolean']>;
+  type?: Maybe<AppTypeEnum>;
 };
 
-export type ItemShippingDetailsDraft = {
-  targets: Array<ShippingTargetDraft>;
+export type AppInput = {
+  /** Name of the app. */
+  name?: Maybe<Scalars['String']>;
+  /** DEPRECATED: Use the `appActivate` and `appDeactivate` mutations instead. This field will be removed after 2020-07-31. */
+  isActive?: Maybe<Scalars['Boolean']>;
+  /** List of permission code names to assign to this app. */
+  permissions?: Maybe<Array<Maybe<PermissionEnum>>>;
 };
 
-export type ItemShippingDetailsDraftType = {
-  targets: Array<ShippingTargetDraftType>;
+/** Install new app by using app manifest. */
+export type AppInstall = {
+  __typename?: 'AppInstall';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  appErrors: Array<AppError>;
+  appInstallation?: Maybe<AppInstallation>;
 };
 
-export type ItemShippingTarget = {
-  __typename?: "ItemShippingTarget";
-  addressKey: Scalars["String"];
-  quantity: Scalars["Long"];
+/** Represents ongoing installation of app. */
+export type AppInstallation = Node &
+  Job & {
+    __typename?: 'AppInstallation';
+    appName: Scalars['String'];
+    manifestUrl: Scalars['String'];
+    /** The ID of the object. */
+    id: Scalars['ID'];
+    /** Job status. */
+    status: JobStatusEnum;
+    /** Created date time of job in ISO 8601 format. */
+    createdAt: Scalars['DateTime'];
+    /** Date time of job last update in ISO 8601 format. */
+    updatedAt: Scalars['DateTime'];
+    /** Job message. */
+    message?: Maybe<Scalars['String']>;
+  };
+
+export type AppInstallInput = {
+  /** Name of the app to install. */
+  appName?: Maybe<Scalars['String']>;
+  /** Url to app's manifest in JSON format. */
+  manifestUrl?: Maybe<Scalars['String']>;
+  /** Determine if app will be set active or not. */
+  activateAfterInstallation?: Maybe<Scalars['Boolean']>;
+  /** List of permission code names to assign to this app. */
+  permissions?: Maybe<Array<Maybe<PermissionEnum>>>;
 };
 
-export type ItemState = {
-  __typename?: "ItemState";
-  quantity: Scalars["Long"];
-  stateRef: Reference;
-  state?: Maybe<State>;
+/** Retry failed installation of new app. */
+export type AppRetryInstall = {
+  __typename?: 'AppRetryInstall';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  appErrors: Array<AppError>;
+  appInstallation?: Maybe<AppInstallation>;
 };
 
-export type ItemStateDraftType = {
-  quantity: Scalars["Long"];
-  state: ReferenceInput;
+export enum AppSortField {
+  /** Sort apps by name. */
+  Name = 'NAME',
+  /** Sort apps by creation date. */
+  CreationDate = 'CREATION_DATE'
+}
+
+export type AppSortingInput = {
+  /** Specifies the direction in which to sort products. */
+  direction: OrderDirection;
+  /** Sort apps by the selected field. */
+  field: AppSortField;
 };
 
-export type KeyReference = {
-  __typename?: "KeyReference";
-  typeId: Scalars["String"];
-  key: Scalars["String"];
+/** Represents token data. */
+export type AppToken = Node & {
+  __typename?: 'AppToken';
+  /** Name of the authenticated token. */
+  name?: Maybe<Scalars['String']>;
+  /** Last 4 characters of the token. */
+  authToken?: Maybe<Scalars['String']>;
+  /** The ID of the object. */
+  id: Scalars['ID'];
 };
 
-/** A line item is a snapshot of a product variant at the time it was added to the cart.
- *
- * Since a product variant may change at any time, the ProductVariant data is copied into the field variant.
- * The relation to the Product is kept but the line item will not automatically update if the product variant changes.
- * On the cart, the line item can be updated manually. The productSlug refers to the current version of the product.
- * It can be used to link to the product. If the product has been deleted, the line item remains but refers to a
- * non-existent product and the productSlug is left empty.
- *
- * Please also note that creating an order is impossible if the product or product
- * variant a line item relates to has been deleted.
+/** Creates a new token. */
+export type AppTokenCreate = {
+  __typename?: 'AppTokenCreate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** The newly created authentication token. */
+  authToken?: Maybe<Scalars['String']>;
+  appErrors: Array<AppError>;
+  appToken?: Maybe<AppToken>;
+};
+
+/** Deletes an authentication token assigned to app. */
+export type AppTokenDelete = {
+  __typename?: 'AppTokenDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  appErrors: Array<AppError>;
+  appToken?: Maybe<AppToken>;
+};
+
+export type AppTokenInput = {
+  /** Name of the token. */
+  name?: Maybe<Scalars['String']>;
+  /** ID of app. */
+  app: Scalars['ID'];
+};
+
+/** Verify provided app token. */
+export type AppTokenVerify = {
+  __typename?: 'AppTokenVerify';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Determine if token is valid or not. */
+  valid: Scalars['Boolean'];
+  appErrors: Array<AppError>;
+};
+
+/** An enumeration. */
+export enum AppTypeEnum {
+  Local = 'LOCAL',
+  Thirdparty = 'THIRDPARTY'
+}
+
+/** Updates an existing app. */
+export type AppUpdate = {
+  __typename?: 'AppUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  appErrors: Array<AppError>;
+  app?: Maybe<App>;
+};
+
+/** Assigns storefront's navigation menus. */
+export type AssignNavigation = {
+  __typename?: 'AssignNavigation';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Assigned navigation menu. */
+  menu?: Maybe<Menu>;
+  menuErrors: Array<MenuError>;
+};
+
+/** Custom attribute of a product. Attributes can be assigned to products and variants at the product type level. */
+export type Attribute = Node &
+  ObjectWithMetadata & {
+    __typename?: 'Attribute';
+    /** The ID of the object. */
+    id: Scalars['ID'];
+    productTypes: ProductTypeCountableConnection;
+    productVariantTypes: ProductTypeCountableConnection;
+    /** List of private metadata items.Requires proper staff permissions to access. */
+    privateMetadata: Array<Maybe<MetadataItem>>;
+    /** List of public metadata items. Can be accessed without permissions. */
+    metadata: Array<Maybe<MetadataItem>>;
+    /**
+     * List of privately stored metadata namespaces.
+     * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
+     */
+    privateMeta: Array<Maybe<MetaStore>>;
+    /**
+     * List of publicly stored metadata namespaces.
+     * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
+     */
+    meta: Array<Maybe<MetaStore>>;
+    /** The input type to use for entering attribute values in the dashboard. */
+    inputType?: Maybe<AttributeInputTypeEnum>;
+    /** Name of an attribute displayed in the interface. */
+    name?: Maybe<Scalars['String']>;
+    /** Internal representation of an attribute name. */
+    slug?: Maybe<Scalars['String']>;
+    /** List of attribute's values. */
+    values?: Maybe<Array<Maybe<AttributeValue>>>;
+    /** Whether the attribute requires values to be passed or not. */
+    valueRequired: Scalars['Boolean'];
+    /** Whether the attribute should be visible or not in storefront. */
+    visibleInStorefront: Scalars['Boolean'];
+    /** Whether the attribute can be filtered in storefront. */
+    filterableInStorefront: Scalars['Boolean'];
+    /** Whether the attribute can be filtered in dashboard. */
+    filterableInDashboard: Scalars['Boolean'];
+    /** Whether the attribute can be displayed in the admin product list. */
+    availableInGrid: Scalars['Boolean'];
+    /** Returns translated attribute fields for the given language code. */
+    translation?: Maybe<AttributeTranslation>;
+    /** The position of the attribute in the storefront navigation (0 by default). */
+    storefrontSearchPosition: Scalars['Int'];
+  };
+
+/** Custom attribute of a product. Attributes can be assigned to products and variants at the product type level. */
+export type AttributeProductTypesArgs = {
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+};
+
+/** Custom attribute of a product. Attributes can be assigned to products and variants at the product type level. */
+export type AttributeProductVariantTypesArgs = {
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+};
+
+/** Custom attribute of a product. Attributes can be assigned to products and variants at the product type level. */
+export type AttributeTranslationArgs = {
+  languageCode: LanguageCodeEnum;
+};
+
+/** Assign attributes to a given product type. */
+export type AttributeAssign = {
+  __typename?: 'AttributeAssign';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** The updated product type. */
+  productType?: Maybe<ProductType>;
+  productErrors: Array<ProductError>;
+};
+
+export type AttributeAssignInput = {
+  /** The ID of the attribute to assign. */
+  id: Scalars['ID'];
+  /** The attribute type to be assigned as. */
+  type: AttributeTypeEnum;
+};
+
+/** Deletes attributes. */
+export type AttributeBulkDelete = {
+  __typename?: 'AttributeBulkDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Returns how many objects were affected. */
+  count: Scalars['Int'];
+  productErrors: Array<ProductError>;
+};
+
+/** Clears public metadata item for attribute. */
+export type AttributeClearMeta = {
+  __typename?: 'AttributeClearMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productErrors: Array<ProductError>;
+  attribute?: Maybe<Attribute>;
+};
+
+/** Clears public metadata item for attribute. */
+export type AttributeClearPrivateMeta = {
+  __typename?: 'AttributeClearPrivateMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productErrors: Array<ProductError>;
+  attribute?: Maybe<Attribute>;
+};
+
+export type AttributeCountableConnection = {
+  __typename?: 'AttributeCountableConnection';
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  edges: Array<AttributeCountableEdge>;
+  /** A total count of items in the collection. */
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type AttributeCountableEdge = {
+  __typename?: 'AttributeCountableEdge';
+  /** The item at the end of the edge. */
+  node: Attribute;
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+};
+
+/** Creates an attribute. */
+export type AttributeCreate = {
+  __typename?: 'AttributeCreate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  attribute?: Maybe<Attribute>;
+  productErrors: Array<ProductError>;
+};
+
+export type AttributeCreateInput = {
+  /** The input type to use for entering attribute values in the dashboard. */
+  inputType?: Maybe<AttributeInputTypeEnum>;
+  /** Name of an attribute displayed in the interface. */
+  name: Scalars['String'];
+  /** Internal representation of an attribute name. */
+  slug?: Maybe<Scalars['String']>;
+  /** List of attribute's values. */
+  values?: Maybe<Array<Maybe<AttributeValueCreateInput>>>;
+  /** Whether the attribute requires values to be passed or not. */
+  valueRequired?: Maybe<Scalars['Boolean']>;
+  /** Whether the attribute is for variants only. */
+  isVariantOnly?: Maybe<Scalars['Boolean']>;
+  /** Whether the attribute should be visible or not in storefront. */
+  visibleInStorefront?: Maybe<Scalars['Boolean']>;
+  /** Whether the attribute can be filtered in storefront. */
+  filterableInStorefront?: Maybe<Scalars['Boolean']>;
+  /** Whether the attribute can be filtered in dashboard. */
+  filterableInDashboard?: Maybe<Scalars['Boolean']>;
+  /** The position of the attribute in the storefront navigation (0 by default). */
+  storefrontSearchPosition?: Maybe<Scalars['Int']>;
+  /** Whether the attribute can be displayed in the admin product list. */
+  availableInGrid?: Maybe<Scalars['Boolean']>;
+};
+
+/** Deletes an attribute. */
+export type AttributeDelete = {
+  __typename?: 'AttributeDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productErrors: Array<ProductError>;
+  attribute?: Maybe<Attribute>;
+};
+
+export type AttributeFilterInput = {
+  valueRequired?: Maybe<Scalars['Boolean']>;
+  isVariantOnly?: Maybe<Scalars['Boolean']>;
+  visibleInStorefront?: Maybe<Scalars['Boolean']>;
+  filterableInStorefront?: Maybe<Scalars['Boolean']>;
+  filterableInDashboard?: Maybe<Scalars['Boolean']>;
+  availableInGrid?: Maybe<Scalars['Boolean']>;
+  search?: Maybe<Scalars['String']>;
+  ids?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  inCollection?: Maybe<Scalars['ID']>;
+  inCategory?: Maybe<Scalars['ID']>;
+};
+
+export type AttributeInput = {
+  /** Internal representation of an attribute name. */
+  slug: Scalars['String'];
+  /** [Deprecated] Internal representation of a value (unique per attribute). This field will be removed after 2020-07-31. */
+  value?: Maybe<Scalars['String']>;
+  /** Internal representation of a value (unique per attribute). */
+  values?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+/** An enumeration. */
+export enum AttributeInputTypeEnum {
+  Dropdown = 'DROPDOWN',
+  Multiselect = 'MULTISELECT'
+}
+
+/** Reorder the values of an attribute. */
+export type AttributeReorderValues = {
+  __typename?: 'AttributeReorderValues';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Attribute from which values are reordered. */
+  attribute?: Maybe<Attribute>;
+  productErrors: Array<ProductError>;
+};
+
+export enum AttributeSortField {
+  /** Sort attributes by name */
+  Name = 'NAME',
+  /** Sort attributes by slug */
+  Slug = 'SLUG',
+  /** Sort attributes by the value required flag */
+  ValueRequired = 'VALUE_REQUIRED',
+  /** Sort attributes by the variant only flag */
+  IsVariantOnly = 'IS_VARIANT_ONLY',
+  /** Sort attributes by visibility in the storefront */
+  VisibleInStorefront = 'VISIBLE_IN_STOREFRONT',
+  /** Sort attributes by the filterable in storefront flag */
+  FilterableInStorefront = 'FILTERABLE_IN_STOREFRONT',
+  /** Sort attributes by the filterable in dashboard flag */
+  FilterableInDashboard = 'FILTERABLE_IN_DASHBOARD',
+  /** Sort attributes by their position in storefront */
+  StorefrontSearchPosition = 'STOREFRONT_SEARCH_POSITION',
+  /** Sort attributes based on whether they can be displayed or not in a product grid. */
+  AvailableInGrid = 'AVAILABLE_IN_GRID'
+}
+
+export type AttributeSortingInput = {
+  /** Specifies the direction in which to sort products. */
+  direction: OrderDirection;
+  /** Sort attributes by the selected field. */
+  field: AttributeSortField;
+};
+
+export type AttributeTranslatableContent = Node & {
+  __typename?: 'AttributeTranslatableContent';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  /** Returns translated attribute fields for the given language code. */
+  translation?: Maybe<AttributeTranslation>;
+  /** Custom attribute of a product. */
+  attribute?: Maybe<Attribute>;
+};
+
+export type AttributeTranslatableContentTranslationArgs = {
+  languageCode: LanguageCodeEnum;
+};
+
+/** Creates/Updates translations for attribute. */
+export type AttributeTranslate = {
+  __typename?: 'AttributeTranslate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  translationErrors: Array<TranslationError>;
+  attribute?: Maybe<Attribute>;
+};
+
+export type AttributeTranslation = Node & {
+  __typename?: 'AttributeTranslation';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  /** Translation language. */
+  language: LanguageDisplay;
+};
+
+export enum AttributeTypeEnum {
+  Product = 'PRODUCT',
+  Variant = 'VARIANT'
+}
+
+/** Un-assign attributes from a given product type. */
+export type AttributeUnassign = {
+  __typename?: 'AttributeUnassign';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** The updated product type. */
+  productType?: Maybe<ProductType>;
+  productErrors: Array<ProductError>;
+};
+
+/** Updates attribute. */
+export type AttributeUpdate = {
+  __typename?: 'AttributeUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  attribute?: Maybe<Attribute>;
+  productErrors: Array<ProductError>;
+};
+
+export type AttributeUpdateInput = {
+  /** Name of an attribute displayed in the interface. */
+  name?: Maybe<Scalars['String']>;
+  /** Internal representation of an attribute name. */
+  slug?: Maybe<Scalars['String']>;
+  /** IDs of values to be removed from this attribute. */
+  removeValues?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  /** New values to be created for this attribute. */
+  addValues?: Maybe<Array<Maybe<AttributeValueCreateInput>>>;
+  /** Whether the attribute requires values to be passed or not. */
+  valueRequired?: Maybe<Scalars['Boolean']>;
+  /** Whether the attribute is for variants only. */
+  isVariantOnly?: Maybe<Scalars['Boolean']>;
+  /** Whether the attribute should be visible or not in storefront. */
+  visibleInStorefront?: Maybe<Scalars['Boolean']>;
+  /** Whether the attribute can be filtered in storefront. */
+  filterableInStorefront?: Maybe<Scalars['Boolean']>;
+  /** Whether the attribute can be filtered in dashboard. */
+  filterableInDashboard?: Maybe<Scalars['Boolean']>;
+  /** The position of the attribute in the storefront navigation (0 by default). */
+  storefrontSearchPosition?: Maybe<Scalars['Int']>;
+  /** Whether the attribute can be displayed in the admin product list. */
+  availableInGrid?: Maybe<Scalars['Boolean']>;
+};
+
+/** Update public metadata for attribute. */
+export type AttributeUpdateMeta = {
+  __typename?: 'AttributeUpdateMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productErrors: Array<ProductError>;
+  attribute?: Maybe<Attribute>;
+};
+
+/** Update public metadata for attribute. */
+export type AttributeUpdatePrivateMeta = {
+  __typename?: 'AttributeUpdatePrivateMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productErrors: Array<ProductError>;
+  attribute?: Maybe<Attribute>;
+};
+
+/** Represents a value of an attribute. */
+export type AttributeValue = Node & {
+  __typename?: 'AttributeValue';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  /** Name of a value displayed in the interface. */
+  name?: Maybe<Scalars['String']>;
+  /** Internal representation of a value (unique per attribute). */
+  slug?: Maybe<Scalars['String']>;
+  /**
+   * Type of value (used only when `value` field is set).
+   * @deprecated Use the `inputType` field to determine the type of attribute's value. This field will be removed after 2020-07-31.
+   */
+  type?: Maybe<AttributeValueType>;
+  /** Returns translated attribute value fields for the given language code. */
+  translation?: Maybe<AttributeValueTranslation>;
+  /** The input type to use for entering attribute values in the dashboard. */
+  inputType?: Maybe<AttributeInputTypeEnum>;
+};
+
+/** Represents a value of an attribute. */
+export type AttributeValueTranslationArgs = {
+  languageCode: LanguageCodeEnum;
+};
+
+/** Deletes values of attributes. */
+export type AttributeValueBulkDelete = {
+  __typename?: 'AttributeValueBulkDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Returns how many objects were affected. */
+  count: Scalars['Int'];
+  productErrors: Array<ProductError>;
+};
+
+/** Creates a value for an attribute. */
+export type AttributeValueCreate = {
+  __typename?: 'AttributeValueCreate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** The updated attribute. */
+  attribute?: Maybe<Attribute>;
+  productErrors: Array<ProductError>;
+  attributeValue?: Maybe<AttributeValue>;
+};
+
+export type AttributeValueCreateInput = {
+  /** Name of a value displayed in the interface. */
+  name: Scalars['String'];
+};
+
+/** Deletes a value of an attribute. */
+export type AttributeValueDelete = {
+  __typename?: 'AttributeValueDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** The updated attribute. */
+  attribute?: Maybe<Attribute>;
+  productErrors: Array<ProductError>;
+  attributeValue?: Maybe<AttributeValue>;
+};
+
+export type AttributeValueInput = {
+  /** ID of the selected attribute. */
+  id?: Maybe<Scalars['ID']>;
+  /** The value or slug of an attribute to resolve. If the passed value is non-existent, it will be created. */
+  values: Array<Maybe<Scalars['String']>>;
+};
+
+export type AttributeValueTranslatableContent = Node & {
+  __typename?: 'AttributeValueTranslatableContent';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  /** Returns translated attribute value fields for the given language code. */
+  translation?: Maybe<AttributeValueTranslation>;
+  /** Represents a value of an attribute. */
+  attributeValue?: Maybe<AttributeValue>;
+};
+
+export type AttributeValueTranslatableContentTranslationArgs = {
+  languageCode: LanguageCodeEnum;
+};
+
+/** Creates/Updates translations for attribute value. */
+export type AttributeValueTranslate = {
+  __typename?: 'AttributeValueTranslate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  translationErrors: Array<TranslationError>;
+  attributeValue?: Maybe<AttributeValue>;
+};
+
+export type AttributeValueTranslation = Node & {
+  __typename?: 'AttributeValueTranslation';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  /** Translation language. */
+  language: LanguageDisplay;
+};
+
+export enum AttributeValueType {
+  Color = 'COLOR',
+  Gradient = 'GRADIENT',
+  Url = 'URL',
+  String = 'STRING'
+}
+
+/** Updates value of an attribute. */
+export type AttributeValueUpdate = {
+  __typename?: 'AttributeValueUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** The updated attribute. */
+  attribute?: Maybe<Attribute>;
+  productErrors: Array<ProductError>;
+  attributeValue?: Maybe<AttributeValue>;
+};
+
+export type AuthorizationKey = {
+  __typename?: 'AuthorizationKey';
+  /** Name of the authorization backend. */
+  name: AuthorizationKeyType;
+  /** Authorization key (client ID). */
+  key: Scalars['String'];
+};
+
+/** Adds an authorization key. */
+export type AuthorizationKeyAdd = {
+  __typename?: 'AuthorizationKeyAdd';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Newly added authorization key. */
+  authorizationKey?: Maybe<AuthorizationKey>;
+  /** Updated shop. */
+  shop?: Maybe<Shop>;
+  shopErrors: Array<ShopError>;
+};
+
+/** Deletes an authorization key. */
+export type AuthorizationKeyDelete = {
+  __typename?: 'AuthorizationKeyDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Authorization key that was deleted. */
+  authorizationKey?: Maybe<AuthorizationKey>;
+  /** Updated shop. */
+  shop?: Maybe<Shop>;
+  shopErrors: Array<ShopError>;
+};
+
+export type AuthorizationKeyInput = {
+  /** Client authorization key (client ID). */
+  key: Scalars['String'];
+  /** Client secret. */
+  password: Scalars['String'];
+};
+
+/** An enumeration. */
+export enum AuthorizationKeyType {
+  Facebook = 'FACEBOOK',
+  GoogleOauth2 = 'GOOGLE_OAUTH2'
+}
+
+export type BulkProductError = {
+  __typename?: 'BulkProductError';
+  /**
+   * Name of a field that caused the error. A value of `null` indicates that the
+   * error isn't associated with a particular field.
+   */
+  field?: Maybe<Scalars['String']>;
+  /** The error message. */
+  message?: Maybe<Scalars['String']>;
+  /** The error code. */
+  code: ProductErrorCode;
+  /** List of attributes IDs which causes the error. */
+  attributes?: Maybe<Array<Scalars['ID']>>;
+  /** Index of an input list item that caused the error. */
+  index?: Maybe<Scalars['Int']>;
+  /** List of warehouse IDs which causes the error. */
+  warehouses?: Maybe<Array<Scalars['ID']>>;
+};
+
+export type BulkStockError = {
+  __typename?: 'BulkStockError';
+  /**
+   * Name of a field that caused the error. A value of `null` indicates that the
+   * error isn't associated with a particular field.
+   */
+  field?: Maybe<Scalars['String']>;
+  /** The error message. */
+  message?: Maybe<Scalars['String']>;
+  /** The error code. */
+  code: ProductErrorCode;
+  /** List of attributes IDs which causes the error. */
+  attributes?: Maybe<Array<Scalars['ID']>>;
+  /** Index of an input list item that caused the error. */
+  index?: Maybe<Scalars['Int']>;
+};
+
+export type CatalogueInput = {
+  /** Products related to the discount. */
+  products?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  /** Categories related to the discount. */
+  categories?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  /** Collections related to the discount. */
+  collections?: Maybe<Array<Maybe<Scalars['ID']>>>;
+};
+
+/**
+ * Represents a single category of products. Categories allow to organize products
+ * in a tree-hierarchies which can be used for navigation in the storefront.
  */
-export type LineItem = {
-  __typename?: "LineItem";
-  id: Scalars["String"];
-  productId: Scalars["String"];
-  name?: Maybe<Scalars["String"]>;
-  nameAllLocales: Array<LocalizedString>;
-  productSlug?: Maybe<Scalars["String"]>;
-  productType?: Maybe<ProductTypeDefinition>;
-  productTypeRef?: Maybe<Reference>;
+export type Category = Node &
+  ObjectWithMetadata & {
+    __typename?: 'Category';
+    seoTitle?: Maybe<Scalars['String']>;
+    seoDescription?: Maybe<Scalars['String']>;
+    /** The ID of the object. */
+    id: Scalars['ID'];
+    name: Scalars['String'];
+    descriptionJson: Scalars['JSONString'];
+    slug: Scalars['String'];
+    parent?: Maybe<Category>;
+    level: Scalars['Int'];
+    /** List of private metadata items.Requires proper staff permissions to access. */
+    privateMetadata: Array<Maybe<MetadataItem>>;
+    /** List of public metadata items. Can be accessed without permissions. */
+    metadata: Array<Maybe<MetadataItem>>;
+    /**
+     * List of privately stored metadata namespaces.
+     * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
+     */
+    privateMeta: Array<Maybe<MetaStore>>;
+    /**
+     * List of publicly stored metadata namespaces.
+     * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
+     */
+    meta: Array<Maybe<MetaStore>>;
+    /** List of ancestors of the category. */
+    ancestors?: Maybe<CategoryCountableConnection>;
+    /** List of products in the category. */
+    products?: Maybe<ProductCountableConnection>;
+    /**
+     * The storefront's URL for the category.
+     * @deprecated This field will be removed after 2020-07-31.
+     */
+    url?: Maybe<Scalars['String']>;
+    /**
+     * Description of the category.
+     * @deprecated Use the `descriptionJson` field instead.
+     */
+    description: Scalars['String'];
+    /** List of children of the category. */
+    children?: Maybe<CategoryCountableConnection>;
+    backgroundImage?: Maybe<Image>;
+    /** Returns translated category fields for the given language code. */
+    translation?: Maybe<CategoryTranslation>;
+  };
+
+/**
+ * Represents a single category of products. Categories allow to organize products
+ * in a tree-hierarchies which can be used for navigation in the storefront.
+ */
+export type CategoryAncestorsArgs = {
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+};
+
+/**
+ * Represents a single category of products. Categories allow to organize products
+ * in a tree-hierarchies which can be used for navigation in the storefront.
+ */
+export type CategoryProductsArgs = {
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+};
+
+/**
+ * Represents a single category of products. Categories allow to organize products
+ * in a tree-hierarchies which can be used for navigation in the storefront.
+ */
+export type CategoryChildrenArgs = {
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+};
+
+/**
+ * Represents a single category of products. Categories allow to organize products
+ * in a tree-hierarchies which can be used for navigation in the storefront.
+ */
+export type CategoryBackgroundImageArgs = {
+  size?: Maybe<Scalars['Int']>;
+};
+
+/**
+ * Represents a single category of products. Categories allow to organize products
+ * in a tree-hierarchies which can be used for navigation in the storefront.
+ */
+export type CategoryTranslationArgs = {
+  languageCode: LanguageCodeEnum;
+};
+
+/** Deletes categories. */
+export type CategoryBulkDelete = {
+  __typename?: 'CategoryBulkDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Returns how many objects were affected. */
+  count: Scalars['Int'];
+  productErrors: Array<ProductError>;
+};
+
+/** Clears public metadata for category. */
+export type CategoryClearMeta = {
+  __typename?: 'CategoryClearMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productErrors: Array<ProductError>;
+  category?: Maybe<Category>;
+};
+
+/** Clears private metadata for category. */
+export type CategoryClearPrivateMeta = {
+  __typename?: 'CategoryClearPrivateMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productErrors: Array<ProductError>;
+  category?: Maybe<Category>;
+};
+
+export type CategoryCountableConnection = {
+  __typename?: 'CategoryCountableConnection';
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  edges: Array<CategoryCountableEdge>;
+  /** A total count of items in the collection. */
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type CategoryCountableEdge = {
+  __typename?: 'CategoryCountableEdge';
+  /** The item at the end of the edge. */
+  node: Category;
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+};
+
+/** Creates a new category. */
+export type CategoryCreate = {
+  __typename?: 'CategoryCreate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productErrors: Array<ProductError>;
+  category?: Maybe<Category>;
+};
+
+/** Deletes a category. */
+export type CategoryDelete = {
+  __typename?: 'CategoryDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productErrors: Array<ProductError>;
+  category?: Maybe<Category>;
+};
+
+export type CategoryFilterInput = {
+  search?: Maybe<Scalars['String']>;
+  ids?: Maybe<Array<Maybe<Scalars['ID']>>>;
+};
+
+export type CategoryInput = {
+  /** Category description (HTML/text). */
+  description?: Maybe<Scalars['String']>;
+  /** Category description (JSON). */
+  descriptionJson?: Maybe<Scalars['JSONString']>;
+  /** Category name. */
+  name?: Maybe<Scalars['String']>;
+  /** Category slug. */
+  slug?: Maybe<Scalars['String']>;
+  /** Search engine optimization fields. */
+  seo?: Maybe<SeoInput>;
+  /** Background image file. */
+  backgroundImage?: Maybe<Scalars['Upload']>;
+  /** Alt text for an image. */
+  backgroundImageAlt?: Maybe<Scalars['String']>;
+};
+
+export enum CategorySortField {
+  /** Sort categories by name. */
+  Name = 'NAME',
+  /** Sort categories by product count. */
+  ProductCount = 'PRODUCT_COUNT',
+  /** Sort categories by subcategory count. */
+  SubcategoryCount = 'SUBCATEGORY_COUNT'
+}
+
+export type CategorySortingInput = {
+  /** Specifies the direction in which to sort products. */
+  direction: OrderDirection;
+  /** Sort categories by the selected field. */
+  field: CategorySortField;
+};
+
+export type CategoryTranslatableContent = Node & {
+  __typename?: 'CategoryTranslatableContent';
+  seoTitle?: Maybe<Scalars['String']>;
+  seoDescription?: Maybe<Scalars['String']>;
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  descriptionJson: Scalars['JSONString'];
+  /**
+   * Description of the category.
+   * @deprecated Use the `descriptionJson` field instead.
+   */
+  description: Scalars['String'];
+  /** Returns translated category fields for the given language code. */
+  translation?: Maybe<CategoryTranslation>;
+  /** Represents a single category of products. */
+  category?: Maybe<Category>;
+};
+
+export type CategoryTranslatableContentTranslationArgs = {
+  languageCode: LanguageCodeEnum;
+};
+
+/** Creates/Updates translations for Category. */
+export type CategoryTranslate = {
+  __typename?: 'CategoryTranslate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  translationErrors: Array<TranslationError>;
+  category?: Maybe<Category>;
+};
+
+export type CategoryTranslation = Node & {
+  __typename?: 'CategoryTranslation';
+  seoTitle?: Maybe<Scalars['String']>;
+  seoDescription?: Maybe<Scalars['String']>;
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  descriptionJson: Scalars['JSONString'];
+  /** Translation language. */
+  language: LanguageDisplay;
+  /**
+   * Translated description of the category.
+   * @deprecated Use the `descriptionJson` field instead.
+   */
+  description: Scalars['String'];
+};
+
+/** Updates a category. */
+export type CategoryUpdate = {
+  __typename?: 'CategoryUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productErrors: Array<ProductError>;
+  category?: Maybe<Category>;
+};
+
+/** Update public metadata for category. */
+export type CategoryUpdateMeta = {
+  __typename?: 'CategoryUpdateMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productErrors: Array<ProductError>;
+  category?: Maybe<Category>;
+};
+
+/** Update private metadata for category. */
+export type CategoryUpdatePrivateMeta = {
+  __typename?: 'CategoryUpdatePrivateMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productErrors: Array<ProductError>;
+  category?: Maybe<Category>;
+};
+
+/** Checkout object. */
+export type Checkout = Node &
+  ObjectWithMetadata & {
+    __typename?: 'Checkout';
+    created: Scalars['DateTime'];
+    lastChange: Scalars['DateTime'];
+    user?: Maybe<User>;
+    quantity: Scalars['Int'];
+    billingAddress?: Maybe<Address>;
+    shippingAddress?: Maybe<Address>;
+    shippingMethod?: Maybe<ShippingMethod>;
+    note: Scalars['String'];
+    discount?: Maybe<Money>;
+    discountName?: Maybe<Scalars['String']>;
+    translatedDiscountName?: Maybe<Scalars['String']>;
+    voucherCode?: Maybe<Scalars['String']>;
+    /** List of gift cards associated with this checkout. */
+    giftCards?: Maybe<Array<Maybe<GiftCard>>>;
+    /** The ID of the object. */
+    id: Scalars['ID'];
+    /** List of private metadata items.Requires proper staff permissions to access. */
+    privateMetadata: Array<Maybe<MetadataItem>>;
+    /** List of public metadata items. Can be accessed without permissions. */
+    metadata: Array<Maybe<MetadataItem>>;
+    /**
+     * List of privately stored metadata namespaces.
+     * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
+     */
+    privateMeta: Array<Maybe<MetaStore>>;
+    /**
+     * List of publicly stored metadata namespaces.
+     * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
+     */
+    meta: Array<Maybe<MetaStore>>;
+    /** Shipping methods that can be used with this order. */
+    availableShippingMethods: Array<Maybe<ShippingMethod>>;
+    /** List of available payment gateways. */
+    availablePaymentGateways: Array<PaymentGateway>;
+    /** Email of a customer. */
+    email: Scalars['String'];
+    /** Returns True, if checkout requires shipping. */
+    isShippingRequired: Scalars['Boolean'];
+    /** A list of checkout lines, each containing information about an item in the checkout. */
+    lines?: Maybe<Array<Maybe<CheckoutLine>>>;
+    /** The price of the shipping, with all the taxes included. */
+    shippingPrice?: Maybe<TaxedMoney>;
+    /** The price of the checkout before shipping, with taxes included. */
+    subtotalPrice?: Maybe<TaxedMoney>;
+    /** The checkout's token. */
+    token: Scalars['UUID'];
+    /** The sum of the the checkout line prices, with all the taxes,shipping costs, and discounts included. */
+    totalPrice?: Maybe<TaxedMoney>;
+  };
+
+/** Adds a gift card or a voucher to a checkout. */
+export type CheckoutAddPromoCode = {
+  __typename?: 'CheckoutAddPromoCode';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** The checkout with the added gift card or voucher. */
+  checkout?: Maybe<Checkout>;
+  checkoutErrors: Array<CheckoutError>;
+};
+
+/** Update billing address in the existing checkout. */
+export type CheckoutBillingAddressUpdate = {
+  __typename?: 'CheckoutBillingAddressUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** An updated checkout. */
+  checkout?: Maybe<Checkout>;
+  checkoutErrors: Array<CheckoutError>;
+};
+
+/** Clear metadata for checkout. */
+export type CheckoutClearMeta = {
+  __typename?: 'CheckoutClearMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  checkoutErrors: Array<CheckoutError>;
+  checkout?: Maybe<Checkout>;
+};
+
+/** Clear private metadata for checkout. */
+export type CheckoutClearPrivateMeta = {
+  __typename?: 'CheckoutClearPrivateMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  checkoutErrors: Array<CheckoutError>;
+  checkout?: Maybe<Checkout>;
+};
+
+/**
+ * Completes the checkout. As a result a new order is created and a payment charge
+ * is made. This action requires a successful payment before it can be performed.
+ * In case additional confirmation step as 3D secure is required confirmationNeeded
+ * flag will be set to True and no order created until payment is confirmed with
+ * second call of this mutation.
+ */
+export type CheckoutComplete = {
+  __typename?: 'CheckoutComplete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Placed order. */
+  order?: Maybe<Order>;
+  /** Set to true if payment needs to be confirmed before checkout is complete. */
+  confirmationNeeded: Scalars['Boolean'];
+  /** Confirmation data used to process additional authorization steps. */
+  confirmationData?: Maybe<Scalars['JSONString']>;
+  checkoutErrors: Array<CheckoutError>;
+};
+
+export type CheckoutCountableConnection = {
+  __typename?: 'CheckoutCountableConnection';
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  edges: Array<CheckoutCountableEdge>;
+  /** A total count of items in the collection. */
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type CheckoutCountableEdge = {
+  __typename?: 'CheckoutCountableEdge';
+  /** The item at the end of the edge. */
+  node: Checkout;
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+};
+
+/** Create a new checkout. */
+export type CheckoutCreate = {
+  __typename?: 'CheckoutCreate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /**
+   * Whether the checkout was created or the current active one was returned. Refer
+   * to checkoutLinesAdd and checkoutLinesUpdate to merge a cart with an active checkout.
+   */
+  created?: Maybe<Scalars['Boolean']>;
+  checkoutErrors: Array<CheckoutError>;
+  checkout?: Maybe<Checkout>;
+};
+
+export type CheckoutCreateInput = {
+  /** A list of checkout lines, each containing information about an item in the checkout. */
+  lines: Array<Maybe<CheckoutLineInput>>;
+  /** The customer's email address. */
+  email?: Maybe<Scalars['String']>;
+  /**
+   * The mailing address to where the checkout will be shipped. Note: the address
+   * will be ignored if the checkout doesn't contain shippable items.
+   */
+  shippingAddress?: Maybe<AddressInput>;
+  /** Billing address of the customer. */
+  billingAddress?: Maybe<AddressInput>;
+};
+
+/** Sets the customer as the owner of the checkout. */
+export type CheckoutCustomerAttach = {
+  __typename?: 'CheckoutCustomerAttach';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** An updated checkout. */
+  checkout?: Maybe<Checkout>;
+  checkoutErrors: Array<CheckoutError>;
+};
+
+/** Removes the user assigned as the owner of the checkout. */
+export type CheckoutCustomerDetach = {
+  __typename?: 'CheckoutCustomerDetach';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** An updated checkout. */
+  checkout?: Maybe<Checkout>;
+  checkoutErrors: Array<CheckoutError>;
+};
+
+/** Updates email address in the existing checkout object. */
+export type CheckoutEmailUpdate = {
+  __typename?: 'CheckoutEmailUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** An updated checkout. */
+  checkout?: Maybe<Checkout>;
+  checkoutErrors: Array<CheckoutError>;
+};
+
+export type CheckoutError = {
+  __typename?: 'CheckoutError';
+  /**
+   * Name of a field that caused the error. A value of `null` indicates that the
+   * error isn't associated with a particular field.
+   */
+  field?: Maybe<Scalars['String']>;
+  /** The error message. */
+  message?: Maybe<Scalars['String']>;
+  /** The error code. */
+  code: CheckoutErrorCode;
+  /** List of varint IDs which causes the error. */
+  variants?: Maybe<Array<Scalars['ID']>>;
+};
+
+/** An enumeration. */
+export enum CheckoutErrorCode {
+  BillingAddressNotSet = 'BILLING_ADDRESS_NOT_SET',
+  CheckoutNotFullyPaid = 'CHECKOUT_NOT_FULLY_PAID',
+  GraphqlError = 'GRAPHQL_ERROR',
+  ProductNotPublished = 'PRODUCT_NOT_PUBLISHED',
+  ProductUnavailableForPurchase = 'PRODUCT_UNAVAILABLE_FOR_PURCHASE',
+  InsufficientStock = 'INSUFFICIENT_STOCK',
+  Invalid = 'INVALID',
+  InvalidShippingMethod = 'INVALID_SHIPPING_METHOD',
+  NotFound = 'NOT_FOUND',
+  PaymentError = 'PAYMENT_ERROR',
+  QuantityGreaterThanLimit = 'QUANTITY_GREATER_THAN_LIMIT',
+  Required = 'REQUIRED',
+  ShippingAddressNotSet = 'SHIPPING_ADDRESS_NOT_SET',
+  ShippingMethodNotApplicable = 'SHIPPING_METHOD_NOT_APPLICABLE',
+  ShippingMethodNotSet = 'SHIPPING_METHOD_NOT_SET',
+  ShippingNotRequired = 'SHIPPING_NOT_REQUIRED',
+  TaxError = 'TAX_ERROR',
+  Unique = 'UNIQUE',
+  VoucherNotApplicable = 'VOUCHER_NOT_APPLICABLE',
+  ZeroQuantity = 'ZERO_QUANTITY'
+}
+
+/** Represents an item in the checkout. */
+export type CheckoutLine = Node & {
+  __typename?: 'CheckoutLine';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  variant: ProductVariant;
+  quantity: Scalars['Int'];
+  /** The sum of the checkout line price, taxes and discounts. */
+  totalPrice?: Maybe<TaxedMoney>;
+  /** Indicates whether the item need to be delivered. */
+  requiresShipping?: Maybe<Scalars['Boolean']>;
+};
+
+export type CheckoutLineCountableConnection = {
+  __typename?: 'CheckoutLineCountableConnection';
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  edges: Array<CheckoutLineCountableEdge>;
+  /** A total count of items in the collection. */
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type CheckoutLineCountableEdge = {
+  __typename?: 'CheckoutLineCountableEdge';
+  /** The item at the end of the edge. */
+  node: CheckoutLine;
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+};
+
+/** Deletes a CheckoutLine. */
+export type CheckoutLineDelete = {
+  __typename?: 'CheckoutLineDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** An updated checkout. */
+  checkout?: Maybe<Checkout>;
+  checkoutErrors: Array<CheckoutError>;
+};
+
+export type CheckoutLineInput = {
+  /** The number of items purchased. */
+  quantity: Scalars['Int'];
+  /** ID of the product variant. */
+  variantId: Scalars['ID'];
+};
+
+/** Adds a checkout line to the existing checkout. */
+export type CheckoutLinesAdd = {
+  __typename?: 'CheckoutLinesAdd';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** An updated checkout. */
+  checkout?: Maybe<Checkout>;
+  checkoutErrors: Array<CheckoutError>;
+};
+
+/** Updates checkout line in the existing checkout. */
+export type CheckoutLinesUpdate = {
+  __typename?: 'CheckoutLinesUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** An updated checkout. */
+  checkout?: Maybe<Checkout>;
+  checkoutErrors: Array<CheckoutError>;
+};
+
+/** Create a new payment for given checkout. */
+export type CheckoutPaymentCreate = {
+  __typename?: 'CheckoutPaymentCreate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Related checkout object. */
+  checkout?: Maybe<Checkout>;
+  /** A newly created payment. */
+  payment?: Maybe<Payment>;
+  paymentErrors: Array<PaymentError>;
+};
+
+/** Remove a gift card or a voucher from a checkout. */
+export type CheckoutRemovePromoCode = {
+  __typename?: 'CheckoutRemovePromoCode';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** The checkout with the removed gift card or voucher. */
+  checkout?: Maybe<Checkout>;
+  checkoutErrors: Array<CheckoutError>;
+};
+
+/** Update shipping address in the existing checkout. */
+export type CheckoutShippingAddressUpdate = {
+  __typename?: 'CheckoutShippingAddressUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** An updated checkout. */
+  checkout?: Maybe<Checkout>;
+  checkoutErrors: Array<CheckoutError>;
+};
+
+/** Updates the shipping address of the checkout. */
+export type CheckoutShippingMethodUpdate = {
+  __typename?: 'CheckoutShippingMethodUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** An updated checkout. */
+  checkout?: Maybe<Checkout>;
+  checkoutErrors: Array<CheckoutError>;
+};
+
+/** Updates metadata for checkout. */
+export type CheckoutUpdateMeta = {
+  __typename?: 'CheckoutUpdateMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  checkoutErrors: Array<CheckoutError>;
+  checkout?: Maybe<Checkout>;
+};
+
+/** Updates private metadata for checkout. */
+export type CheckoutUpdatePrivateMeta = {
+  __typename?: 'CheckoutUpdatePrivateMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  checkoutErrors: Array<CheckoutError>;
+  checkout?: Maybe<Checkout>;
+};
+
+export type ChoiceValue = {
+  __typename?: 'ChoiceValue';
+  raw?: Maybe<Scalars['String']>;
+  verbose?: Maybe<Scalars['String']>;
+};
+
+/** Represents a collection of products. */
+export type Collection = Node &
+  ObjectWithMetadata & {
+    __typename?: 'Collection';
+    seoTitle?: Maybe<Scalars['String']>;
+    seoDescription?: Maybe<Scalars['String']>;
+    /** The ID of the object. */
+    id: Scalars['ID'];
+    name: Scalars['String'];
+    descriptionJson: Scalars['JSONString'];
+    publicationDate?: Maybe<Scalars['Date']>;
+    slug: Scalars['String'];
+    /** List of private metadata items.Requires proper staff permissions to access. */
+    privateMetadata: Array<Maybe<MetadataItem>>;
+    /** List of public metadata items. Can be accessed without permissions. */
+    metadata: Array<Maybe<MetadataItem>>;
+    /**
+     * List of privately stored metadata namespaces.
+     * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
+     */
+    privateMeta: Array<Maybe<MetaStore>>;
+    /**
+     * List of publicly stored metadata namespaces.
+     * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
+     */
+    meta: Array<Maybe<MetaStore>>;
+    /** List of products in this collection. */
+    products?: Maybe<ProductCountableConnection>;
+    backgroundImage?: Maybe<Image>;
+    /**
+     * Description of the collection.
+     * @deprecated Use the `descriptionJson` field instead.
+     */
+    description: Scalars['String'];
+    /** Returns translated collection fields for the given language code. */
+    translation?: Maybe<CollectionTranslation>;
+    /** Whether the collection is published. */
+    isPublished: Scalars['Boolean'];
+  };
+
+/** Represents a collection of products. */
+export type CollectionProductsArgs = {
+  filter?: Maybe<ProductFilterInput>;
+  sortBy?: Maybe<ProductOrder>;
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+};
+
+/** Represents a collection of products. */
+export type CollectionBackgroundImageArgs = {
+  size?: Maybe<Scalars['Int']>;
+};
+
+/** Represents a collection of products. */
+export type CollectionTranslationArgs = {
+  languageCode: LanguageCodeEnum;
+};
+
+/** Adds products to a collection. */
+export type CollectionAddProducts = {
+  __typename?: 'CollectionAddProducts';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Collection to which products will be added. */
+  collection?: Maybe<Collection>;
+  productErrors: Array<ProductError>;
+};
+
+/** Deletes collections. */
+export type CollectionBulkDelete = {
+  __typename?: 'CollectionBulkDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Returns how many objects were affected. */
+  count: Scalars['Int'];
+  productErrors: Array<ProductError>;
+};
+
+/** Publish collections. */
+export type CollectionBulkPublish = {
+  __typename?: 'CollectionBulkPublish';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Returns how many objects were affected. */
+  count: Scalars['Int'];
+  productErrors: Array<ProductError>;
+};
+
+/** Clears public metadata for collection. */
+export type CollectionClearMeta = {
+  __typename?: 'CollectionClearMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productErrors: Array<ProductError>;
+  collection?: Maybe<Collection>;
+};
+
+/** Clears private metadata item for collection. */
+export type CollectionClearPrivateMeta = {
+  __typename?: 'CollectionClearPrivateMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productErrors: Array<ProductError>;
+  collection?: Maybe<Collection>;
+};
+
+export type CollectionCountableConnection = {
+  __typename?: 'CollectionCountableConnection';
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  edges: Array<CollectionCountableEdge>;
+  /** A total count of items in the collection. */
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type CollectionCountableEdge = {
+  __typename?: 'CollectionCountableEdge';
+  /** The item at the end of the edge. */
+  node: Collection;
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+};
+
+/** Creates a new collection. */
+export type CollectionCreate = {
+  __typename?: 'CollectionCreate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productErrors: Array<ProductError>;
+  collection?: Maybe<Collection>;
+};
+
+export type CollectionCreateInput = {
+  /** Informs whether a collection is published. */
+  isPublished?: Maybe<Scalars['Boolean']>;
+  /** Name of the collection. */
+  name?: Maybe<Scalars['String']>;
+  /** Slug of the collection. */
+  slug?: Maybe<Scalars['String']>;
+  /** Description of the collection (HTML/text). */
+  description?: Maybe<Scalars['String']>;
+  /** Description of the collection (JSON). */
+  descriptionJson?: Maybe<Scalars['JSONString']>;
+  /** Background image file. */
+  backgroundImage?: Maybe<Scalars['Upload']>;
+  /** Alt text for an image. */
+  backgroundImageAlt?: Maybe<Scalars['String']>;
+  /** Search engine optimization fields. */
+  seo?: Maybe<SeoInput>;
+  /** Publication date. ISO 8601 standard. */
+  publicationDate?: Maybe<Scalars['Date']>;
+  /** List of products to be added to the collection. */
+  products?: Maybe<Array<Maybe<Scalars['ID']>>>;
+};
+
+/** Deletes a collection. */
+export type CollectionDelete = {
+  __typename?: 'CollectionDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productErrors: Array<ProductError>;
+  collection?: Maybe<Collection>;
+};
+
+export type CollectionFilterInput = {
+  published?: Maybe<CollectionPublished>;
+  search?: Maybe<Scalars['String']>;
+  ids?: Maybe<Array<Maybe<Scalars['ID']>>>;
+};
+
+export type CollectionInput = {
+  /** Informs whether a collection is published. */
+  isPublished?: Maybe<Scalars['Boolean']>;
+  /** Name of the collection. */
+  name?: Maybe<Scalars['String']>;
+  /** Slug of the collection. */
+  slug?: Maybe<Scalars['String']>;
+  /** Description of the collection (HTML/text). */
+  description?: Maybe<Scalars['String']>;
+  /** Description of the collection (JSON). */
+  descriptionJson?: Maybe<Scalars['JSONString']>;
+  /** Background image file. */
+  backgroundImage?: Maybe<Scalars['Upload']>;
+  /** Alt text for an image. */
+  backgroundImageAlt?: Maybe<Scalars['String']>;
+  /** Search engine optimization fields. */
+  seo?: Maybe<SeoInput>;
+  /** Publication date. ISO 8601 standard. */
+  publicationDate?: Maybe<Scalars['Date']>;
+};
+
+export enum CollectionPublished {
+  Published = 'PUBLISHED',
+  Hidden = 'HIDDEN'
+}
+
+/** Remove products from a collection. */
+export type CollectionRemoveProducts = {
+  __typename?: 'CollectionRemoveProducts';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Collection from which products will be removed. */
+  collection?: Maybe<Collection>;
+  productErrors: Array<ProductError>;
+};
+
+/** Reorder the products of a collection. */
+export type CollectionReorderProducts = {
+  __typename?: 'CollectionReorderProducts';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Collection from which products are reordered. */
+  collection?: Maybe<Collection>;
+  productErrors: Array<ProductError>;
+};
+
+export enum CollectionSortField {
+  /** Sort collections by name. */
+  Name = 'NAME',
+  /** Sort collections by availability. */
+  Availability = 'AVAILABILITY',
+  /** Sort collections by product count. */
+  ProductCount = 'PRODUCT_COUNT',
+  /** Sort collections by publication date. */
+  PublicationDate = 'PUBLICATION_DATE'
+}
+
+export type CollectionSortingInput = {
+  /** Specifies the direction in which to sort products. */
+  direction: OrderDirection;
+  /** Sort collections by the selected field. */
+  field: CollectionSortField;
+};
+
+export type CollectionTranslatableContent = Node & {
+  __typename?: 'CollectionTranslatableContent';
+  seoTitle?: Maybe<Scalars['String']>;
+  seoDescription?: Maybe<Scalars['String']>;
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  descriptionJson: Scalars['JSONString'];
+  /**
+   * Description of the collection.
+   * @deprecated Use the `descriptionJson` field instead.
+   */
+  description: Scalars['String'];
+  /** Returns translated collection fields for the given language code. */
+  translation?: Maybe<CollectionTranslation>;
+  /** Represents a collection of products. */
+  collection?: Maybe<Collection>;
+};
+
+export type CollectionTranslatableContentTranslationArgs = {
+  languageCode: LanguageCodeEnum;
+};
+
+/** Creates/Updates translations for collection. */
+export type CollectionTranslate = {
+  __typename?: 'CollectionTranslate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  translationErrors: Array<TranslationError>;
+  collection?: Maybe<Collection>;
+};
+
+export type CollectionTranslation = Node & {
+  __typename?: 'CollectionTranslation';
+  seoTitle?: Maybe<Scalars['String']>;
+  seoDescription?: Maybe<Scalars['String']>;
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  descriptionJson: Scalars['JSONString'];
+  /** Translation language. */
+  language: LanguageDisplay;
+  /**
+   * Translated description of the collection.
+   * @deprecated Use the `descriptionJson` field instead.
+   */
+  description: Scalars['String'];
+};
+
+/** Updates a collection. */
+export type CollectionUpdate = {
+  __typename?: 'CollectionUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productErrors: Array<ProductError>;
+  collection?: Maybe<Collection>;
+};
+
+/** Update public metadata for collection. */
+export type CollectionUpdateMeta = {
+  __typename?: 'CollectionUpdateMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productErrors: Array<ProductError>;
+  collection?: Maybe<Collection>;
+};
+
+/** Update private metadata for collection. */
+export type CollectionUpdatePrivateMeta = {
+  __typename?: 'CollectionUpdatePrivateMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productErrors: Array<ProductError>;
+  collection?: Maybe<Collection>;
+};
+
+/** Stores information about a single configuration field. */
+export type ConfigurationItem = {
+  __typename?: 'ConfigurationItem';
+  /** Name of the field. */
+  name: Scalars['String'];
+  /** Current value of the field. */
+  value?: Maybe<Scalars['String']>;
+  /** Type of the field. */
+  type?: Maybe<ConfigurationTypeFieldEnum>;
+  /** Help text for the field. */
+  helpText?: Maybe<Scalars['String']>;
+  /** Label for the field. */
+  label?: Maybe<Scalars['String']>;
+};
+
+export type ConfigurationItemInput = {
+  /** Name of the field to update. */
+  name: Scalars['String'];
+  /** Value of the given field to update. */
+  value?: Maybe<Scalars['String']>;
+};
+
+/** An enumeration. */
+export enum ConfigurationTypeFieldEnum {
+  String = 'STRING',
+  Boolean = 'BOOLEAN',
+  Secret = 'SECRET',
+  Password = 'PASSWORD',
+  Secretmultiline = 'SECRETMULTILINE'
+}
+
+/** Confirm user account with token sent by email during registration. */
+export type ConfirmAccount = {
+  __typename?: 'ConfirmAccount';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** An activated user account. */
+  user?: Maybe<User>;
+  accountErrors: Array<AccountError>;
+};
+
+/** Confirm the email change of the logged-in user. */
+export type ConfirmEmailChange = {
+  __typename?: 'ConfirmEmailChange';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** A user instance with a new email. */
+  user?: Maybe<User>;
+  accountErrors: Array<AccountError>;
+};
+
+/** An enumeration. */
+export enum CountryCode {
+  Af = 'AF',
+  Ax = 'AX',
+  Al = 'AL',
+  Dz = 'DZ',
+  As = 'AS',
+  Ad = 'AD',
+  Ao = 'AO',
+  Ai = 'AI',
+  Aq = 'AQ',
+  Ag = 'AG',
+  Ar = 'AR',
+  Am = 'AM',
+  Aw = 'AW',
+  Au = 'AU',
+  At = 'AT',
+  Az = 'AZ',
+  Bs = 'BS',
+  Bh = 'BH',
+  Bd = 'BD',
+  Bb = 'BB',
+  By = 'BY',
+  Be = 'BE',
+  Bz = 'BZ',
+  Bj = 'BJ',
+  Bm = 'BM',
+  Bt = 'BT',
+  Bo = 'BO',
+  Bq = 'BQ',
+  Ba = 'BA',
+  Bw = 'BW',
+  Bv = 'BV',
+  Br = 'BR',
+  Io = 'IO',
+  Bn = 'BN',
+  Bg = 'BG',
+  Bf = 'BF',
+  Bi = 'BI',
+  Cv = 'CV',
+  Kh = 'KH',
+  Cm = 'CM',
+  Ca = 'CA',
+  Ky = 'KY',
+  Cf = 'CF',
+  Td = 'TD',
+  Cl = 'CL',
+  Cn = 'CN',
+  Cx = 'CX',
+  Cc = 'CC',
+  Co = 'CO',
+  Km = 'KM',
+  Cg = 'CG',
+  Cd = 'CD',
+  Ck = 'CK',
+  Cr = 'CR',
+  Ci = 'CI',
+  Hr = 'HR',
+  Cu = 'CU',
+  Cw = 'CW',
+  Cy = 'CY',
+  Cz = 'CZ',
+  Dk = 'DK',
+  Dj = 'DJ',
+  Dm = 'DM',
+  Do = 'DO',
+  Ec = 'EC',
+  Eg = 'EG',
+  Sv = 'SV',
+  Gq = 'GQ',
+  Er = 'ER',
+  Ee = 'EE',
+  Sz = 'SZ',
+  Et = 'ET',
+  Eu = 'EU',
+  Fk = 'FK',
+  Fo = 'FO',
+  Fj = 'FJ',
+  Fi = 'FI',
+  Fr = 'FR',
+  Gf = 'GF',
+  Pf = 'PF',
+  Tf = 'TF',
+  Ga = 'GA',
+  Gm = 'GM',
+  Ge = 'GE',
+  De = 'DE',
+  Gh = 'GH',
+  Gi = 'GI',
+  Gr = 'GR',
+  Gl = 'GL',
+  Gd = 'GD',
+  Gp = 'GP',
+  Gu = 'GU',
+  Gt = 'GT',
+  Gg = 'GG',
+  Gn = 'GN',
+  Gw = 'GW',
+  Gy = 'GY',
+  Ht = 'HT',
+  Hm = 'HM',
+  Va = 'VA',
+  Hn = 'HN',
+  Hk = 'HK',
+  Hu = 'HU',
+  Is = 'IS',
+  In = 'IN',
+  Id = 'ID',
+  Ir = 'IR',
+  Iq = 'IQ',
+  Ie = 'IE',
+  Im = 'IM',
+  Il = 'IL',
+  It = 'IT',
+  Jm = 'JM',
+  Jp = 'JP',
+  Je = 'JE',
+  Jo = 'JO',
+  Kz = 'KZ',
+  Ke = 'KE',
+  Ki = 'KI',
+  Kw = 'KW',
+  Kg = 'KG',
+  La = 'LA',
+  Lv = 'LV',
+  Lb = 'LB',
+  Ls = 'LS',
+  Lr = 'LR',
+  Ly = 'LY',
+  Li = 'LI',
+  Lt = 'LT',
+  Lu = 'LU',
+  Mo = 'MO',
+  Mg = 'MG',
+  Mw = 'MW',
+  My = 'MY',
+  Mv = 'MV',
+  Ml = 'ML',
+  Mt = 'MT',
+  Mh = 'MH',
+  Mq = 'MQ',
+  Mr = 'MR',
+  Mu = 'MU',
+  Yt = 'YT',
+  Mx = 'MX',
+  Fm = 'FM',
+  Md = 'MD',
+  Mc = 'MC',
+  Mn = 'MN',
+  Me = 'ME',
+  Ms = 'MS',
+  Ma = 'MA',
+  Mz = 'MZ',
+  Mm = 'MM',
+  Na = 'NA',
+  Nr = 'NR',
+  Np = 'NP',
+  Nl = 'NL',
+  Nc = 'NC',
+  Nz = 'NZ',
+  Ni = 'NI',
+  Ne = 'NE',
+  Ng = 'NG',
+  Nu = 'NU',
+  Nf = 'NF',
+  Kp = 'KP',
+  Mk = 'MK',
+  Mp = 'MP',
+  No = 'NO',
+  Om = 'OM',
+  Pk = 'PK',
+  Pw = 'PW',
+  Ps = 'PS',
+  Pa = 'PA',
+  Pg = 'PG',
+  Py = 'PY',
+  Pe = 'PE',
+  Ph = 'PH',
+  Pn = 'PN',
+  Pl = 'PL',
+  Pt = 'PT',
+  Pr = 'PR',
+  Qa = 'QA',
+  Re = 'RE',
+  Ro = 'RO',
+  Ru = 'RU',
+  Rw = 'RW',
+  Bl = 'BL',
+  Sh = 'SH',
+  Kn = 'KN',
+  Lc = 'LC',
+  Mf = 'MF',
+  Pm = 'PM',
+  Vc = 'VC',
+  Ws = 'WS',
+  Sm = 'SM',
+  St = 'ST',
+  Sa = 'SA',
+  Sn = 'SN',
+  Rs = 'RS',
+  Sc = 'SC',
+  Sl = 'SL',
+  Sg = 'SG',
+  Sx = 'SX',
+  Sk = 'SK',
+  Si = 'SI',
+  Sb = 'SB',
+  So = 'SO',
+  Za = 'ZA',
+  Gs = 'GS',
+  Kr = 'KR',
+  Ss = 'SS',
+  Es = 'ES',
+  Lk = 'LK',
+  Sd = 'SD',
+  Sr = 'SR',
+  Sj = 'SJ',
+  Se = 'SE',
+  Ch = 'CH',
+  Sy = 'SY',
+  Tw = 'TW',
+  Tj = 'TJ',
+  Tz = 'TZ',
+  Th = 'TH',
+  Tl = 'TL',
+  Tg = 'TG',
+  Tk = 'TK',
+  To = 'TO',
+  Tt = 'TT',
+  Tn = 'TN',
+  Tr = 'TR',
+  Tm = 'TM',
+  Tc = 'TC',
+  Tv = 'TV',
+  Ug = 'UG',
+  Ua = 'UA',
+  Ae = 'AE',
+  Gb = 'GB',
+  Um = 'UM',
+  Us = 'US',
+  Uy = 'UY',
+  Uz = 'UZ',
+  Vu = 'VU',
+  Ve = 'VE',
+  Vn = 'VN',
+  Vg = 'VG',
+  Vi = 'VI',
+  Wf = 'WF',
+  Eh = 'EH',
+  Ye = 'YE',
+  Zm = 'ZM',
+  Zw = 'ZW'
+}
+
+export type CountryDisplay = {
+  __typename?: 'CountryDisplay';
+  /** Country code. */
+  code: Scalars['String'];
+  /** Country name. */
+  country: Scalars['String'];
+  /** Country tax. */
+  vat?: Maybe<Vat>;
+};
+
+/** Create JWT token. */
+export type CreateToken = {
+  __typename?: 'CreateToken';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** JWT token, required to authenticate. */
+  token?: Maybe<Scalars['String']>;
+  /** JWT refresh token, required to re-generate access token. */
+  refreshToken?: Maybe<Scalars['String']>;
+  /** CSRF token required to re-generate access token. */
+  csrfToken?: Maybe<Scalars['String']>;
+  /** A user instance. */
+  user?: Maybe<User>;
+  accountErrors: Array<AccountError>;
+};
+
+export type CreditCard = {
+  __typename?: 'CreditCard';
+  /** Card brand. */
+  brand: Scalars['String'];
+  /** First 4 digits of the card number. */
+  firstDigits?: Maybe<Scalars['String']>;
+  /** Last 4 digits of the card number. */
+  lastDigits: Scalars['String'];
+  /** Two-digit number representing the card’s expiration month. */
+  expMonth?: Maybe<Scalars['Int']>;
+  /** Four-digit number representing the card’s expiration year. */
+  expYear?: Maybe<Scalars['Int']>;
+};
+
+/** Deletes customers. */
+export type CustomerBulkDelete = {
+  __typename?: 'CustomerBulkDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Returns how many objects were affected. */
+  count: Scalars['Int'];
+  accountErrors: Array<AccountError>;
+};
+
+/** Creates a new customer. */
+export type CustomerCreate = {
+  __typename?: 'CustomerCreate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  accountErrors: Array<AccountError>;
+  user?: Maybe<User>;
+};
+
+/** Deletes a customer. */
+export type CustomerDelete = {
+  __typename?: 'CustomerDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  accountErrors: Array<AccountError>;
+  user?: Maybe<User>;
+};
+
+/** History log of the customer. */
+export type CustomerEvent = Node & {
+  __typename?: 'CustomerEvent';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  /** Date when event happened at in ISO 8601 format. */
+  date?: Maybe<Scalars['DateTime']>;
+  /** Customer event type. */
+  type?: Maybe<CustomerEventsEnum>;
+  /** User who performed the action. */
+  user?: Maybe<User>;
+  /** Content of the event. */
+  message?: Maybe<Scalars['String']>;
+  /** Number of objects concerned by the event. */
+  count?: Maybe<Scalars['Int']>;
+  /** The concerned order. */
+  order?: Maybe<Order>;
+  /** The concerned order line. */
+  orderLine?: Maybe<OrderLine>;
+};
+
+/** An enumeration. */
+export enum CustomerEventsEnum {
+  AccountCreated = 'ACCOUNT_CREATED',
+  PasswordResetLinkSent = 'PASSWORD_RESET_LINK_SENT',
+  PasswordReset = 'PASSWORD_RESET',
+  EmailChangedRequest = 'EMAIL_CHANGED_REQUEST',
+  PasswordChanged = 'PASSWORD_CHANGED',
+  EmailChanged = 'EMAIL_CHANGED',
+  PlacedOrder = 'PLACED_ORDER',
+  NoteAddedToOrder = 'NOTE_ADDED_TO_ORDER',
+  DigitalLinkDownloaded = 'DIGITAL_LINK_DOWNLOADED',
+  CustomerDeleted = 'CUSTOMER_DELETED',
+  NameAssigned = 'NAME_ASSIGNED',
+  EmailAssigned = 'EMAIL_ASSIGNED',
+  NoteAdded = 'NOTE_ADDED'
+}
+
+export type CustomerFilterInput = {
+  dateJoined?: Maybe<DateRangeInput>;
+  moneySpent?: Maybe<PriceRangeInput>;
+  numberOfOrders?: Maybe<IntRangeInput>;
+  placedOrders?: Maybe<DateRangeInput>;
+  search?: Maybe<Scalars['String']>;
+};
+
+export type CustomerInput = {
+  /** Billing address of the customer. */
+  defaultBillingAddress?: Maybe<AddressInput>;
+  /** Shipping address of the customer. */
+  defaultShippingAddress?: Maybe<AddressInput>;
+  /** Given name. */
+  firstName?: Maybe<Scalars['String']>;
+  /** Family name. */
+  lastName?: Maybe<Scalars['String']>;
+  /** The unique email address of the user. */
+  email?: Maybe<Scalars['String']>;
+  /** User account is active. */
+  isActive?: Maybe<Scalars['Boolean']>;
+  /** A note about the user. */
+  note?: Maybe<Scalars['String']>;
+};
+
+/** Updates an existing customer. */
+export type CustomerUpdate = {
+  __typename?: 'CustomerUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  accountErrors: Array<AccountError>;
+  user?: Maybe<User>;
+};
+
+export type DateRangeInput = {
+  /** Start date. */
+  gte?: Maybe<Scalars['Date']>;
+  /** End date. */
+  lte?: Maybe<Scalars['Date']>;
+};
+
+export type DateTimeRangeInput = {
+  /** Start date. */
+  gte?: Maybe<Scalars['DateTime']>;
+  /** End date. */
+  lte?: Maybe<Scalars['DateTime']>;
+};
+
+/** Deactivate all JWT tokens of the currently authenticated user. */
+export type DeactivateAllUserTokens = {
+  __typename?: 'DeactivateAllUserTokens';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  accountErrors: Array<AccountError>;
+};
+
+/** Delete metadata of an object. */
+export type DeleteMetadata = {
+  __typename?: 'DeleteMetadata';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  metadataErrors: Array<MetadataError>;
+  item?: Maybe<ObjectWithMetadata>;
+};
+
+/** Delete object's private metadata. */
+export type DeletePrivateMetadata = {
+  __typename?: 'DeletePrivateMetadata';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  metadataErrors: Array<MetadataError>;
+  item?: Maybe<ObjectWithMetadata>;
+};
+
+export type DigitalContent = Node &
+  ObjectWithMetadata & {
+    __typename?: 'DigitalContent';
+    useDefaultSettings: Scalars['Boolean'];
+    automaticFulfillment: Scalars['Boolean'];
+    productVariant: ProductVariant;
+    contentFile: Scalars['String'];
+    maxDownloads?: Maybe<Scalars['Int']>;
+    urlValidDays?: Maybe<Scalars['Int']>;
+    /** List of URLs for the digital variant. */
+    urls?: Maybe<Array<Maybe<DigitalContentUrl>>>;
+    /** The ID of the object. */
+    id: Scalars['ID'];
+    /** List of private metadata items.Requires proper staff permissions to access. */
+    privateMetadata: Array<Maybe<MetadataItem>>;
+    /** List of public metadata items. Can be accessed without permissions. */
+    metadata: Array<Maybe<MetadataItem>>;
+    /**
+     * List of privately stored metadata namespaces.
+     * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
+     */
+    privateMeta: Array<Maybe<MetaStore>>;
+    /**
+     * List of publicly stored metadata namespaces.
+     * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
+     */
+    meta: Array<Maybe<MetaStore>>;
+  };
+
+export type DigitalContentCountableConnection = {
+  __typename?: 'DigitalContentCountableConnection';
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  edges: Array<DigitalContentCountableEdge>;
+  /** A total count of items in the collection. */
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type DigitalContentCountableEdge = {
+  __typename?: 'DigitalContentCountableEdge';
+  /** The item at the end of the edge. */
+  node: DigitalContent;
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+};
+
+/**
+ * Create new digital content. This mutation must be sent as a `multipart` request.
+ * More detailed specs of the upload format can be found here:
+ * https://github.com/jaydenseric/graphql-multipart-request-spec
+ */
+export type DigitalContentCreate = {
+  __typename?: 'DigitalContentCreate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
   variant?: Maybe<ProductVariant>;
-  price: ProductPrice;
-  taxedPrice?: Maybe<TaxedItemPrice>;
-  totalPrice?: Maybe<Money>;
-  quantity: Scalars["Long"];
-  state: Array<ItemState>;
-  taxRate?: Maybe<TaxRate>;
-  supplyChannel?: Maybe<Channel>;
-  supplyChannelRef?: Maybe<Reference>;
-  distributionChannel?: Maybe<Channel>;
-  distributionChannelRef?: Maybe<Reference>;
-  discountedPricePerQuantity: Array<DiscountedLineItemPriceForQuantity>;
-  lineItemMode: LineItemMode;
-  priceMode: LineItemPriceMode;
-  /** This field contains non-typed data. Consider using `customFields` as a typed alternative. */
-  customFieldsRaw?: Maybe<Array<RawCustomField>>;
-  /** This field would contain type data */
-  customFields?: Maybe<Type>;
-  custom?: Maybe<CustomFieldsType>;
-  shippingDetails?: Maybe<ItemShippingDetails>;
-  inventoryMode?: Maybe<ItemShippingDetails>;
-  /** Custom fields are returned as a list instead of an object structure. */
-  customFieldList?: Maybe<Array<CustomField>>;
+  content?: Maybe<DigitalContent>;
+  productErrors: Array<ProductError>;
 };
 
-/** A line item is a snapshot of a product variant at the time it was added to the cart.
- *
- * Since a product variant may change at any time, the ProductVariant data is copied into the field variant.
- * The relation to the Product is kept but the line item will not automatically update if the product variant changes.
- * On the cart, the line item can be updated manually. The productSlug refers to the current version of the product.
- * It can be used to link to the product. If the product has been deleted, the line item remains but refers to a
- * non-existent product and the productSlug is left empty.
- *
- * Please also note that creating an order is impossible if the product or product
- * variant a line item relates to has been deleted.
- */
-export type LineItemNameArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
-};
-
-/** A line item is a snapshot of a product variant at the time it was added to the cart.
- *
- * Since a product variant may change at any time, the ProductVariant data is copied into the field variant.
- * The relation to the Product is kept but the line item will not automatically update if the product variant changes.
- * On the cart, the line item can be updated manually. The productSlug refers to the current version of the product.
- * It can be used to link to the product. If the product has been deleted, the line item remains but refers to a
- * non-existent product and the productSlug is left empty.
- *
- * Please also note that creating an order is impossible if the product or product
- * variant a line item relates to has been deleted.
- */
-export type LineItemProductSlugArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
-};
-
-/** A line item is a snapshot of a product variant at the time it was added to the cart.
- *
- * Since a product variant may change at any time, the ProductVariant data is copied into the field variant.
- * The relation to the Product is kept but the line item will not automatically update if the product variant changes.
- * On the cart, the line item can be updated manually. The productSlug refers to the current version of the product.
- * It can be used to link to the product. If the product has been deleted, the line item remains but refers to a
- * non-existent product and the productSlug is left empty.
- *
- * Please also note that creating an order is impossible if the product or product
- * variant a line item relates to has been deleted.
- */
-export type LineItemCustomFieldsRawArgs = {
-  includeNames?: Maybe<Array<Scalars["String"]>>;
-  excludeNames?: Maybe<Array<Scalars["String"]>>;
-};
-
-/** A line item is a snapshot of a product variant at the time it was added to the cart.
- *
- * Since a product variant may change at any time, the ProductVariant data is copied into the field variant.
- * The relation to the Product is kept but the line item will not automatically update if the product variant changes.
- * On the cart, the line item can be updated manually. The productSlug refers to the current version of the product.
- * It can be used to link to the product. If the product has been deleted, the line item remains but refers to a
- * non-existent product and the productSlug is left empty.
- *
- * Please also note that creating an order is impossible if the product or product
- * variant a line item relates to has been deleted.
- */
-export type LineItemCustomFieldListArgs = {
-  includeNames?: Maybe<Array<Scalars["String"]>>;
-  excludeNames?: Maybe<Array<Scalars["String"]>>;
-};
-
-export type LineItemDraft = {
-  productId?: Maybe<Scalars["String"]>;
-  sku?: Maybe<Scalars["String"]>;
-  quantity?: Maybe<Scalars["Long"]>;
-  variantId?: Maybe<Scalars["Int"]>;
-  supplyChannel?: Maybe<ResourceIdentifierInput>;
-  distributionChannel?: Maybe<ResourceIdentifierInput>;
-  custom?: Maybe<CustomFieldsDraft>;
-  shippingDetails?: Maybe<ItemShippingDetailsDraft>;
-  externalTaxRate?: Maybe<ExternalTaxRateDraft>;
-  externalPrice?: Maybe<BaseMoneyInput>;
-  externalTotalPrice?: Maybe<ExternalLineItemTotalPriceDraft>;
-};
-
-export enum LineItemMode {
-  /** The line item was added automatically, because a discount has added a free gift to the cart.
-   * The quantity can not be increased, and it won’t be merged when the same product variant is added.
-   * If the gift is removed, an entry is added to the "refusedGifts" array and the discount won’t be applied again
-   * to the cart. The price can not be changed externally.
-   * All other updates, such as the ones related to custom fields, can be used.
+/** Remove digital content assigned to given variant. */
+export type DigitalContentDelete = {
+  __typename?: 'DigitalContentDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
    */
-  GiftLineItem = "GiftLineItem",
-  /** The line item was added during cart creation or with the update action addLineItem. Its quantity can be
-   * changed without restrictions.
+  errors: Array<Error>;
+  variant?: Maybe<ProductVariant>;
+  productErrors: Array<ProductError>;
+};
+
+export type DigitalContentInput = {
+  /** Use default digital content settings for this product. */
+  useDefaultSettings: Scalars['Boolean'];
+  /** Determines how many times a download link can be accessed by a customer. */
+  maxDownloads?: Maybe<Scalars['Int']>;
+  /** Determines for how many days a download link is active since it was generated. */
+  urlValidDays?: Maybe<Scalars['Int']>;
+  /** Overwrite default automatic_fulfillment setting for variant. */
+  automaticFulfillment?: Maybe<Scalars['Boolean']>;
+};
+
+/** Update digital content. */
+export type DigitalContentUpdate = {
+  __typename?: 'DigitalContentUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
    */
-  Standard = "Standard"
+  errors: Array<Error>;
+  variant?: Maybe<ProductVariant>;
+  content?: Maybe<DigitalContent>;
+  productErrors: Array<ProductError>;
+};
+
+export type DigitalContentUploadInput = {
+  /** Use default digital content settings for this product. */
+  useDefaultSettings: Scalars['Boolean'];
+  /** Determines how many times a download link can be accessed by a customer. */
+  maxDownloads?: Maybe<Scalars['Int']>;
+  /** Determines for how many days a download link is active since it was generated. */
+  urlValidDays?: Maybe<Scalars['Int']>;
+  /** Overwrite default automatic_fulfillment setting for variant. */
+  automaticFulfillment?: Maybe<Scalars['Boolean']>;
+  /** Represents an file in a multipart request. */
+  contentFile: Scalars['Upload'];
+};
+
+export type DigitalContentUrl = Node & {
+  __typename?: 'DigitalContentUrl';
+  content: DigitalContent;
+  created: Scalars['DateTime'];
+  downloadNum: Scalars['Int'];
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  /** URL for digital content. */
+  url?: Maybe<Scalars['String']>;
+  /** UUID of digital content. */
+  token: Scalars['UUID'];
+};
+
+/** Generate new URL to digital content. */
+export type DigitalContentUrlCreate = {
+  __typename?: 'DigitalContentUrlCreate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productErrors: Array<ProductError>;
+  digitalContentUrl?: Maybe<DigitalContentUrl>;
+};
+
+export type DigitalContentUrlCreateInput = {
+  /** Digital content ID which URL will belong to. */
+  content: Scalars['ID'];
+};
+
+export type DiscountError = {
+  __typename?: 'DiscountError';
+  /**
+   * Name of a field that caused the error. A value of `null` indicates that the
+   * error isn't associated with a particular field.
+   */
+  field?: Maybe<Scalars['String']>;
+  /** The error message. */
+  message?: Maybe<Scalars['String']>;
+  /** The error code. */
+  code: DiscountErrorCode;
+};
+
+/** An enumeration. */
+export enum DiscountErrorCode {
+  AlreadyExists = 'ALREADY_EXISTS',
+  GraphqlError = 'GRAPHQL_ERROR',
+  Invalid = 'INVALID',
+  NotFound = 'NOT_FOUND',
+  Required = 'REQUIRED',
+  Unique = 'UNIQUE'
 }
 
-export enum LineItemPriceMode {
-  /** The price is selected form the product variant. This is the default mode. */
-  Platform = "Platform",
-  /** The line item price was set externally. Cart discounts can apply to line items
-   * with this price mode. All update actions that change the quantity of a line
-   * item with this price mode require the externalPrice field to be given.
-   */
-  ExternalPrice = "ExternalPrice",
-  /** The line item price with the total was set externally. */
-  ExternalTotal = "ExternalTotal"
+export enum DiscountStatusEnum {
+  Active = 'ACTIVE',
+  Expired = 'EXPIRED',
+  Scheduled = 'SCHEDULED'
 }
 
-export type LineItemReturnItem = ReturnItem & {
-  __typename?: "LineItemReturnItem";
-  type: Scalars["String"];
-  lineItemId: Scalars["String"];
-  id: Scalars["String"];
-  quantity: Scalars["Long"];
-  comment?: Maybe<Scalars["String"]>;
-  shipmentState: ReturnShipmentState;
-  paymentState: ReturnPaymentState;
-  lastModifiedAt: Scalars["DateTime"];
-  createdAt: Scalars["DateTime"];
+export enum DiscountValueTypeEnum {
+  Fixed = 'FIXED',
+  Percentage = 'PERCENTAGE'
+}
+
+/** Represents shop's domain. */
+export type Domain = {
+  __typename?: 'Domain';
+  /** The host name of the domain. */
+  host: Scalars['String'];
+  /** Inform if SSL is enabled. */
+  sslEnabled: Scalars['Boolean'];
+  /** Shop's absolute URL. */
+  url: Scalars['String'];
 };
 
-export type LineItemsTarget = CartDiscountTarget & {
-  __typename?: "LineItemsTarget";
-  predicate: Scalars["String"];
-  type: Scalars["String"];
+/** Deletes draft orders. */
+export type DraftOrderBulkDelete = {
+  __typename?: 'DraftOrderBulkDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Returns how many objects were affected. */
+  count: Scalars['Int'];
+  orderErrors: Array<OrderError>;
 };
 
-export type LineItemsTargetInput = {
-  predicate: Scalars["String"];
-};
-
-export type LocalizableEnumAttributeDefinitionType = AttributeDefinitionType & {
-  __typename?: "LocalizableEnumAttributeDefinitionType";
-  values: LocalizableEnumValueTypeResult;
-  name: Scalars["String"];
-};
-
-export type LocalizableEnumAttributeDefinitionTypeValuesArgs = {
-  includeKeys?: Maybe<Array<Scalars["String"]>>;
-  excludeKeys?: Maybe<Array<Scalars["String"]>>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
-  sort?: Maybe<Array<Scalars["String"]>>;
-};
-
-export type LocalizableEnumTypeDraft = {
-  values: Array<LocalizedEnumValueDraft>;
-};
-
-export type LocalizableEnumValueType = {
-  __typename?: "LocalizableEnumValueType";
-  key: Scalars["String"];
-  label?: Maybe<Scalars["String"]>;
-  labelAllLocales: Array<LocalizedString>;
-};
-
-export type LocalizableEnumValueTypeLabelArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
-};
-
-export type LocalizableEnumValueTypeResult = {
-  __typename?: "LocalizableEnumValueTypeResult";
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
-  total: Scalars["Int"];
-  results: Array<LocalizableEnumValueType>;
-};
-
-export type LocalizableTextAttributeDefinitionType = AttributeDefinitionType & {
-  __typename?: "LocalizableTextAttributeDefinitionType";
-  name: Scalars["String"];
-};
-
-export type LocalizedEnumAttribute = Attribute & {
-  __typename?: "LocalizedEnumAttribute";
-  key: Scalars["String"];
-  label?: Maybe<Scalars["String"]>;
-  name: Scalars["String"];
-};
-
-export type LocalizedEnumAttributeLabelArgs = {
-  locale: Scalars["Locale"];
-};
-
-export type LocalizedEnumField = CustomField & {
-  __typename?: "LocalizedEnumField";
-  key: Scalars["String"];
-  label?: Maybe<Scalars["String"]>;
-  name: Scalars["String"];
-};
-
-export type LocalizedEnumFieldLabelArgs = {
-  locale: Scalars["Locale"];
-};
-
-export type LocalizedEnumType = FieldType & {
-  __typename?: "LocalizedEnumType";
-  values: Array<LocalizedEnumValue>;
-  name: Scalars["String"];
-};
-
-export type LocalizedEnumValue = {
-  __typename?: "LocalizedEnumValue";
-  key: Scalars["String"];
-  label?: Maybe<Scalars["String"]>;
-  labelAllLocales: Array<LocalizedString>;
-};
-
-export type LocalizedEnumValueLabelArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
-};
-
-export type LocalizedEnumValueDraft = {
-  key: Scalars["String"];
-  label: Array<LocalizedStringItemInputType>;
-};
-
-export type LocalizedEnumValueInput = {
-  key: Scalars["String"];
-  label: Array<LocalizedStringItemInputType>;
-};
-
-export type LocalizedString = {
-  __typename?: "LocalizedString";
-  locale: Scalars["Locale"];
-  value: Scalars["String"];
-};
-
-export type LocalizedStringAttribute = Attribute & {
-  __typename?: "LocalizedStringAttribute";
-  value?: Maybe<Scalars["String"]>;
-  name: Scalars["String"];
-};
-
-export type LocalizedStringAttributeValueArgs = {
-  locale: Scalars["Locale"];
-};
-
-export type LocalizedStringField = CustomField & {
-  __typename?: "LocalizedStringField";
-  value?: Maybe<Scalars["String"]>;
-  name: Scalars["String"];
-};
-
-export type LocalizedStringFieldValueArgs = {
-  locale: Scalars["Locale"];
-};
-
-export type LocalizedStringItemInputType = {
-  locale: Scalars["Locale"];
-  value: Scalars["String"];
-};
-
-export type LocalizedStringType = FieldType & {
-  __typename?: "LocalizedStringType";
-  name: Scalars["String"];
-};
-
-export type LocalizedText = {
-  text: Scalars["String"];
-  locale: Scalars["Locale"];
-};
-
-export type Location = {
-  __typename?: "Location";
-  country: Scalars["Country"];
-  state?: Maybe<Scalars["String"]>;
-};
-
-/** Sunrise Product Data Set Structure */
-export type MainProductType = ProductType & {
-  __typename?: "mainProductType";
-  productTypeId: Scalars["String"];
-  creationDate?: Maybe<DateTimeAttribute>;
-  articleNumberManufacturer?: Maybe<StringAttribute>;
-  articleNumberMax?: Maybe<StringAttribute>;
-  matrixId?: Maybe<StringAttribute>;
-  baseId?: Maybe<StringAttribute>;
-  designer?: Maybe<EnumAttribute>;
-  madeInItaly?: Maybe<EnumAttribute>;
-  completeTheLook?: Maybe<Array<StringAttribute>>;
-  commonSize?: Maybe<EnumAttribute>;
-  size?: Maybe<StringAttribute>;
-  color?: Maybe<LocalizedEnumAttribute>;
-  colorFreeDefinition?: Maybe<LocalizedStringAttribute>;
-  details?: Maybe<Array<LocalizedStringAttribute>>;
-  style?: Maybe<EnumAttribute>;
-  gender?: Maybe<EnumAttribute>;
-  season?: Maybe<StringAttribute>;
-  isOnStock?: Maybe<BooleanAttribute>;
-  isLook?: Maybe<BooleanAttribute>;
-  lookProducts?: Maybe<Array<StringAttribute>>;
-  seasonNew?: Maybe<StringAttribute>;
-  sapExternalId?: Maybe<StringAttribute>;
-};
-
-export type Me = MeQueryInterface & {
-  __typename?: "Me";
-  customer?: Maybe<Customer>;
-  cart?: Maybe<Cart>;
-  carts: CartQueryResult;
-  activeCart?: Maybe<Cart>;
+/** Completes creating an order. */
+export type DraftOrderComplete = {
+  __typename?: 'DraftOrderComplete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Completed order. */
   order?: Maybe<Order>;
-  orders: OrderQueryResult;
-  shoppingList?: Maybe<ShoppingList>;
-  shoppingLists: ShoppingListQueryResult;
+  orderErrors: Array<OrderError>;
 };
 
-export type MeCartArgs = {
-  id: Scalars["String"];
-};
-
-export type MeCartsArgs = {
-  where?: Maybe<Scalars["String"]>;
-  sort?: Maybe<Array<Scalars["String"]>>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
-};
-
-export type MeOrderArgs = {
-  id?: Maybe<Scalars["String"]>;
-  orderNumber?: Maybe<Scalars["String"]>;
-};
-
-export type MeOrdersArgs = {
-  where?: Maybe<Scalars["String"]>;
-  sort?: Maybe<Array<Scalars["String"]>>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
-};
-
-export type MeShoppingListArgs = {
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
-};
-
-export type MeShoppingListsArgs = {
-  where?: Maybe<Scalars["String"]>;
-  sort?: Maybe<Array<Scalars["String"]>>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
-};
-
-/** The me field gives access to the data that is specific to the customer or anonymous session linked to the access token. */
-export type MeFieldInterface = {
-  me: MeQueryInterface;
-};
-
-export type MeQueryInterface = {
-  cart?: Maybe<Cart>;
-  carts: CartQueryResult;
-  activeCart?: Maybe<Cart>;
+/** Creates a new draft order. */
+export type DraftOrderCreate = {
+  __typename?: 'DraftOrderCreate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  orderErrors: Array<OrderError>;
   order?: Maybe<Order>;
-  orders: OrderQueryResult;
-  shoppingList?: Maybe<ShoppingList>;
-  shoppingLists: ShoppingListQueryResult;
 };
 
-export type MeQueryInterfaceCartArgs = {
-  id: Scalars["String"];
+export type DraftOrderCreateInput = {
+  /** Billing address of the customer. */
+  billingAddress?: Maybe<AddressInput>;
+  user?: Maybe<Scalars['ID']>;
+  /** Email address of the customer. */
+  userEmail?: Maybe<Scalars['String']>;
+  /** Discount amount for the order. */
+  discount?: Maybe<Scalars['PositiveDecimal']>;
+  /** Shipping address of the customer. */
+  shippingAddress?: Maybe<AddressInput>;
+  /** ID of a selected shipping method. */
+  shippingMethod?: Maybe<Scalars['ID']>;
+  /** ID of the voucher associated with the order. */
+  voucher?: Maybe<Scalars['ID']>;
+  /** A note from a customer. Visible by customers in the order summary. */
+  customerNote?: Maybe<Scalars['String']>;
+  /** Variant line input consisting of variant ID and quantity of products. */
+  lines?: Maybe<Array<Maybe<OrderLineCreateInput>>>;
 };
 
-export type MeQueryInterfaceCartsArgs = {
-  where?: Maybe<Scalars["String"]>;
-  sort?: Maybe<Array<Scalars["String"]>>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
+/** Deletes a draft order. */
+export type DraftOrderDelete = {
+  __typename?: 'DraftOrderDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  orderErrors: Array<OrderError>;
+  order?: Maybe<Order>;
 };
 
-export type MeQueryInterfaceOrderArgs = {
-  id?: Maybe<Scalars["String"]>;
-  orderNumber?: Maybe<Scalars["String"]>;
+export type DraftOrderInput = {
+  /** Billing address of the customer. */
+  billingAddress?: Maybe<AddressInput>;
+  user?: Maybe<Scalars['ID']>;
+  /** Email address of the customer. */
+  userEmail?: Maybe<Scalars['String']>;
+  /** Discount amount for the order. */
+  discount?: Maybe<Scalars['PositiveDecimal']>;
+  /** Shipping address of the customer. */
+  shippingAddress?: Maybe<AddressInput>;
+  /** ID of a selected shipping method. */
+  shippingMethod?: Maybe<Scalars['ID']>;
+  /** ID of the voucher associated with the order. */
+  voucher?: Maybe<Scalars['ID']>;
+  /** A note from a customer. Visible by customers in the order summary. */
+  customerNote?: Maybe<Scalars['String']>;
 };
 
-export type MeQueryInterfaceOrdersArgs = {
-  where?: Maybe<Scalars["String"]>;
-  sort?: Maybe<Array<Scalars["String"]>>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
+/** Deletes an order line from a draft order. */
+export type DraftOrderLineDelete = {
+  __typename?: 'DraftOrderLineDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** A related draft order. */
+  order?: Maybe<Order>;
+  /** An order line that was deleted. */
+  orderLine?: Maybe<OrderLine>;
+  orderErrors: Array<OrderError>;
 };
 
-export type MeQueryInterfaceShoppingListArgs = {
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
+/** Deletes order lines. */
+export type DraftOrderLinesBulkDelete = {
+  __typename?: 'DraftOrderLinesBulkDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Returns how many objects were affected. */
+  count: Scalars['Int'];
+  orderErrors: Array<OrderError>;
 };
 
-export type MeQueryInterfaceShoppingListsArgs = {
-  where?: Maybe<Scalars["String"]>;
-  sort?: Maybe<Array<Scalars["String"]>>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
+/** Create order lines for a draft order. */
+export type DraftOrderLinesCreate = {
+  __typename?: 'DraftOrderLinesCreate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** A related draft order. */
+  order?: Maybe<Order>;
+  /** List of newly added order lines. */
+  orderLines?: Maybe<Array<OrderLine>>;
+  orderErrors: Array<OrderError>;
 };
 
-export type MessagesConfiguration = {
-  __typename?: "MessagesConfiguration";
-  enabled: Scalars["Boolean"];
-  deleteDaysAfterCreation?: Maybe<Scalars["Int"]>;
+/** Updates an order line of a draft order. */
+export type DraftOrderLineUpdate = {
+  __typename?: 'DraftOrderLineUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** A related draft order. */
+  order?: Maybe<Order>;
+  orderErrors: Array<OrderError>;
+  orderLine?: Maybe<OrderLine>;
 };
 
-export type MessagesConfigurationDraft = {
-  enabled: Scalars["Boolean"];
-  deleteDaysAfterCreation: Scalars["Int"];
+/** Updates a draft order. */
+export type DraftOrderUpdate = {
+  __typename?: 'DraftOrderUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  orderErrors: Array<OrderError>;
+  order?: Maybe<Order>;
 };
 
-export type Money = BaseMoney & {
-  __typename?: "Money";
-  type: Scalars["String"];
-  currencyCode: Scalars["Currency"];
-  centAmount: Scalars["Long"];
-  /** For the `Money` it equals to the default number of fraction digits used with the currency. */
-  fractionDigits: Scalars["Int"];
+/** Represents an error in the input of a mutation. */
+export type Error = {
+  __typename?: 'Error';
+  /**
+   * Name of a field that caused the error. A value of `null` indicates that the
+   * error isn't associated with a particular field.
+   */
+  field?: Maybe<Scalars['String']>;
+  /** The error message. */
+  message?: Maybe<Scalars['String']>;
 };
 
-export type MoneyAttribute = Attribute & {
-  __typename?: "MoneyAttribute";
-  centAmount: Scalars["Long"];
-  currencyCode: Scalars["Currency"];
-  name: Scalars["String"];
+export type ExportError = {
+  __typename?: 'ExportError';
+  /**
+   * Name of a field that caused the error. A value of `null` indicates that the
+   * error isn't associated with a particular field.
+   */
+  field?: Maybe<Scalars['String']>;
+  /** The error message. */
+  message?: Maybe<Scalars['String']>;
+  /** The error code. */
+  code: ExportErrorCode;
 };
 
-export type MoneyAttributeDefinitionType = AttributeDefinitionType & {
-  __typename?: "MoneyAttributeDefinitionType";
-  name: Scalars["String"];
+/** An enumeration. */
+export enum ExportErrorCode {
+  Invalid = 'INVALID',
+  NotFound = 'NOT_FOUND',
+  Required = 'REQUIRED'
+}
+
+/** History log of export file. */
+export type ExportEvent = Node & {
+  __typename?: 'ExportEvent';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  /** Date when event happened at in ISO 8601 format. */
+  date: Scalars['DateTime'];
+  /** Export event type. */
+  type: ExportEventsEnum;
+  /** User who performed the action. */
+  user?: Maybe<User>;
+  /** App which performed the action. */
+  app?: Maybe<App>;
+  /** Content of the event. */
+  message: Scalars['String'];
 };
 
-export type MoneyDraft = {
-  currencyCode: Scalars["Currency"];
-  centAmount: Scalars["Long"];
+/** An enumeration. */
+export enum ExportEventsEnum {
+  ExportPending = 'EXPORT_PENDING',
+  ExportSuccess = 'EXPORT_SUCCESS',
+  ExportFailed = 'EXPORT_FAILED',
+  ExportDeleted = 'EXPORT_DELETED',
+  ExportedFileSent = 'EXPORTED_FILE_SENT',
+  ExportFailedInfoSent = 'EXPORT_FAILED_INFO_SENT'
+}
+
+/** Represents a job data of exported file. */
+export type ExportFile = Node &
+  Job & {
+    __typename?: 'ExportFile';
+    /** The ID of the object. */
+    id: Scalars['ID'];
+    user?: Maybe<User>;
+    app?: Maybe<App>;
+    /** Job status. */
+    status: JobStatusEnum;
+    /** Created date time of job in ISO 8601 format. */
+    createdAt: Scalars['DateTime'];
+    /** Date time of job last update in ISO 8601 format. */
+    updatedAt: Scalars['DateTime'];
+    /** Job message. */
+    message?: Maybe<Scalars['String']>;
+    /** The URL of field to download. */
+    url?: Maybe<Scalars['String']>;
+    /** List of events associated with the export. */
+    events?: Maybe<Array<ExportEvent>>;
+  };
+
+export type ExportFileCountableConnection = {
+  __typename?: 'ExportFileCountableConnection';
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  edges: Array<ExportFileCountableEdge>;
+  /** A total count of items in the collection. */
+  totalCount?: Maybe<Scalars['Int']>;
 };
 
-export type MoneyField = CustomField & {
-  __typename?: "MoneyField";
-  centAmount: Scalars["Long"];
-  currencyCode: Scalars["Currency"];
-  name: Scalars["String"];
+export type ExportFileCountableEdge = {
+  __typename?: 'ExportFileCountableEdge';
+  /** The item at the end of the edge. */
+  node: ExportFile;
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
 };
 
-export type MoneyInput = {
-  currencyCode: Scalars["Currency"];
-  centAmount: Scalars["Long"];
+export type ExportFileFilterInput = {
+  createdAt?: Maybe<DateTimeRangeInput>;
+  updatedAt?: Maybe<DateTimeRangeInput>;
+  status?: Maybe<JobStatusEnum>;
+  user?: Maybe<Scalars['String']>;
+  app?: Maybe<Scalars['String']>;
 };
 
-export type MoneyType = FieldType & {
-  __typename?: "MoneyType";
-  name: Scalars["String"];
+export enum ExportFileSortField {
+  /** Sort export file by status. */
+  Status = 'STATUS',
+  /** Sort export file by created at. */
+  CreatedAt = 'CREATED_AT',
+  /** Sort export file by updated at. */
+  UpdatedAt = 'UPDATED_AT'
+}
+
+export type ExportFileSortingInput = {
+  /** Specifies the direction in which to sort products. */
+  direction: OrderDirection;
+  /** Sort export file by the selected field. */
+  field: ExportFileSortField;
 };
 
-export type MoveProductImageToPosition = {
-  variantId?: Maybe<Scalars["Int"]>;
-  sku?: Maybe<Scalars["String"]>;
-  imageUrl: Scalars["String"];
-  position: Scalars["Int"];
-  staged?: Maybe<Scalars["Boolean"]>;
+export type ExportInfoInput = {
+  /** List of attribute ids witch should be exported. */
+  attributes?: Maybe<Array<Scalars['ID']>>;
+  /** List of warehouse ids witch should be exported. */
+  warehouses?: Maybe<Array<Scalars['ID']>>;
+  /** List of product fields witch should be exported. */
+  fields?: Maybe<Array<ProductFieldEnum>>;
 };
 
-export type MultiBuyCustomLineItemsTarget = CartDiscountTarget & {
-  __typename?: "MultiBuyCustomLineItemsTarget";
-  predicate: Scalars["String"];
-  triggerQuantity: Scalars["Long"];
-  discountedQuantity: Scalars["Long"];
-  maxOccurrence?: Maybe<Scalars["Int"]>;
-  selectionMode: SelectionMode;
-  type: Scalars["String"];
+/** Export products to csv file. */
+export type ExportProducts = {
+  __typename?: 'ExportProducts';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** The newly created export file job which is responsible for export data. */
+  exportFile?: Maybe<ExportFile>;
+  exportErrors: Array<ExportError>;
 };
 
-export type MultiBuyCustomLineItemsTargetInput = {
-  predicate: Scalars["String"];
-  triggerQuantity: Scalars["Long"];
-  discountedQuantity: Scalars["Long"];
-  maxOccurrence?: Maybe<Scalars["Int"]>;
-  selectionMode?: Maybe<SelectionMode>;
+export type ExportProductsInput = {
+  /** Determine which products should be exported. */
+  scope: ExportScope;
+  /** Filtering options for products. */
+  filter?: Maybe<ProductFilterInput>;
+  /** List of products IDS to export. */
+  ids?: Maybe<Array<Scalars['ID']>>;
+  /** Input with info about fields which should be exported. */
+  exportInfo?: Maybe<ExportInfoInput>;
+  /** Type of exported file. */
+  fileType: FileTypesEnum;
 };
 
-export type MultiBuyLineItemsTarget = CartDiscountTarget & {
-  __typename?: "MultiBuyLineItemsTarget";
-  predicate: Scalars["String"];
-  triggerQuantity: Scalars["Long"];
-  discountedQuantity: Scalars["Long"];
-  maxOccurrence?: Maybe<Scalars["Int"]>;
-  selectionMode: SelectionMode;
-  type: Scalars["String"];
+export enum ExportScope {
+  /** Export all products. */
+  All = 'ALL',
+  /** Export products with given ids. */
+  Ids = 'IDS',
+  /** Export the filtered products. */
+  Filter = 'FILTER'
+}
+
+/** An enumeration. */
+export enum FileTypesEnum {
+  Csv = 'CSV',
+  Xlsx = 'XLSX'
+}
+
+/** Represents order fulfillment. */
+export type Fulfillment = Node &
+  ObjectWithMetadata & {
+    __typename?: 'Fulfillment';
+    /** The ID of the object. */
+    id: Scalars['ID'];
+    fulfillmentOrder: Scalars['Int'];
+    status: FulfillmentStatus;
+    trackingNumber: Scalars['String'];
+    created: Scalars['DateTime'];
+    /** List of private metadata items.Requires proper staff permissions to access. */
+    privateMetadata: Array<Maybe<MetadataItem>>;
+    /** List of public metadata items. Can be accessed without permissions. */
+    metadata: Array<Maybe<MetadataItem>>;
+    /**
+     * List of privately stored metadata namespaces.
+     * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
+     */
+    privateMeta: Array<Maybe<MetaStore>>;
+    /**
+     * List of publicly stored metadata namespaces.
+     * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
+     */
+    meta: Array<Maybe<MetaStore>>;
+    /** List of lines for the fulfillment. */
+    lines?: Maybe<Array<Maybe<FulfillmentLine>>>;
+    /** User-friendly fulfillment status. */
+    statusDisplay?: Maybe<Scalars['String']>;
+    /** Warehouse from fulfillment was fulfilled. */
+    warehouse?: Maybe<Warehouse>;
+  };
+
+/** Cancels existing fulfillment and optionally restocks items. */
+export type FulfillmentCancel = {
+  __typename?: 'FulfillmentCancel';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** A canceled fulfillment. */
+  fulfillment?: Maybe<Fulfillment>;
+  /** Order which fulfillment was cancelled. */
+  order?: Maybe<Order>;
+  orderErrors: Array<OrderError>;
 };
 
-export type MultiBuyLineItemsTargetInput = {
-  predicate: Scalars["String"];
-  triggerQuantity: Scalars["Long"];
-  discountedQuantity: Scalars["Long"];
-  maxOccurrence?: Maybe<Scalars["Int"]>;
-  selectionMode?: Maybe<SelectionMode>;
+export type FulfillmentCancelInput = {
+  /** ID of warehouse where items will be restock. */
+  warehouseId: Scalars['ID'];
+};
+
+/** Clears metadata for fulfillment. */
+export type FulfillmentClearMeta = {
+  __typename?: 'FulfillmentClearMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  fulfillment?: Maybe<Fulfillment>;
+};
+
+/** Clears private metadata for fulfillment. */
+export type FulfillmentClearPrivateMeta = {
+  __typename?: 'FulfillmentClearPrivateMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  fulfillment?: Maybe<Fulfillment>;
+};
+
+/** Represents line of the fulfillment. */
+export type FulfillmentLine = Node & {
+  __typename?: 'FulfillmentLine';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  quantity: Scalars['Int'];
+  orderLine?: Maybe<OrderLine>;
+};
+
+/** An enumeration. */
+export enum FulfillmentStatus {
+  /** Fulfilled */
+  Fulfilled = 'FULFILLED',
+  /** Canceled */
+  Canceled = 'CANCELED'
+}
+
+/** Updates metadata for fulfillment. */
+export type FulfillmentUpdateMeta = {
+  __typename?: 'FulfillmentUpdateMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  fulfillment?: Maybe<Fulfillment>;
+};
+
+/** Updates metadata for fulfillment. */
+export type FulfillmentUpdatePrivateMeta = {
+  __typename?: 'FulfillmentUpdatePrivateMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  fulfillment?: Maybe<Fulfillment>;
+};
+
+/** Updates a fulfillment for an order. */
+export type FulfillmentUpdateTracking = {
+  __typename?: 'FulfillmentUpdateTracking';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** A fulfillment with updated tracking. */
+  fulfillment?: Maybe<Fulfillment>;
+  /** Order for which fulfillment was updated. */
+  order?: Maybe<Order>;
+  orderErrors: Array<OrderError>;
+};
+
+export type FulfillmentUpdateTrackingInput = {
+  /** Fulfillment tracking number. */
+  trackingNumber?: Maybe<Scalars['String']>;
+  /** If true, send an email notification to the customer. */
+  notifyCustomer?: Maybe<Scalars['Boolean']>;
+};
+
+/** Payment gateway client configuration key and value pair. */
+export type GatewayConfigLine = {
+  __typename?: 'GatewayConfigLine';
+  /** Gateway config key. */
+  field: Scalars['String'];
+  /** Gateway config value for key. */
+  value?: Maybe<Scalars['String']>;
+};
+
+/** Represents customers's geolocalization data. */
+export type Geolocalization = {
+  __typename?: 'Geolocalization';
+  /** Country of the user acquired by his IP address. */
+  country?: Maybe<CountryDisplay>;
+};
+
+/**
+ * A gift card is a prepaid electronic payment card accepted in stores. They can be
+ * used during checkout by providing a valid gift card codes.
+ */
+export type GiftCard = Node & {
+  __typename?: 'GiftCard';
+  /** Gift card code. */
+  code?: Maybe<Scalars['String']>;
+  /** The customer who bought a gift card. */
+  user?: Maybe<User>;
+  created: Scalars['DateTime'];
+  startDate: Scalars['Date'];
+  endDate?: Maybe<Scalars['Date']>;
+  lastUsedOn?: Maybe<Scalars['DateTime']>;
+  isActive: Scalars['Boolean'];
+  initialBalance?: Maybe<Money>;
+  currentBalance?: Maybe<Money>;
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  /** Code in format which allows displaying in a user interface. */
+  displayCode?: Maybe<Scalars['String']>;
+};
+
+/** Activate a gift card. */
+export type GiftCardActivate = {
+  __typename?: 'GiftCardActivate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** A gift card to activate. */
+  giftCard?: Maybe<GiftCard>;
+  giftCardErrors: Array<GiftCardError>;
+};
+
+export type GiftCardCountableConnection = {
+  __typename?: 'GiftCardCountableConnection';
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  edges: Array<GiftCardCountableEdge>;
+  /** A total count of items in the collection. */
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type GiftCardCountableEdge = {
+  __typename?: 'GiftCardCountableEdge';
+  /** The item at the end of the edge. */
+  node: GiftCard;
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+};
+
+/** Creates a new gift card. */
+export type GiftCardCreate = {
+  __typename?: 'GiftCardCreate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  giftCardErrors: Array<GiftCardError>;
+  giftCard?: Maybe<GiftCard>;
+};
+
+export type GiftCardCreateInput = {
+  /** Start date of the gift card in ISO 8601 format. */
+  startDate?: Maybe<Scalars['Date']>;
+  /** End date of the gift card in ISO 8601 format. */
+  endDate?: Maybe<Scalars['Date']>;
+  /** Value of the gift card. */
+  balance?: Maybe<Scalars['PositiveDecimal']>;
+  /** The customer's email of the gift card buyer. */
+  userEmail?: Maybe<Scalars['String']>;
+  /** Code to use the gift card. */
+  code?: Maybe<Scalars['String']>;
+};
+
+/** Deactivate a gift card. */
+export type GiftCardDeactivate = {
+  __typename?: 'GiftCardDeactivate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** A gift card to deactivate. */
+  giftCard?: Maybe<GiftCard>;
+  giftCardErrors: Array<GiftCardError>;
+};
+
+export type GiftCardError = {
+  __typename?: 'GiftCardError';
+  /**
+   * Name of a field that caused the error. A value of `null` indicates that the
+   * error isn't associated with a particular field.
+   */
+  field?: Maybe<Scalars['String']>;
+  /** The error message. */
+  message?: Maybe<Scalars['String']>;
+  /** The error code. */
+  code: GiftCardErrorCode;
+};
+
+/** An enumeration. */
+export enum GiftCardErrorCode {
+  AlreadyExists = 'ALREADY_EXISTS',
+  GraphqlError = 'GRAPHQL_ERROR',
+  Invalid = 'INVALID',
+  NotFound = 'NOT_FOUND',
+  Required = 'REQUIRED',
+  Unique = 'UNIQUE'
+}
+
+/** Update a gift card. */
+export type GiftCardUpdate = {
+  __typename?: 'GiftCardUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  giftCardErrors: Array<GiftCardError>;
+  giftCard?: Maybe<GiftCard>;
+};
+
+export type GiftCardUpdateInput = {
+  /** Start date of the gift card in ISO 8601 format. */
+  startDate?: Maybe<Scalars['Date']>;
+  /** End date of the gift card in ISO 8601 format. */
+  endDate?: Maybe<Scalars['Date']>;
+  /** Value of the gift card. */
+  balance?: Maybe<Scalars['PositiveDecimal']>;
+  /** The customer's email of the gift card buyer. */
+  userEmail?: Maybe<Scalars['String']>;
+};
+
+/** Represents permission group data. */
+export type Group = Node & {
+  __typename?: 'Group';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  /** List of group permissions */
+  permissions?: Maybe<Array<Maybe<Permission>>>;
+  /** List of group users */
+  users?: Maybe<Array<Maybe<User>>>;
+  /** True, if the currently authenticated user has rights to manage a group. */
+  userCanManage: Scalars['Boolean'];
+};
+
+export type GroupCountableConnection = {
+  __typename?: 'GroupCountableConnection';
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  edges: Array<GroupCountableEdge>;
+  /** A total count of items in the collection. */
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type GroupCountableEdge = {
+  __typename?: 'GroupCountableEdge';
+  /** The item at the end of the edge. */
+  node: Group;
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+};
+
+/** Updates homepage collection of the shop. */
+export type HomepageCollectionUpdate = {
+  __typename?: 'HomepageCollectionUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Updated shop. */
+  shop?: Maybe<Shop>;
+  shopErrors: Array<ShopError>;
+};
+
+/** Represents an image. */
+export type Image = {
+  __typename?: 'Image';
+  /** The URL of the image. */
+  url: Scalars['String'];
+  /** Alt text for an image. */
+  alt?: Maybe<Scalars['String']>;
+};
+
+export type IntRangeInput = {
+  /** Value greater than or equal to. */
+  gte?: Maybe<Scalars['Int']>;
+  /** Value less than or equal to. */
+  lte?: Maybe<Scalars['Int']>;
+};
+
+/** Represents an Invoice. */
+export type Invoice = ObjectWithMetadata &
+  Job &
+  Node & {
+    __typename?: 'Invoice';
+    /** The ID of the object. */
+    id: Scalars['ID'];
+    /** List of public metadata items. Can be accessed without permissions. */
+    metadata: Array<Maybe<MetadataItem>>;
+    /** Job status. */
+    status: JobStatusEnum;
+    number?: Maybe<Scalars['String']>;
+    externalUrl?: Maybe<Scalars['String']>;
+    /** List of private metadata items.Requires proper staff permissions to access. */
+    privateMetadata: Array<Maybe<MetadataItem>>;
+    /**
+     * List of privately stored metadata namespaces.
+     * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
+     */
+    privateMeta: Array<Maybe<MetaStore>>;
+    /**
+     * List of publicly stored metadata namespaces.
+     * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
+     */
+    meta: Array<Maybe<MetaStore>>;
+    /** Created date time of job in ISO 8601 format. */
+    createdAt: Scalars['DateTime'];
+    /** Date time of job last update in ISO 8601 format. */
+    updatedAt: Scalars['DateTime'];
+    /** Job message. */
+    message?: Maybe<Scalars['String']>;
+    /** URL to download an invoice. */
+    url?: Maybe<Scalars['String']>;
+  };
+
+/** Creates a ready to send invoice. */
+export type InvoiceCreate = {
+  __typename?: 'InvoiceCreate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  invoiceErrors: Array<InvoiceError>;
+  invoice?: Maybe<Invoice>;
+};
+
+export type InvoiceCreateInput = {
+  /** Invoice number. */
+  number: Scalars['String'];
+  /** URL of an invoice to download. */
+  url: Scalars['String'];
+};
+
+/** Deletes an invoice. */
+export type InvoiceDelete = {
+  __typename?: 'InvoiceDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  invoiceErrors: Array<InvoiceError>;
+  invoice?: Maybe<Invoice>;
+};
+
+export type InvoiceError = {
+  __typename?: 'InvoiceError';
+  /**
+   * Name of a field that caused the error. A value of `null` indicates that the
+   * error isn't associated with a particular field.
+   */
+  field?: Maybe<Scalars['String']>;
+  /** The error message. */
+  message?: Maybe<Scalars['String']>;
+  /** The error code. */
+  code: InvoiceErrorCode;
+};
+
+/** An enumeration. */
+export enum InvoiceErrorCode {
+  Required = 'REQUIRED',
+  NotReady = 'NOT_READY',
+  UrlNotSet = 'URL_NOT_SET',
+  EmailNotSet = 'EMAIL_NOT_SET',
+  NumberNotSet = 'NUMBER_NOT_SET',
+  NotFound = 'NOT_FOUND',
+  InvalidStatus = 'INVALID_STATUS'
+}
+
+/** Request an invoice for the order using plugin. */
+export type InvoiceRequest = {
+  __typename?: 'InvoiceRequest';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Order related to an invoice. */
+  order?: Maybe<Order>;
+  invoiceErrors: Array<InvoiceError>;
+  invoice?: Maybe<Invoice>;
+};
+
+/** Requests deletion of an invoice. */
+export type InvoiceRequestDelete = {
+  __typename?: 'InvoiceRequestDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  invoiceErrors: Array<InvoiceError>;
+  invoice?: Maybe<Invoice>;
+};
+
+/** Send an invoice by email. */
+export type InvoiceSendEmail = {
+  __typename?: 'InvoiceSendEmail';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  invoiceErrors: Array<InvoiceError>;
+  invoice?: Maybe<Invoice>;
+};
+
+/** Updates an invoice. */
+export type InvoiceUpdate = {
+  __typename?: 'InvoiceUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  invoiceErrors: Array<InvoiceError>;
+  invoice?: Maybe<Invoice>;
+};
+
+export type Job = {
+  /** Job status. */
+  status: JobStatusEnum;
+  /** Created date time of job in ISO 8601 format. */
+  createdAt: Scalars['DateTime'];
+  /** Date time of job last update in ISO 8601 format. */
+  updatedAt: Scalars['DateTime'];
+  /** Job message. */
+  message?: Maybe<Scalars['String']>;
+};
+
+/** An enumeration. */
+export enum JobStatusEnum {
+  Pending = 'PENDING',
+  Success = 'SUCCESS',
+  Failed = 'FAILED',
+  Deleted = 'DELETED'
+}
+
+/** An enumeration. */
+export enum LanguageCodeEnum {
+  Ar = 'AR',
+  Az = 'AZ',
+  Bg = 'BG',
+  Bn = 'BN',
+  Ca = 'CA',
+  Cs = 'CS',
+  Da = 'DA',
+  De = 'DE',
+  El = 'EL',
+  En = 'EN',
+  Es = 'ES',
+  EsCo = 'ES_CO',
+  Et = 'ET',
+  Fa = 'FA',
+  Fi = 'FI',
+  Fr = 'FR',
+  Hi = 'HI',
+  Hu = 'HU',
+  Hy = 'HY',
+  Id = 'ID',
+  Is = 'IS',
+  It = 'IT',
+  Ja = 'JA',
+  Ka = 'KA',
+  Km = 'KM',
+  Ko = 'KO',
+  Lt = 'LT',
+  Mn = 'MN',
+  My = 'MY',
+  Nb = 'NB',
+  Nl = 'NL',
+  Pl = 'PL',
+  Pt = 'PT',
+  PtBr = 'PT_BR',
+  Ro = 'RO',
+  Ru = 'RU',
+  Sk = 'SK',
+  Sl = 'SL',
+  Sq = 'SQ',
+  Sr = 'SR',
+  Sv = 'SV',
+  Sw = 'SW',
+  Ta = 'TA',
+  Th = 'TH',
+  Tr = 'TR',
+  Uk = 'UK',
+  Vi = 'VI',
+  ZhHans = 'ZH_HANS',
+  ZhHant = 'ZH_HANT'
+}
+
+export type LanguageDisplay = {
+  __typename?: 'LanguageDisplay';
+  /** ISO 639 representation of the language name. */
+  code: LanguageCodeEnum;
+  /** Full name of the language. */
+  language: Scalars['String'];
+};
+
+/** The manifest definition. */
+export type Manifest = {
+  __typename?: 'Manifest';
+  identifier: Scalars['String'];
+  version: Scalars['String'];
+  name: Scalars['String'];
+  about?: Maybe<Scalars['String']>;
+  permissions?: Maybe<Array<Maybe<Permission>>>;
+  appUrl?: Maybe<Scalars['String']>;
+  configurationUrl?: Maybe<Scalars['String']>;
+  tokenTargetUrl?: Maybe<Scalars['String']>;
+  dataPrivacy?: Maybe<Scalars['String']>;
+  dataPrivacyUrl?: Maybe<Scalars['String']>;
+  homepageUrl?: Maybe<Scalars['String']>;
+  supportUrl?: Maybe<Scalars['String']>;
+};
+
+export type Margin = {
+  __typename?: 'Margin';
+  start?: Maybe<Scalars['Int']>;
+  stop?: Maybe<Scalars['Int']>;
+};
+
+/** Represents a single menu - an object that is used to help navigate through the store. */
+export type Menu = Node & {
+  __typename?: 'Menu';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  slug: Scalars['String'];
+  items?: Maybe<Array<Maybe<MenuItem>>>;
+};
+
+/** Deletes menus. */
+export type MenuBulkDelete = {
+  __typename?: 'MenuBulkDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Returns how many objects were affected. */
+  count: Scalars['Int'];
+  menuErrors: Array<MenuError>;
+};
+
+export type MenuCountableConnection = {
+  __typename?: 'MenuCountableConnection';
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  edges: Array<MenuCountableEdge>;
+  /** A total count of items in the collection. */
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type MenuCountableEdge = {
+  __typename?: 'MenuCountableEdge';
+  /** The item at the end of the edge. */
+  node: Menu;
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+};
+
+/** Creates a new Menu. */
+export type MenuCreate = {
+  __typename?: 'MenuCreate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  menuErrors: Array<MenuError>;
+  menu?: Maybe<Menu>;
+};
+
+export type MenuCreateInput = {
+  /** Name of the menu. */
+  name: Scalars['String'];
+  /** Slug of the menu. Will be generated if not provided. */
+  slug?: Maybe<Scalars['String']>;
+  /** List of menu items. */
+  items?: Maybe<Array<Maybe<MenuItemInput>>>;
+};
+
+/** Deletes a menu. */
+export type MenuDelete = {
+  __typename?: 'MenuDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  menuErrors: Array<MenuError>;
+  menu?: Maybe<Menu>;
+};
+
+export type MenuError = {
+  __typename?: 'MenuError';
+  /**
+   * Name of a field that caused the error. A value of `null` indicates that the
+   * error isn't associated with a particular field.
+   */
+  field?: Maybe<Scalars['String']>;
+  /** The error message. */
+  message?: Maybe<Scalars['String']>;
+  /** The error code. */
+  code: MenuErrorCode;
+};
+
+/** An enumeration. */
+export enum MenuErrorCode {
+  CannotAssignNode = 'CANNOT_ASSIGN_NODE',
+  GraphqlError = 'GRAPHQL_ERROR',
+  Invalid = 'INVALID',
+  InvalidMenuItem = 'INVALID_MENU_ITEM',
+  NoMenuItemProvided = 'NO_MENU_ITEM_PROVIDED',
+  NotFound = 'NOT_FOUND',
+  Required = 'REQUIRED',
+  TooManyMenuItems = 'TOO_MANY_MENU_ITEMS',
+  Unique = 'UNIQUE'
+}
+
+export type MenuFilterInput = {
+  search?: Maybe<Scalars['String']>;
+  slug?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+export type MenuInput = {
+  /** Name of the menu. */
+  name?: Maybe<Scalars['String']>;
+  /** Slug of the menu. */
+  slug?: Maybe<Scalars['String']>;
+};
+
+/** Represents a single item of the related menu. Can store categories, collection or pages. */
+export type MenuItem = Node & {
+  __typename?: 'MenuItem';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  menu: Menu;
+  parent?: Maybe<MenuItem>;
+  category?: Maybe<Category>;
+  collection?: Maybe<Collection>;
+  page?: Maybe<Page>;
+  level: Scalars['Int'];
+  children?: Maybe<Array<Maybe<MenuItem>>>;
+  /** URL to the menu item. */
+  url?: Maybe<Scalars['String']>;
+  /** Returns translated menu item fields for the given language code. */
+  translation?: Maybe<MenuItemTranslation>;
+};
+
+/** Represents a single item of the related menu. Can store categories, collection or pages. */
+export type MenuItemTranslationArgs = {
+  languageCode: LanguageCodeEnum;
+};
+
+/** Deletes menu items. */
+export type MenuItemBulkDelete = {
+  __typename?: 'MenuItemBulkDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Returns how many objects were affected. */
+  count: Scalars['Int'];
+  menuErrors: Array<MenuError>;
+};
+
+export type MenuItemCountableConnection = {
+  __typename?: 'MenuItemCountableConnection';
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  edges: Array<MenuItemCountableEdge>;
+  /** A total count of items in the collection. */
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type MenuItemCountableEdge = {
+  __typename?: 'MenuItemCountableEdge';
+  /** The item at the end of the edge. */
+  node: MenuItem;
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+};
+
+/** Creates a new menu item. */
+export type MenuItemCreate = {
+  __typename?: 'MenuItemCreate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  menuErrors: Array<MenuError>;
+  menuItem?: Maybe<MenuItem>;
+};
+
+export type MenuItemCreateInput = {
+  /** Name of the menu item. */
+  name: Scalars['String'];
+  /** URL of the pointed item. */
+  url?: Maybe<Scalars['String']>;
+  /** Category to which item points. */
+  category?: Maybe<Scalars['ID']>;
+  /** Collection to which item points. */
+  collection?: Maybe<Scalars['ID']>;
+  /** Page to which item points. */
+  page?: Maybe<Scalars['ID']>;
+  /** Menu to which item belongs. */
+  menu: Scalars['ID'];
+  /** ID of the parent menu. If empty, menu will be top level menu. */
+  parent?: Maybe<Scalars['ID']>;
+};
+
+/** Deletes a menu item. */
+export type MenuItemDelete = {
+  __typename?: 'MenuItemDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  menuErrors: Array<MenuError>;
+  menuItem?: Maybe<MenuItem>;
+};
+
+export type MenuItemFilterInput = {
+  search?: Maybe<Scalars['String']>;
+};
+
+export type MenuItemInput = {
+  /** Name of the menu item. */
+  name?: Maybe<Scalars['String']>;
+  /** URL of the pointed item. */
+  url?: Maybe<Scalars['String']>;
+  /** Category to which item points. */
+  category?: Maybe<Scalars['ID']>;
+  /** Collection to which item points. */
+  collection?: Maybe<Scalars['ID']>;
+  /** Page to which item points. */
+  page?: Maybe<Scalars['ID']>;
+};
+
+/** Moves items of menus. */
+export type MenuItemMove = {
+  __typename?: 'MenuItemMove';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Assigned menu to move within. */
+  menu?: Maybe<Menu>;
+  menuErrors: Array<MenuError>;
+};
+
+export type MenuItemMoveInput = {
+  /** The menu item ID to move. */
+  itemId: Scalars['ID'];
+  /** ID of the parent menu. If empty, menu will be top level menu. */
+  parentId?: Maybe<Scalars['ID']>;
+  /**
+   * The new relative sorting position of the item (from -inf to +inf). 1 moves the
+   * item one position forward, -1 moves the item one position backward, 0 leaves
+   * the item unchanged.
+   */
+  sortOrder?: Maybe<Scalars['Int']>;
+};
+
+export type MenuItemSortingInput = {
+  /** Specifies the direction in which to sort products. */
+  direction: OrderDirection;
+  /** Sort menu items by the selected field. */
+  field: MenuItemsSortField;
+};
+
+export enum MenuItemsSortField {
+  /** Sort menu items by name. */
+  Name = 'NAME'
+}
+
+export type MenuItemTranslatableContent = Node & {
+  __typename?: 'MenuItemTranslatableContent';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  /** Returns translated menu item fields for the given language code. */
+  translation?: Maybe<MenuItemTranslation>;
+  /** Represents a single item of the related menu. Can store categories, collection or pages. */
+  menuItem?: Maybe<MenuItem>;
+};
+
+export type MenuItemTranslatableContentTranslationArgs = {
+  languageCode: LanguageCodeEnum;
+};
+
+/** Creates/Updates translations for Menu Item. */
+export type MenuItemTranslate = {
+  __typename?: 'MenuItemTranslate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  translationErrors: Array<TranslationError>;
+  menuItem?: Maybe<MenuItem>;
+};
+
+export type MenuItemTranslation = Node & {
+  __typename?: 'MenuItemTranslation';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  /** Translation language. */
+  language: LanguageDisplay;
+};
+
+/** Updates a menu item. */
+export type MenuItemUpdate = {
+  __typename?: 'MenuItemUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  menuErrors: Array<MenuError>;
+  menuItem?: Maybe<MenuItem>;
+};
+
+export enum MenuSortField {
+  /** Sort menus by name. */
+  Name = 'NAME',
+  /** Sort menus by items count. */
+  ItemsCount = 'ITEMS_COUNT'
+}
+
+export type MenuSortingInput = {
+  /** Specifies the direction in which to sort products. */
+  direction: OrderDirection;
+  /** Sort menus by the selected field. */
+  field: MenuSortField;
+};
+
+/** Updates a menu. */
+export type MenuUpdate = {
+  __typename?: 'MenuUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  menuErrors: Array<MenuError>;
+  menu?: Maybe<Menu>;
+};
+
+export type MetaClientStore = {
+  __typename?: 'MetaClientStore';
+  /** Metadata client's name. */
+  name: Scalars['String'];
+  /** Metadata stored for a client. */
+  metadata: Array<Maybe<MetaItem>>;
+};
+
+export type MetadataError = {
+  __typename?: 'MetadataError';
+  /**
+   * Name of a field that caused the error. A value of `null` indicates that the
+   * error isn't associated with a particular field.
+   */
+  field?: Maybe<Scalars['String']>;
+  /** The error message. */
+  message?: Maybe<Scalars['String']>;
+  /** The error code. */
+  code: MetadataErrorCode;
+};
+
+/** An enumeration. */
+export enum MetadataErrorCode {
+  GraphqlError = 'GRAPHQL_ERROR',
+  Invalid = 'INVALID',
+  NotFound = 'NOT_FOUND',
+  Required = 'REQUIRED'
+}
+
+export type MetadataInput = {
+  /** Key of a metadata item. */
+  key: Scalars['String'];
+  /** Value of a metadata item. */
+  value: Scalars['String'];
+};
+
+export type MetadataItem = {
+  __typename?: 'MetadataItem';
+  /** Key of a metadata item. */
+  key: Scalars['String'];
+  /** Value of a metadata item. */
+  value: Scalars['String'];
+};
+
+export type MetaInput = {
+  /** Name of metadata client group. */
+  namespace: Scalars['String'];
+  /** Metadata client's name. */
+  clientName: Scalars['String'];
+  /** Key for stored data. */
+  key: Scalars['String'];
+  /** Stored metadata value. */
+  value: Scalars['String'];
+};
+
+export type MetaItem = {
+  __typename?: 'MetaItem';
+  /** Key of a metadata item. */
+  key: Scalars['String'];
+  /** Value of a metadata item. */
+  value: Scalars['String'];
+};
+
+export type MetaPath = {
+  /** Name of metadata client group. */
+  namespace: Scalars['String'];
+  /** Metadata client's name. */
+  clientName: Scalars['String'];
+  /** Key for stored data. */
+  key: Scalars['String'];
+};
+
+export type MetaStore = {
+  __typename?: 'MetaStore';
+  /** Name of metadata client group. */
+  namespace: Scalars['String'];
+  /** List of clients that stored metadata in a group. */
+  clients: Array<Maybe<MetaClientStore>>;
+};
+
+/** Represents amount of money in specific currency. */
+export type Money = {
+  __typename?: 'Money';
+  /** Currency code. */
+  currency: Scalars['String'];
+  /** Amount of money. */
+  amount: Scalars['Float'];
+  /**
+   * Money formatted according to the current locale.
+   * @deprecated Price formatting according to the current locale should be handled by the frontend client. This field will be removed after 2020-07-31.
+   */
+  localized: Scalars['String'];
+};
+
+/** Represents a range of amounts of money. */
+export type MoneyRange = {
+  __typename?: 'MoneyRange';
+  /** Lower bound of a price range. */
+  start?: Maybe<Money>;
+  /** Upper bound of a price range. */
+  stop?: Maybe<Money>;
+};
+
+export type MoveProductInput = {
+  /** The ID of the product to move. */
+  productId: Scalars['ID'];
+  /**
+   * The relative sorting position of the product (from -inf to +inf) starting from
+   * the first given product's actual position.1 moves the item one position
+   * forward, -1 moves the item one position backward, 0 leaves the item unchanged.
+   */
+  sortOrder?: Maybe<Scalars['Int']>;
 };
 
 export type Mutation = {
-  __typename?: "Mutation";
-  createCustomerGroup?: Maybe<CustomerGroup>;
-  updateCustomerGroup?: Maybe<CustomerGroup>;
-  deleteCustomerGroup?: Maybe<CustomerGroup>;
-  createCategory?: Maybe<Category>;
-  updateCategory?: Maybe<Category>;
-  deleteCategory?: Maybe<Category>;
-  createProductType?: Maybe<ProductTypeDefinition>;
-  updateProductType?: Maybe<ProductTypeDefinition>;
-  deleteProductType?: Maybe<ProductTypeDefinition>;
-  createShippingMethod?: Maybe<ShippingMethod>;
-  updateShippingMethod?: Maybe<ShippingMethod>;
-  deleteShippingMethod?: Maybe<ShippingMethod>;
-  createZone?: Maybe<Zone>;
-  updateZone?: Maybe<Zone>;
-  deleteZone?: Maybe<Zone>;
-  createTaxCategory?: Maybe<TaxCategory>;
-  updateTaxCategory?: Maybe<TaxCategory>;
-  deleteTaxCategory?: Maybe<TaxCategory>;
-  createDiscountCode?: Maybe<DiscountCode>;
-  updateDiscountCode?: Maybe<DiscountCode>;
-  deleteDiscountCode?: Maybe<DiscountCode>;
-  createCartDiscount?: Maybe<CartDiscount>;
-  updateCartDiscount?: Maybe<CartDiscount>;
-  deleteCartDiscount?: Maybe<CartDiscount>;
-  createProductDiscount?: Maybe<ProductDiscount>;
-  updateProductDiscount?: Maybe<ProductDiscount>;
-  deleteProductDiscount?: Maybe<ProductDiscount>;
-  createProduct?: Maybe<Product>;
-  updateProduct?: Maybe<Product>;
-  deleteProduct?: Maybe<Product>;
-  /** Creates a customer. If an anonymous cart is given then the cart is assigned to
-   * the created customer and the version number of the Cart will increase. If the
-   * id of an anonymous session is given, all carts and orders will be assigned to
-   * the created customer.
+  __typename?: 'Mutation';
+  /** Creates a new webhook subscription. */
+  webhookCreate?: Maybe<WebhookCreate>;
+  /** Deletes a webhook subscription. */
+  webhookDelete?: Maybe<WebhookDelete>;
+  /** Updates a webhook subscription. */
+  webhookUpdate?: Maybe<WebhookUpdate>;
+  /** Creates new warehouse. */
+  createWarehouse?: Maybe<WarehouseCreate>;
+  /** Updates given warehouse. */
+  updateWarehouse?: Maybe<WarehouseUpdate>;
+  /** Deletes selected warehouse. */
+  deleteWarehouse?: Maybe<WarehouseDelete>;
+  /** Add shipping zone to given warehouse. */
+  assignWarehouseShippingZone?: Maybe<WarehouseShippingZoneAssign>;
+  /** Remove shipping zone from given warehouse. */
+  unassignWarehouseShippingZone?: Maybe<WarehouseShippingZoneUnassign>;
+  /** Adds an authorization key. */
+  authorizationKeyAdd?: Maybe<AuthorizationKeyAdd>;
+  /** Deletes an authorization key. */
+  authorizationKeyDelete?: Maybe<AuthorizationKeyDelete>;
+  /** Creates a new staff notification recipient. */
+  staffNotificationRecipientCreate?: Maybe<StaffNotificationRecipientCreate>;
+  /** Updates a staff notification recipient. */
+  staffNotificationRecipientUpdate?: Maybe<StaffNotificationRecipientUpdate>;
+  /** Delete staff notification recipient. */
+  staffNotificationRecipientDelete?: Maybe<StaffNotificationRecipientDelete>;
+  /** Updates homepage collection of the shop. */
+  homepageCollectionUpdate?: Maybe<HomepageCollectionUpdate>;
+  /** Updates site domain of the shop. */
+  shopDomainUpdate?: Maybe<ShopDomainUpdate>;
+  /** Updates shop settings. */
+  shopSettingsUpdate?: Maybe<ShopSettingsUpdate>;
+  /** Fetch tax rates. */
+  shopFetchTaxRates?: Maybe<ShopFetchTaxRates>;
+  /** Creates/Updates translations for Shop Settings. */
+  shopSettingsTranslate?: Maybe<ShopSettingsTranslate>;
+  /** Update the shop's address. If the `null` value is passed, the currently selected address will be deleted. */
+  shopAddressUpdate?: Maybe<ShopAddressUpdate>;
+  /** Creates a new shipping price. */
+  shippingPriceCreate?: Maybe<ShippingPriceCreate>;
+  /** Deletes a shipping price. */
+  shippingPriceDelete?: Maybe<ShippingPriceDelete>;
+  /** Deletes shipping prices. */
+  shippingPriceBulkDelete?: Maybe<ShippingPriceBulkDelete>;
+  /** Updates a new shipping price. */
+  shippingPriceUpdate?: Maybe<ShippingPriceUpdate>;
+  /** Creates/Updates translations for shipping method. */
+  shippingPriceTranslate?: Maybe<ShippingPriceTranslate>;
+  /** Creates a new shipping zone. */
+  shippingZoneCreate?: Maybe<ShippingZoneCreate>;
+  /** Deletes a shipping zone. */
+  shippingZoneDelete?: Maybe<ShippingZoneDelete>;
+  /** Deletes shipping zones. */
+  shippingZoneBulkDelete?: Maybe<ShippingZoneBulkDelete>;
+  /** Updates a new shipping zone. */
+  shippingZoneUpdate?: Maybe<ShippingZoneUpdate>;
+  /** Creates an attribute. */
+  attributeCreate?: Maybe<AttributeCreate>;
+  /** Deletes an attribute. */
+  attributeDelete?: Maybe<AttributeDelete>;
+  /** Deletes attributes. */
+  attributeBulkDelete?: Maybe<AttributeBulkDelete>;
+  /** Assign attributes to a given product type. */
+  attributeAssign?: Maybe<AttributeAssign>;
+  /** Un-assign attributes from a given product type. */
+  attributeUnassign?: Maybe<AttributeUnassign>;
+  /** Updates attribute. */
+  attributeUpdate?: Maybe<AttributeUpdate>;
+  /** Creates/Updates translations for attribute. */
+  attributeTranslate?: Maybe<AttributeTranslate>;
+  /**
+   * Update public metadata for attribute.
+   * @deprecated Use the `updateMetadata` mutation instead. This field will be removed after 2020-07-31.
    */
-  customerSignUp: CustomerSignInResult;
-  /** Retrieves the authenticated customer (a customer that matches the given email/password pair).
-   *
-   * There may be carts and orders created before the sign in that should be
-   * assigned to the customer account. With the `anonymousCartId`, a single
-   * anonymous cart can be assigned. With the `anonymousId`, all orders and carts
-   * that have this `anonymousId` set will be assigned to the customer.
-   * If both `anonymousCartId` and `anonymousId` are given, the anonymous cart must have the `anonymousId`.
-   *
-   * Additionally, there might also exist one or more active customer carts from an
-   * earlier session. On customer sign in there are several ways how to proceed
-   * with this cart and the cart referenced by the `anonymousCartId`.
-   *
-   * * If the customer does not have a cart yet, the anonymous cart becomes the customer's cart.
-   * * If the customer already has one or more carts, the content of the anonymous
-   * cart will be copied to the customer's active cart that has been modified most recently.
-   *
-   *   In this case the `CartState` of the anonymous cart gets changed to `Merged`
-   * while the customer's cart remains the `Active` cart.
-   *
-   *   If a `LineItem` in the anonymous cart matches an existing line item, or a
-   * `CustomLineItem` matches an existing custom line item in the customer's cart,
-   * the maximum quantity of both line items is used as the new quantity.
-   *
-   *   `ItemShippingDetails` are copied from the item with the highest quantity.
-   *
-   *   If `itemShippingAddresses` are different in the two carts, the resulting cart
-   * contains the addresses of both the customer cart and the anonymous cart.
-   *
-   *   Note, that it is not possible to merge carts that differ in their currency (set during creation of the cart).
-   *
-   * If a cart is is returned as part of the `CustomerSignInResult`, it has been
-   * recalculated (it will have up-to-date prices, taxes and discounts, and invalid
-   * line items have been removed).
+  attributeUpdateMetadata?: Maybe<AttributeUpdateMeta>;
+  /**
+   * Clears public metadata item for attribute.
+   * @deprecated Use the `deleteMetadata` mutation instead. This field will be removed after 2020-07-31.
    */
-  customerSignIn: CustomerSignInResult;
-  updateCustomer?: Maybe<Customer>;
-  deleteCustomer?: Maybe<Customer>;
-  customerChangePassword?: Maybe<Customer>;
-  /** The following workflow can be used to reset the customer’s password:
-   *
-   * 1. Create a password reset token and send it embedded in a link to the customer.
-   * 2. When the customer clicks on the link, you may optionally retrieve customer by password token.
-   * 3. When the customer entered new password, use reset customer’s password to reset the password.
+  attributeClearMetadata?: Maybe<AttributeClearMeta>;
+  /**
+   * Update public metadata for attribute.
+   * @deprecated Use the `updatePrivateMetadata` mutation instead. This field will be removed after 2020-07-31.
    */
-  customerResetPassword?: Maybe<Customer>;
-  /** Verifies customer's email using a token. */
-  customerConfirmEmail?: Maybe<Customer>;
-  /** The token value is used to reset the password of the customer with the given
-   * email. The token is valid only for 10 minutes.
+  attributeUpdatePrivateMetadata?: Maybe<AttributeUpdatePrivateMeta>;
+  /**
+   * Clears public metadata item for attribute.
+   * @deprecated Use the `deletePrivateMetadata` mutation instead. This field will be removed after 2020-07-31.
    */
-  customerCreatePasswordResetToken?: Maybe<CustomerToken>;
-  customerCreateEmailVerificationToken: CustomerToken;
-  /** If used with an access token for Anonymous Sessions, all orders and carts
-   * belonging to the anonymousId will be assigned to the newly created customer.
+  attributeClearPrivateMetadata?: Maybe<AttributeClearPrivateMeta>;
+  /** Creates a value for an attribute. */
+  attributeValueCreate?: Maybe<AttributeValueCreate>;
+  /** Deletes a value of an attribute. */
+  attributeValueDelete?: Maybe<AttributeValueDelete>;
+  /** Deletes values of attributes. */
+  attributeValueBulkDelete?: Maybe<AttributeValueBulkDelete>;
+  /** Updates value of an attribute. */
+  attributeValueUpdate?: Maybe<AttributeValueUpdate>;
+  /** Creates/Updates translations for attribute value. */
+  attributeValueTranslate?: Maybe<AttributeValueTranslate>;
+  /** Reorder the values of an attribute. */
+  attributeReorderValues?: Maybe<AttributeReorderValues>;
+  /** Creates a new category. */
+  categoryCreate?: Maybe<CategoryCreate>;
+  /** Deletes a category. */
+  categoryDelete?: Maybe<CategoryDelete>;
+  /** Deletes categories. */
+  categoryBulkDelete?: Maybe<CategoryBulkDelete>;
+  /** Updates a category. */
+  categoryUpdate?: Maybe<CategoryUpdate>;
+  /** Creates/Updates translations for Category. */
+  categoryTranslate?: Maybe<CategoryTranslate>;
+  /**
+   * Update public metadata for category.
+   * @deprecated Use the `updateMetadata` mutation instead. This field will be removed after 2020-07-31.
    */
-  customerSignMeUp: CustomerSignInResult;
-  /** Retrieves the authenticated customer (a customer that matches the given email/password pair).
-   *
-   * If used with an access token for Anonymous Sessions, all orders and carts
-   * belonging to the `anonymousId` will be assigned to the newly created customer.
-   *
-   * * If the customer does not have a cart yet, the anonymous cart that was
-   * modified most recently becomes the customer's cart.
-   * * If the customer already has a cart, the most recently modified anonymous
-   * cart will be handled according to the `AnonymousCartSignInMode`.
-   *
-   * If a cart is is returned as part of the `CustomerSignInResult`, it has been
-   * recalculated (it will have up-to-date prices, taxes and discounts, and invalid
-   * line items have been removed).
+  categoryUpdateMetadata?: Maybe<CategoryUpdateMeta>;
+  /**
+   * Clears public metadata for category.
+   * @deprecated Use the `deleteMetadata` mutation instead. This field will be removed after 2020-07-31.
    */
-  customerSignMeIn: CustomerSignInResult;
-  updateMyCustomer?: Maybe<Customer>;
-  deleteMyCustomer?: Maybe<Customer>;
-  customerChangeMyPassword?: Maybe<Customer>;
-  customerConfirmMyEmail?: Maybe<Customer>;
-  customerResetMyPassword?: Maybe<Customer>;
-  createInventoryEntry?: Maybe<InventoryEntry>;
-  updateInventoryEntry?: Maybe<InventoryEntry>;
-  deleteInventoryEntry?: Maybe<InventoryEntry>;
-  createCart?: Maybe<Cart>;
-  updateCart?: Maybe<Cart>;
-  deleteCart?: Maybe<Cart>;
-  replicateCart?: Maybe<Cart>;
-  createMyCart?: Maybe<Cart>;
-  updateMyCart?: Maybe<Cart>;
-  deleteMyCart?: Maybe<Cart>;
-  createOrderFromCart?: Maybe<Order>;
-  updateOrder?: Maybe<Order>;
-  deleteOrder?: Maybe<Order>;
-  createMyOrderFromCart?: Maybe<Order>;
-  createShoppingList?: Maybe<ShoppingList>;
-  updateShoppingList?: Maybe<ShoppingList>;
-  deleteShoppingList?: Maybe<ShoppingList>;
-  createMyShoppingList?: Maybe<ShoppingList>;
-  updateMyShoppingList?: Maybe<ShoppingList>;
-  deleteMyShoppingList?: Maybe<ShoppingList>;
-  updateProject?: Maybe<ProjectProjection>;
-  createStore?: Maybe<Store>;
-  updateStore?: Maybe<Store>;
-  deleteStore?: Maybe<Store>;
-  createApiClient?: Maybe<ApiClientWithSecret>;
-  deleteApiClient?: Maybe<ApiClientWithoutSecret>;
+  categoryClearMetadata?: Maybe<CategoryClearMeta>;
+  /**
+   * Update private metadata for category.
+   * @deprecated Use the `updatePrivateMetadata` mutation instead. This field will be removed after 2020-07-31.
+   */
+  categoryUpdatePrivateMetadata?: Maybe<CategoryUpdatePrivateMeta>;
+  /**
+   * Clears private metadata for category.
+   * @deprecated Use the `deletePrivateMetadata` mutation instead. This field will be removed after 2020-07-31.
+   */
+  categoryClearPrivateMetadata?: Maybe<CategoryClearPrivateMeta>;
+  /** Adds products to a collection. */
+  collectionAddProducts?: Maybe<CollectionAddProducts>;
+  /** Creates a new collection. */
+  collectionCreate?: Maybe<CollectionCreate>;
+  /** Deletes a collection. */
+  collectionDelete?: Maybe<CollectionDelete>;
+  /** Reorder the products of a collection. */
+  collectionReorderProducts?: Maybe<CollectionReorderProducts>;
+  /** Deletes collections. */
+  collectionBulkDelete?: Maybe<CollectionBulkDelete>;
+  /** Publish collections. */
+  collectionBulkPublish?: Maybe<CollectionBulkPublish>;
+  /** Remove products from a collection. */
+  collectionRemoveProducts?: Maybe<CollectionRemoveProducts>;
+  /** Updates a collection. */
+  collectionUpdate?: Maybe<CollectionUpdate>;
+  /** Creates/Updates translations for collection. */
+  collectionTranslate?: Maybe<CollectionTranslate>;
+  /**
+   * Update public metadata for collection.
+   * @deprecated Use the `updateMetadata` mutation instead. This field will be removed after 2020-07-31.
+   */
+  collectionUpdateMetadata?: Maybe<CollectionUpdateMeta>;
+  /**
+   * Clears public metadata for collection.
+   * @deprecated Use the `deleteMetadata` mutation instead. This field will be removed after 2020-07-31.
+   */
+  collectionClearMetadata?: Maybe<CollectionClearMeta>;
+  /**
+   * Update private metadata for collection.
+   * @deprecated Use the `updatePrivateMetadata` mutation instead. This field will be removed after 2020-07-31.
+   */
+  collectionUpdatePrivateMetadata?: Maybe<CollectionUpdatePrivateMeta>;
+  /**
+   * Clears private metadata item for collection.
+   * @deprecated Use the `deletePrivateMetadata` mutation instead. This field will be removed after 2020-07-31.
+   */
+  collectionClearPrivateMetadata?: Maybe<CollectionClearPrivateMeta>;
+  /** Creates a new product. */
+  productCreate?: Maybe<ProductCreate>;
+  /** Deletes a product. */
+  productDelete?: Maybe<ProductDelete>;
+  /** Deletes products. */
+  productBulkDelete?: Maybe<ProductBulkDelete>;
+  /** Publish products. */
+  productBulkPublish?: Maybe<ProductBulkPublish>;
+  /** Updates an existing product. */
+  productUpdate?: Maybe<ProductUpdate>;
+  /** Creates/Updates translations for Product. */
+  productTranslate?: Maybe<ProductTranslate>;
+  /**
+   * Update public metadata for product.
+   * @deprecated Use the `updateMetadata` mutation instead. This field will be removed after 2020-07-31.
+   */
+  productUpdateMetadata?: Maybe<ProductUpdateMeta>;
+  /**
+   * Clears public metadata item for product.
+   * @deprecated Use the `deleteMetadata` mutation instead. This field will be removed after 2020-07-31.
+   */
+  productClearMetadata?: Maybe<ProductClearMeta>;
+  /**
+   * Update private metadata for product.
+   * @deprecated Use the `updatePrivateMetadata` mutation instead. This field will be removed after 2020-07-31.
+   */
+  productUpdatePrivateMetadata?: Maybe<ProductUpdatePrivateMeta>;
+  /**
+   * Clears private metadata item for product.
+   * @deprecated Use the `deletePrivateMetadata` mutation instead. This field will be removed after 2020-07-31.
+   */
+  productClearPrivateMetadata?: Maybe<ProductClearPrivateMeta>;
+  /** Set product availability for purchase date. */
+  productSetAvailabilityForPurchase?: Maybe<ProductSetAvailabilityForPurchase>;
+  /**
+   * Create a product image. This mutation must be sent as a `multipart` request.
+   * More detailed specs of the upload format can be found here:
+   * https://github.com/jaydenseric/graphql-multipart-request-spec
+   */
+  productImageCreate?: Maybe<ProductImageCreate>;
+  /** Reorder the variants of a product. Mutation updates updated_at on product and triggers PRODUCT_UPDATED webhook. */
+  productVariantReorder?: Maybe<ProductVariantReorder>;
+  /** Deletes a product image. */
+  productImageDelete?: Maybe<ProductImageDelete>;
+  /** Deletes product images. */
+  productImageBulkDelete?: Maybe<ProductImageBulkDelete>;
+  /** Changes ordering of the product image. */
+  productImageReorder?: Maybe<ProductImageReorder>;
+  /** Updates a product image. */
+  productImageUpdate?: Maybe<ProductImageUpdate>;
+  /** Creates a new product type. */
+  productTypeCreate?: Maybe<ProductTypeCreate>;
+  /** Deletes a product type. */
+  productTypeDelete?: Maybe<ProductTypeDelete>;
+  /** Deletes product types. */
+  productTypeBulkDelete?: Maybe<ProductTypeBulkDelete>;
+  /** Updates an existing product type. */
+  productTypeUpdate?: Maybe<ProductTypeUpdate>;
+  /** Reorder the attributes of a product type. */
+  productTypeReorderAttributes?: Maybe<ProductTypeReorderAttributes>;
+  /**
+   * Update public metadata for product type.
+   * @deprecated Use the `updateMetadata` mutation instead. This field will be removed after 2020-07-31.
+   */
+  productTypeUpdateMetadata?: Maybe<ProductTypeUpdateMeta>;
+  /**
+   * Clears public metadata for product type.
+   * @deprecated Use the `deleteMetadata` mutation instead. This field will be removed after 2020-07-31.
+   */
+  productTypeClearMetadata?: Maybe<ProductTypeClearMeta>;
+  /**
+   * Update private metadata for product type.
+   * @deprecated Use the `updatePrivateMetadata` mutation instead. This field will be removed after 2020-07-31.
+   */
+  productTypeUpdatePrivateMetadata?: Maybe<ProductTypeUpdatePrivateMeta>;
+  /**
+   * Clears private metadata for product type.
+   * @deprecated Use the `deletePrivateMetadata` mutation instead. This field will be removed after 2020-07-31.
+   */
+  productTypeClearPrivateMetadata?: Maybe<ProductTypeClearPrivateMeta>;
+  /**
+   * Create new digital content. This mutation must be sent as a `multipart`
+   * request. More detailed specs of the upload format can be found here:
+   * https://github.com/jaydenseric/graphql-multipart-request-spec
+   */
+  digitalContentCreate?: Maybe<DigitalContentCreate>;
+  /** Remove digital content assigned to given variant. */
+  digitalContentDelete?: Maybe<DigitalContentDelete>;
+  /** Update digital content. */
+  digitalContentUpdate?: Maybe<DigitalContentUpdate>;
+  /** Generate new URL to digital content. */
+  digitalContentUrlCreate?: Maybe<DigitalContentUrlCreate>;
+  /** Creates a new variant for a product. */
+  productVariantCreate?: Maybe<ProductVariantCreate>;
+  /** Deletes a product variant. */
+  productVariantDelete?: Maybe<ProductVariantDelete>;
+  /** Creates product variants for a given product. */
+  productVariantBulkCreate?: Maybe<ProductVariantBulkCreate>;
+  /** Deletes product variants. */
+  productVariantBulkDelete?: Maybe<ProductVariantBulkDelete>;
+  /** Creates stocks for product variant. */
+  productVariantStocksCreate?: Maybe<ProductVariantStocksCreate>;
+  /** Delete stocks from product variant. */
+  productVariantStocksDelete?: Maybe<ProductVariantStocksDelete>;
+  /** Update stocks for product variant. */
+  productVariantStocksUpdate?: Maybe<ProductVariantStocksUpdate>;
+  /** Updates an existing variant for product. */
+  productVariantUpdate?: Maybe<ProductVariantUpdate>;
+  /** Set default variant for a product. Mutation triggers PRODUCT_UPDATED webhook. */
+  productVariantSetDefault?: Maybe<ProductVariantSetDefault>;
+  /** Creates/Updates translations for Product Variant. */
+  productVariantTranslate?: Maybe<ProductVariantTranslate>;
+  /**
+   * Update public metadata for product variant.
+   * @deprecated Use the `updateMetadata` mutation instead. This field will be removed after 2020-07-31.
+   */
+  productVariantUpdateMetadata?: Maybe<ProductVariantUpdateMeta>;
+  /**
+   * Clears public metadata for product variant.
+   * @deprecated Use the `deleteMetadata` mutation instead. This field will be removed after 2020-07-31.
+   */
+  productVariantClearMetadata?: Maybe<ProductVariantClearMeta>;
+  /**
+   * Update private metadata for product variant.
+   * @deprecated Use the `updatePrivateMetadata` mutation instead. This field will be removed after 2020-07-31.
+   */
+  productVariantUpdatePrivateMetadata?: Maybe<ProductVariantUpdatePrivateMeta>;
+  /**
+   * Clears private metadata for product variant.
+   * @deprecated Use the `deletePrivateMetadata` mutation instead. This field will be removed after 2020-07-31.
+   */
+  productVariantClearPrivateMetadata?: Maybe<ProductVariantClearPrivateMeta>;
+  /** Assign an image to a product variant. */
+  variantImageAssign?: Maybe<VariantImageAssign>;
+  /** Unassign an image from a product variant. */
+  variantImageUnassign?: Maybe<VariantImageUnassign>;
+  /** Captures the authorized payment amount. */
+  paymentCapture?: Maybe<PaymentCapture>;
+  /** Refunds the captured payment amount. */
+  paymentRefund?: Maybe<PaymentRefund>;
+  /** Voids the authorized payment. */
+  paymentVoid?: Maybe<PaymentVoid>;
+  /** Initializes payment process when it is required by gateway. */
+  paymentInitialize?: Maybe<PaymentInitialize>;
+  /** Creates a new page. */
+  pageCreate?: Maybe<PageCreate>;
+  /** Deletes a page. */
+  pageDelete?: Maybe<PageDelete>;
+  /** Deletes pages. */
+  pageBulkDelete?: Maybe<PageBulkDelete>;
+  /** Publish pages. */
+  pageBulkPublish?: Maybe<PageBulkPublish>;
+  /** Updates an existing page. */
+  pageUpdate?: Maybe<PageUpdate>;
+  /** Creates/Updates translations for Page. */
+  pageTranslate?: Maybe<PageTranslate>;
+  /** Completes creating an order. */
+  draftOrderComplete?: Maybe<DraftOrderComplete>;
+  /** Creates a new draft order. */
+  draftOrderCreate?: Maybe<DraftOrderCreate>;
+  /** Deletes a draft order. */
+  draftOrderDelete?: Maybe<DraftOrderDelete>;
+  /** Deletes draft orders. */
+  draftOrderBulkDelete?: Maybe<DraftOrderBulkDelete>;
+  /** Deletes order lines. */
+  draftOrderLinesBulkDelete?: Maybe<DraftOrderLinesBulkDelete>;
+  /** Create order lines for a draft order. */
+  draftOrderLinesCreate?: Maybe<DraftOrderLinesCreate>;
+  /** Deletes an order line from a draft order. */
+  draftOrderLineDelete?: Maybe<DraftOrderLineDelete>;
+  /** Updates an order line of a draft order. */
+  draftOrderLineUpdate?: Maybe<DraftOrderLineUpdate>;
+  /** Updates a draft order. */
+  draftOrderUpdate?: Maybe<DraftOrderUpdate>;
+  /** Adds note to the order. */
+  orderAddNote?: Maybe<OrderAddNote>;
+  /** Cancel an order. */
+  orderCancel?: Maybe<OrderCancel>;
+  /** Capture an order. */
+  orderCapture?: Maybe<OrderCapture>;
+  /**
+   * Clears stored private metadata value.
+   * @deprecated Use the `deletePrivateMetadata` mutation instead. This field will be removed after 2020-07-31.
+   */
+  orderClearPrivateMeta?: Maybe<OrderClearPrivateMeta>;
+  /**
+   * Clears stored metadata value.
+   * @deprecated Use the `deleteMetadata` mutation instead. This field will be removed after 2020-07-31.
+   */
+  orderClearMeta?: Maybe<OrderClearMeta>;
+  /** Creates new fulfillments for an order. */
+  orderFulfill?: Maybe<OrderFulfill>;
+  /** Cancels existing fulfillment and optionally restocks items. */
+  orderFulfillmentCancel?: Maybe<FulfillmentCancel>;
+  /** Updates a fulfillment for an order. */
+  orderFulfillmentUpdateTracking?: Maybe<FulfillmentUpdateTracking>;
+  /**
+   * Clears metadata for fulfillment.
+   * @deprecated Use the `deleteMetadata` mutation instead. This field will be removed after 2020-07-31.
+   */
+  orderFulfillmentClearMeta?: Maybe<FulfillmentClearMeta>;
+  /**
+   * Clears private metadata for fulfillment.
+   * @deprecated Use the `deletePrivateMetadata` mutation instead. This field will be removed after 2020-07-31.
+   */
+  orderFulfillmentClearPrivateMeta?: Maybe<FulfillmentClearPrivateMeta>;
+  /**
+   * Updates metadata for fulfillment.
+   * @deprecated Use the `updateMetadata` mutation instead. This field will be removed after 2020-07-31.
+   */
+  orderFulfillmentUpdateMeta?: Maybe<FulfillmentUpdateMeta>;
+  /**
+   * Updates metadata for fulfillment.
+   * @deprecated Use the `updatePrivateMetadata` mutation instead. This field will be removed after 2020-07-31.
+   */
+  orderFulfillmentUpdatePrivateMeta?: Maybe<FulfillmentUpdatePrivateMeta>;
+  /** Mark order as manually paid. */
+  orderMarkAsPaid?: Maybe<OrderMarkAsPaid>;
+  /** Refund an order. */
+  orderRefund?: Maybe<OrderRefund>;
+  /** Updates an order. */
+  orderUpdate?: Maybe<OrderUpdate>;
+  /**
+   * Updates meta for order.
+   * @deprecated Use the `updateMetadata` mutation instead. This field will be removed after 2020-07-31.
+   */
+  orderUpdateMeta?: Maybe<OrderUpdateMeta>;
+  /**
+   * Updates private meta for order.
+   * @deprecated Use the `updatePrivateMetadata` mutation instead. This field will be removed after 2020-07-31.
+   */
+  orderUpdatePrivateMeta?: Maybe<OrderUpdatePrivateMeta>;
+  /** Updates a shipping method of the order. */
+  orderUpdateShipping?: Maybe<OrderUpdateShipping>;
+  /** Void an order. */
+  orderVoid?: Maybe<OrderVoid>;
+  /** Cancels orders. */
+  orderBulkCancel?: Maybe<OrderBulkCancel>;
+  /** Delete metadata of an object. */
+  deleteMetadata?: Maybe<DeleteMetadata>;
+  /** Delete object's private metadata. */
+  deletePrivateMetadata?: Maybe<DeletePrivateMetadata>;
+  /** Updates metadata of an object. */
+  updateMetadata?: Maybe<UpdateMetadata>;
+  /** Updates private metadata of an object. */
+  updatePrivateMetadata?: Maybe<UpdatePrivateMetadata>;
+  /** Assigns storefront's navigation menus. */
+  assignNavigation?: Maybe<AssignNavigation>;
+  /** Creates a new Menu. */
+  menuCreate?: Maybe<MenuCreate>;
+  /** Deletes a menu. */
+  menuDelete?: Maybe<MenuDelete>;
+  /** Deletes menus. */
+  menuBulkDelete?: Maybe<MenuBulkDelete>;
+  /** Updates a menu. */
+  menuUpdate?: Maybe<MenuUpdate>;
+  /** Creates a new menu item. */
+  menuItemCreate?: Maybe<MenuItemCreate>;
+  /** Deletes a menu item. */
+  menuItemDelete?: Maybe<MenuItemDelete>;
+  /** Deletes menu items. */
+  menuItemBulkDelete?: Maybe<MenuItemBulkDelete>;
+  /** Updates a menu item. */
+  menuItemUpdate?: Maybe<MenuItemUpdate>;
+  /** Creates/Updates translations for Menu Item. */
+  menuItemTranslate?: Maybe<MenuItemTranslate>;
+  /** Moves items of menus. */
+  menuItemMove?: Maybe<MenuItemMove>;
+  /** Request an invoice for the order using plugin. */
+  invoiceRequest?: Maybe<InvoiceRequest>;
+  /** Requests deletion of an invoice. */
+  invoiceRequestDelete?: Maybe<InvoiceRequestDelete>;
+  /** Creates a ready to send invoice. */
+  invoiceCreate?: Maybe<InvoiceCreate>;
+  /** Deletes an invoice. */
+  invoiceDelete?: Maybe<InvoiceDelete>;
+  /** Updates an invoice. */
+  invoiceUpdate?: Maybe<InvoiceUpdate>;
+  /** Send an invoice by email. */
+  invoiceSendEmail?: Maybe<InvoiceSendEmail>;
+  /** Activate a gift card. */
+  giftCardActivate?: Maybe<GiftCardActivate>;
+  /** Creates a new gift card. */
+  giftCardCreate?: Maybe<GiftCardCreate>;
+  /** Deactivate a gift card. */
+  giftCardDeactivate?: Maybe<GiftCardDeactivate>;
+  /** Update a gift card. */
+  giftCardUpdate?: Maybe<GiftCardUpdate>;
+  /** Update plugin configuration. */
+  pluginUpdate?: Maybe<PluginUpdate>;
+  /** Creates a new sale. */
+  saleCreate?: Maybe<SaleCreate>;
+  /** Deletes a sale. */
+  saleDelete?: Maybe<SaleDelete>;
+  /** Deletes sales. */
+  saleBulkDelete?: Maybe<SaleBulkDelete>;
+  /** Updates a sale. */
+  saleUpdate?: Maybe<SaleUpdate>;
+  /** Adds products, categories, collections to a voucher. */
+  saleCataloguesAdd?: Maybe<SaleAddCatalogues>;
+  /** Removes products, categories, collections from a sale. */
+  saleCataloguesRemove?: Maybe<SaleRemoveCatalogues>;
+  /** Creates/updates translations for a sale. */
+  saleTranslate?: Maybe<SaleTranslate>;
+  /** Creates a new voucher. */
+  voucherCreate?: Maybe<VoucherCreate>;
+  /** Deletes a voucher. */
+  voucherDelete?: Maybe<VoucherDelete>;
+  /** Deletes vouchers. */
+  voucherBulkDelete?: Maybe<VoucherBulkDelete>;
+  /** Updates a voucher. */
+  voucherUpdate?: Maybe<VoucherUpdate>;
+  /** Adds products, categories, collections to a voucher. */
+  voucherCataloguesAdd?: Maybe<VoucherAddCatalogues>;
+  /** Removes products, categories, collections from a voucher. */
+  voucherCataloguesRemove?: Maybe<VoucherRemoveCatalogues>;
+  /** Creates/Updates translations for Voucher. */
+  voucherTranslate?: Maybe<VoucherTranslate>;
+  /** Export products to csv file. */
+  exportProducts?: Maybe<ExportProducts>;
+  /** Adds a gift card or a voucher to a checkout. */
+  checkoutAddPromoCode?: Maybe<CheckoutAddPromoCode>;
+  /** Update billing address in the existing checkout. */
+  checkoutBillingAddressUpdate?: Maybe<CheckoutBillingAddressUpdate>;
+  /**
+   * Completes the checkout. As a result a new order is created and a payment
+   * charge is made. This action requires a successful payment before it can be
+   * performed. In case additional confirmation step as 3D secure is required
+   * confirmationNeeded flag will be set to True and no order created until payment
+   * is confirmed with second call of this mutation.
+   */
+  checkoutComplete?: Maybe<CheckoutComplete>;
+  /** Create a new checkout. */
+  checkoutCreate?: Maybe<CheckoutCreate>;
+  /** Sets the customer as the owner of the checkout. */
+  checkoutCustomerAttach?: Maybe<CheckoutCustomerAttach>;
+  /** Removes the user assigned as the owner of the checkout. */
+  checkoutCustomerDetach?: Maybe<CheckoutCustomerDetach>;
+  /** Updates email address in the existing checkout object. */
+  checkoutEmailUpdate?: Maybe<CheckoutEmailUpdate>;
+  /** Deletes a CheckoutLine. */
+  checkoutLineDelete?: Maybe<CheckoutLineDelete>;
+  /** Adds a checkout line to the existing checkout. */
+  checkoutLinesAdd?: Maybe<CheckoutLinesAdd>;
+  /** Updates checkout line in the existing checkout. */
+  checkoutLinesUpdate?: Maybe<CheckoutLinesUpdate>;
+  /** Remove a gift card or a voucher from a checkout. */
+  checkoutRemovePromoCode?: Maybe<CheckoutRemovePromoCode>;
+  /** Create a new payment for given checkout. */
+  checkoutPaymentCreate?: Maybe<CheckoutPaymentCreate>;
+  /** Update shipping address in the existing checkout. */
+  checkoutShippingAddressUpdate?: Maybe<CheckoutShippingAddressUpdate>;
+  /** Updates the shipping address of the checkout. */
+  checkoutShippingMethodUpdate?: Maybe<CheckoutShippingMethodUpdate>;
+  /**
+   * Updates metadata for checkout.
+   * @deprecated Use the `updateMetadata` mutation. This field will be removed after 2020-07-31.
+   */
+  checkoutUpdateMetadata?: Maybe<CheckoutUpdateMeta>;
+  /**
+   * Clear metadata for checkout.
+   * @deprecated Use the `deleteMetadata` mutation. This field will be removed after 2020-07-31.
+   */
+  checkoutClearMetadata?: Maybe<CheckoutClearMeta>;
+  /**
+   * Updates private metadata for checkout.
+   * @deprecated Use the `updatePrivateMetadata` mutation. This field will be removed after 2020-07-31.
+   */
+  checkoutUpdatePrivateMetadata?: Maybe<CheckoutUpdatePrivateMeta>;
+  /**
+   * Clear private metadata for checkout.
+   * @deprecated Use the `deletePrivateMetadata` mutation. This field will be removed after 2020-07-31.
+   */
+  checkoutClearPrivateMetadata?: Maybe<CheckoutClearPrivateMeta>;
+  /** Creates a new app. */
+  appCreate?: Maybe<AppCreate>;
+  /** Updates an existing app. */
+  appUpdate?: Maybe<AppUpdate>;
+  /** Deletes an app. */
+  appDelete?: Maybe<AppDelete>;
+  /** Creates a new token. */
+  appTokenCreate?: Maybe<AppTokenCreate>;
+  /** Deletes an authentication token assigned to app. */
+  appTokenDelete?: Maybe<AppTokenDelete>;
+  /** Verify provided app token. */
+  appTokenVerify?: Maybe<AppTokenVerify>;
+  /** Install new app by using app manifest. */
+  appInstall?: Maybe<AppInstall>;
+  /** Retry failed installation of new app. */
+  appRetryInstall?: Maybe<AppRetryInstall>;
+  /** Delete failed installation. */
+  appDeleteFailedInstallation?: Maybe<AppDeleteFailedInstallation>;
+  /** Fetch and validate manifest. */
+  appFetchManifest?: Maybe<AppFetchManifest>;
+  /** Activate the app. */
+  appActivate?: Maybe<AppActivate>;
+  /** Deactivate the app. */
+  appDeactivate?: Maybe<AppDeactivate>;
+  /** Create JWT token. */
+  tokenCreate?: Maybe<CreateToken>;
+  /**
+   * Refresh JWT token. Mutation tries to take refreshToken from the input.If it
+   * fails it will try to take refreshToken from the http-only cookie
+   * -refreshToken. csrfToken is required when refreshToken is provided as a cookie.
+   */
+  tokenRefresh?: Maybe<RefreshToken>;
+  /** Verify JWT token. */
+  tokenVerify?: Maybe<VerifyToken>;
+  /** Deactivate all JWT tokens of the currently authenticated user. */
+  tokensDeactivateAll?: Maybe<DeactivateAllUserTokens>;
+  /** Sends an email with the account password modification link. */
+  requestPasswordReset?: Maybe<RequestPasswordReset>;
+  /** Confirm user account with token sent by email during registration. */
+  confirmAccount?: Maybe<ConfirmAccount>;
+  /** Sets the user's password from the token sent by email using the RequestPasswordReset mutation. */
+  setPassword?: Maybe<SetPassword>;
+  /** Change the password of the logged in user. */
+  passwordChange?: Maybe<PasswordChange>;
+  /** Request email change of the logged in user. */
+  requestEmailChange?: Maybe<RequestEmailChange>;
+  /** Confirm the email change of the logged-in user. */
+  confirmEmailChange?: Maybe<ConfirmEmailChange>;
+  /** Create a new address for the customer. */
+  accountAddressCreate?: Maybe<AccountAddressCreate>;
+  /** Updates an address of the logged-in user. */
+  accountAddressUpdate?: Maybe<AccountAddressUpdate>;
+  /** Delete an address of the logged-in user. */
+  accountAddressDelete?: Maybe<AccountAddressDelete>;
+  /** Sets a default address for the authenticated user. */
+  accountSetDefaultAddress?: Maybe<AccountSetDefaultAddress>;
+  /** Register a new user. */
+  accountRegister?: Maybe<AccountRegister>;
+  /** Updates the account of the logged-in user. */
+  accountUpdate?: Maybe<AccountUpdate>;
+  /** Sends an email with the account removal link for the logged-in user. */
+  accountRequestDeletion?: Maybe<AccountRequestDeletion>;
+  /** Remove user account. */
+  accountDelete?: Maybe<AccountDelete>;
+  /**
+   * Updates metadata of the logged-in user.
+   * @deprecated Use the `updateMetadata` mutation. This field will be removed after 2020-07-31.
+   */
+  accountUpdateMeta?: Maybe<AccountUpdateMeta>;
+  /** Creates user address. */
+  addressCreate?: Maybe<AddressCreate>;
+  /** Updates an address. */
+  addressUpdate?: Maybe<AddressUpdate>;
+  /** Deletes an address. */
+  addressDelete?: Maybe<AddressDelete>;
+  /** Sets a default address for the given user. */
+  addressSetDefault?: Maybe<AddressSetDefault>;
+  /** Creates a new customer. */
+  customerCreate?: Maybe<CustomerCreate>;
+  /** Updates an existing customer. */
+  customerUpdate?: Maybe<CustomerUpdate>;
+  /** Deletes a customer. */
+  customerDelete?: Maybe<CustomerDelete>;
+  /** Deletes customers. */
+  customerBulkDelete?: Maybe<CustomerBulkDelete>;
+  /** Creates a new staff user. */
+  staffCreate?: Maybe<StaffCreate>;
+  /** Updates an existing staff user. */
+  staffUpdate?: Maybe<StaffUpdate>;
+  /** Deletes a staff user. */
+  staffDelete?: Maybe<StaffDelete>;
+  /** Deletes staff users. */
+  staffBulkDelete?: Maybe<StaffBulkDelete>;
+  /**
+   * Create a user avatar. Only for staff members. This mutation must be sent as a
+   * `multipart` request. More detailed specs of the upload format can be found
+   * here: https://github.com/jaydenseric/graphql-multipart-request-spec
+   */
+  userAvatarUpdate?: Maybe<UserAvatarUpdate>;
+  /** Deletes a user avatar. Only for staff members. */
+  userAvatarDelete?: Maybe<UserAvatarDelete>;
+  /** Activate or deactivate users. */
+  userBulkSetActive?: Maybe<UserBulkSetActive>;
+  /**
+   * Updates metadata for user.
+   * @deprecated Use the `updateMetadata` mutation. This field will be removed after 2020-07-31.
+   */
+  userUpdateMetadata?: Maybe<UserUpdateMeta>;
+  /**
+   * Clear metadata for user.
+   * @deprecated Use the `deleteMetadata` mutation. This field will be removed after 2020-07-31.
+   */
+  userClearMetadata?: Maybe<UserClearMeta>;
+  /**
+   * Updates private metadata for user.
+   * @deprecated Use the `updatePrivateMetadata` mutation. This field will be removed after 2020-07-31.
+   */
+  userUpdatePrivateMetadata?: Maybe<UserUpdatePrivateMeta>;
+  /**
+   * Clear private metadata for user.
+   * @deprecated Use the `deletePrivateMetadata` mutation. This field will be removed after 2020-07-31.
+   */
+  userClearPrivateMetadata?: Maybe<UserClearPrivateMeta>;
+  /**
+   * Creates a new service account.
+   * @deprecated Use the `appCreate` mutation instead. This field will be removed after 2020-07-31.
+   */
+  serviceAccountCreate?: Maybe<ServiceAccountCreate>;
+  /**
+   * Updates an existing service account.
+   * @deprecated Use the `appUpdate` mutation instead. This field will be removed after 2020-07-31.
+   */
+  serviceAccountUpdate?: Maybe<ServiceAccountUpdate>;
+  /**
+   * Deletes a service account.
+   * @deprecated Use the `appDelete` mutation instead. This field will be removed after 2020-07-31.
+   */
+  serviceAccountDelete?: Maybe<ServiceAccountDelete>;
+  /**
+   * Updates private metadata for a service account.
+   * @deprecated Use the `updatePrivateMetadata` mutation with App instead.This field will be removed after 2020-07-31.
+   */
+  serviceAccountUpdatePrivateMetadata?: Maybe<ServiceAccountUpdatePrivateMeta>;
+  /**
+   * Clear private metadata for a service account.
+   * @deprecated Use the `deletePrivateMetadata` mutation with App instead.This field will be removed after 2020-07-31.
+   */
+  serviceAccountClearPrivateMetadata?: Maybe<ServiceAccountClearPrivateMeta>;
+  /**
+   * Creates a new token.
+   * @deprecated Use the `appTokenCreate` mutation instead. This field will be removed after 2020-07-31.
+   */
+  serviceAccountTokenCreate?: Maybe<ServiceAccountTokenCreate>;
+  /**
+   * Deletes an authentication token assigned to service account.
+   * @deprecated Use the `appTokenDelete` mutation instead. This field will be removed after 2020-07-31.
+   */
+  serviceAccountTokenDelete?: Maybe<ServiceAccountTokenDelete>;
+  /** Create new permission group. */
+  permissionGroupCreate?: Maybe<PermissionGroupCreate>;
+  /** Update permission group. */
+  permissionGroupUpdate?: Maybe<PermissionGroupUpdate>;
+  /** Delete permission group. */
+  permissionGroupDelete?: Maybe<PermissionGroupDelete>;
+};
+
+export type MutationWebhookCreateArgs = {
+  input: WebhookCreateInput;
+};
+
+export type MutationWebhookDeleteArgs = {
+  id: Scalars['ID'];
+};
+
+export type MutationWebhookUpdateArgs = {
+  id: Scalars['ID'];
+  input: WebhookUpdateInput;
+};
+
+export type MutationCreateWarehouseArgs = {
+  input: WarehouseCreateInput;
+};
+
+export type MutationUpdateWarehouseArgs = {
+  id: Scalars['ID'];
+  input: WarehouseUpdateInput;
+};
+
+export type MutationDeleteWarehouseArgs = {
+  id: Scalars['ID'];
+};
+
+export type MutationAssignWarehouseShippingZoneArgs = {
+  id: Scalars['ID'];
+  shippingZoneIds: Array<Scalars['ID']>;
+};
+
+export type MutationUnassignWarehouseShippingZoneArgs = {
+  id: Scalars['ID'];
+  shippingZoneIds: Array<Scalars['ID']>;
+};
+
+export type MutationAuthorizationKeyAddArgs = {
+  input: AuthorizationKeyInput;
+  keyType: AuthorizationKeyType;
+};
+
+export type MutationAuthorizationKeyDeleteArgs = {
+  keyType: AuthorizationKeyType;
+};
+
+export type MutationStaffNotificationRecipientCreateArgs = {
+  input: StaffNotificationRecipientInput;
+};
+
+export type MutationStaffNotificationRecipientUpdateArgs = {
+  id: Scalars['ID'];
+  input: StaffNotificationRecipientInput;
+};
+
+export type MutationStaffNotificationRecipientDeleteArgs = {
+  id: Scalars['ID'];
+};
+
+export type MutationHomepageCollectionUpdateArgs = {
+  collection?: Maybe<Scalars['ID']>;
+};
+
+export type MutationShopDomainUpdateArgs = {
+  input?: Maybe<SiteDomainInput>;
+};
+
+export type MutationShopSettingsUpdateArgs = {
+  input: ShopSettingsInput;
+};
+
+export type MutationShopSettingsTranslateArgs = {
+  input: ShopSettingsTranslationInput;
+  languageCode: LanguageCodeEnum;
+};
+
+export type MutationShopAddressUpdateArgs = {
+  input?: Maybe<AddressInput>;
+};
+
+export type MutationShippingPriceCreateArgs = {
+  input: ShippingPriceInput;
+};
+
+export type MutationShippingPriceDeleteArgs = {
+  id: Scalars['ID'];
+};
+
+export type MutationShippingPriceBulkDeleteArgs = {
+  ids: Array<Maybe<Scalars['ID']>>;
+};
+
+export type MutationShippingPriceUpdateArgs = {
+  id: Scalars['ID'];
+  input: ShippingPriceInput;
+};
+
+export type MutationShippingPriceTranslateArgs = {
+  id: Scalars['ID'];
+  input: NameTranslationInput;
+  languageCode: LanguageCodeEnum;
+};
+
+export type MutationShippingZoneCreateArgs = {
+  input: ShippingZoneCreateInput;
+};
+
+export type MutationShippingZoneDeleteArgs = {
+  id: Scalars['ID'];
+};
+
+export type MutationShippingZoneBulkDeleteArgs = {
+  ids: Array<Maybe<Scalars['ID']>>;
+};
+
+export type MutationShippingZoneUpdateArgs = {
+  id: Scalars['ID'];
+  input: ShippingZoneUpdateInput;
+};
+
+export type MutationAttributeCreateArgs = {
+  input: AttributeCreateInput;
+};
+
+export type MutationAttributeDeleteArgs = {
+  id: Scalars['ID'];
+};
+
+export type MutationAttributeBulkDeleteArgs = {
+  ids: Array<Maybe<Scalars['ID']>>;
+};
+
+export type MutationAttributeAssignArgs = {
+  operations: Array<Maybe<AttributeAssignInput>>;
+  productTypeId: Scalars['ID'];
+};
+
+export type MutationAttributeUnassignArgs = {
+  attributeIds: Array<Maybe<Scalars['ID']>>;
+  productTypeId: Scalars['ID'];
+};
+
+export type MutationAttributeUpdateArgs = {
+  id: Scalars['ID'];
+  input: AttributeUpdateInput;
+};
+
+export type MutationAttributeTranslateArgs = {
+  id: Scalars['ID'];
+  input: NameTranslationInput;
+  languageCode: LanguageCodeEnum;
+};
+
+export type MutationAttributeUpdateMetadataArgs = {
+  id: Scalars['ID'];
+  input: MetaInput;
+};
+
+export type MutationAttributeClearMetadataArgs = {
+  id: Scalars['ID'];
+  input: MetaPath;
+};
+
+export type MutationAttributeUpdatePrivateMetadataArgs = {
+  id: Scalars['ID'];
+  input: MetaInput;
+};
+
+export type MutationAttributeClearPrivateMetadataArgs = {
+  id: Scalars['ID'];
+  input: MetaPath;
+};
+
+export type MutationAttributeValueCreateArgs = {
+  attribute: Scalars['ID'];
+  input: AttributeValueCreateInput;
+};
+
+export type MutationAttributeValueDeleteArgs = {
+  id: Scalars['ID'];
+};
+
+export type MutationAttributeValueBulkDeleteArgs = {
+  ids: Array<Maybe<Scalars['ID']>>;
+};
+
+export type MutationAttributeValueUpdateArgs = {
+  id: Scalars['ID'];
+  input: AttributeValueCreateInput;
+};
+
+export type MutationAttributeValueTranslateArgs = {
+  id: Scalars['ID'];
+  input: NameTranslationInput;
+  languageCode: LanguageCodeEnum;
+};
+
+export type MutationAttributeReorderValuesArgs = {
+  attributeId: Scalars['ID'];
+  moves: Array<Maybe<ReorderInput>>;
+};
+
+export type MutationCategoryCreateArgs = {
+  input: CategoryInput;
+  parent?: Maybe<Scalars['ID']>;
+};
+
+export type MutationCategoryDeleteArgs = {
+  id: Scalars['ID'];
+};
+
+export type MutationCategoryBulkDeleteArgs = {
+  ids: Array<Maybe<Scalars['ID']>>;
+};
+
+export type MutationCategoryUpdateArgs = {
+  id: Scalars['ID'];
+  input: CategoryInput;
+};
+
+export type MutationCategoryTranslateArgs = {
+  id: Scalars['ID'];
+  input: TranslationInput;
+  languageCode: LanguageCodeEnum;
+};
+
+export type MutationCategoryUpdateMetadataArgs = {
+  id: Scalars['ID'];
+  input: MetaInput;
+};
+
+export type MutationCategoryClearMetadataArgs = {
+  id: Scalars['ID'];
+  input: MetaPath;
+};
+
+export type MutationCategoryUpdatePrivateMetadataArgs = {
+  id: Scalars['ID'];
+  input: MetaInput;
+};
+
+export type MutationCategoryClearPrivateMetadataArgs = {
+  id: Scalars['ID'];
+  input: MetaPath;
+};
+
+export type MutationCollectionAddProductsArgs = {
+  collectionId: Scalars['ID'];
+  products: Array<Maybe<Scalars['ID']>>;
+};
+
+export type MutationCollectionCreateArgs = {
+  input: CollectionCreateInput;
+};
+
+export type MutationCollectionDeleteArgs = {
+  id: Scalars['ID'];
+};
+
+export type MutationCollectionReorderProductsArgs = {
+  collectionId: Scalars['ID'];
+  moves: Array<Maybe<MoveProductInput>>;
+};
+
+export type MutationCollectionBulkDeleteArgs = {
+  ids: Array<Maybe<Scalars['ID']>>;
+};
+
+export type MutationCollectionBulkPublishArgs = {
+  ids: Array<Maybe<Scalars['ID']>>;
+  isPublished: Scalars['Boolean'];
+};
+
+export type MutationCollectionRemoveProductsArgs = {
+  collectionId: Scalars['ID'];
+  products: Array<Maybe<Scalars['ID']>>;
+};
+
+export type MutationCollectionUpdateArgs = {
+  id: Scalars['ID'];
+  input: CollectionInput;
+};
+
+export type MutationCollectionTranslateArgs = {
+  id: Scalars['ID'];
+  input: TranslationInput;
+  languageCode: LanguageCodeEnum;
+};
+
+export type MutationCollectionUpdateMetadataArgs = {
+  id: Scalars['ID'];
+  input: MetaInput;
+};
+
+export type MutationCollectionClearMetadataArgs = {
+  id: Scalars['ID'];
+  input: MetaPath;
+};
+
+export type MutationCollectionUpdatePrivateMetadataArgs = {
+  id: Scalars['ID'];
+  input: MetaInput;
+};
+
+export type MutationCollectionClearPrivateMetadataArgs = {
+  id: Scalars['ID'];
+  input: MetaPath;
+};
+
+export type MutationProductCreateArgs = {
+  input: ProductCreateInput;
+};
+
+export type MutationProductDeleteArgs = {
+  id: Scalars['ID'];
+};
+
+export type MutationProductBulkDeleteArgs = {
+  ids: Array<Maybe<Scalars['ID']>>;
+};
+
+export type MutationProductBulkPublishArgs = {
+  ids: Array<Maybe<Scalars['ID']>>;
+  isPublished: Scalars['Boolean'];
+};
+
+export type MutationProductUpdateArgs = {
+  id: Scalars['ID'];
+  input: ProductInput;
+};
+
+export type MutationProductTranslateArgs = {
+  id: Scalars['ID'];
+  input: TranslationInput;
+  languageCode: LanguageCodeEnum;
+};
+
+export type MutationProductUpdateMetadataArgs = {
+  id: Scalars['ID'];
+  input: MetaInput;
+};
+
+export type MutationProductClearMetadataArgs = {
+  id: Scalars['ID'];
+  input: MetaPath;
+};
+
+export type MutationProductUpdatePrivateMetadataArgs = {
+  id: Scalars['ID'];
+  input: MetaInput;
+};
+
+export type MutationProductClearPrivateMetadataArgs = {
+  id: Scalars['ID'];
+  input: MetaPath;
+};
+
+export type MutationProductSetAvailabilityForPurchaseArgs = {
+  isAvailable: Scalars['Boolean'];
+  productId: Scalars['ID'];
+  startDate?: Maybe<Scalars['Date']>;
+};
+
+export type MutationProductImageCreateArgs = {
+  input: ProductImageCreateInput;
+};
+
+export type MutationProductVariantReorderArgs = {
+  moves: Array<Maybe<ReorderInput>>;
+  productId: Scalars['ID'];
+};
+
+export type MutationProductImageDeleteArgs = {
+  id: Scalars['ID'];
+};
+
+export type MutationProductImageBulkDeleteArgs = {
+  ids: Array<Maybe<Scalars['ID']>>;
+};
+
+export type MutationProductImageReorderArgs = {
+  imagesIds: Array<Maybe<Scalars['ID']>>;
+  productId: Scalars['ID'];
+};
+
+export type MutationProductImageUpdateArgs = {
+  id: Scalars['ID'];
+  input: ProductImageUpdateInput;
+};
+
+export type MutationProductTypeCreateArgs = {
+  input: ProductTypeInput;
+};
+
+export type MutationProductTypeDeleteArgs = {
+  id: Scalars['ID'];
+};
+
+export type MutationProductTypeBulkDeleteArgs = {
+  ids: Array<Maybe<Scalars['ID']>>;
+};
+
+export type MutationProductTypeUpdateArgs = {
+  id: Scalars['ID'];
+  input: ProductTypeInput;
+};
+
+export type MutationProductTypeReorderAttributesArgs = {
+  moves: Array<Maybe<ReorderInput>>;
+  productTypeId: Scalars['ID'];
+  type: AttributeTypeEnum;
+};
+
+export type MutationProductTypeUpdateMetadataArgs = {
+  id: Scalars['ID'];
+  input: MetaInput;
+};
+
+export type MutationProductTypeClearMetadataArgs = {
+  id: Scalars['ID'];
+  input: MetaPath;
+};
+
+export type MutationProductTypeUpdatePrivateMetadataArgs = {
+  id: Scalars['ID'];
+  input: MetaInput;
+};
+
+export type MutationProductTypeClearPrivateMetadataArgs = {
+  id: Scalars['ID'];
+  input: MetaPath;
+};
+
+export type MutationDigitalContentCreateArgs = {
+  input: DigitalContentUploadInput;
+  variantId: Scalars['ID'];
+};
+
+export type MutationDigitalContentDeleteArgs = {
+  variantId: Scalars['ID'];
+};
+
+export type MutationDigitalContentUpdateArgs = {
+  input: DigitalContentInput;
+  variantId: Scalars['ID'];
+};
+
+export type MutationDigitalContentUrlCreateArgs = {
+  input: DigitalContentUrlCreateInput;
+};
+
+export type MutationProductVariantCreateArgs = {
+  input: ProductVariantCreateInput;
+};
+
+export type MutationProductVariantDeleteArgs = {
+  id: Scalars['ID'];
+};
+
+export type MutationProductVariantBulkCreateArgs = {
+  product: Scalars['ID'];
+  variants: Array<Maybe<ProductVariantBulkCreateInput>>;
+};
+
+export type MutationProductVariantBulkDeleteArgs = {
+  ids: Array<Maybe<Scalars['ID']>>;
+};
+
+export type MutationProductVariantStocksCreateArgs = {
+  stocks: Array<StockInput>;
+  variantId: Scalars['ID'];
+};
+
+export type MutationProductVariantStocksDeleteArgs = {
+  variantId: Scalars['ID'];
+  warehouseIds?: Maybe<Array<Scalars['ID']>>;
+};
+
+export type MutationProductVariantStocksUpdateArgs = {
+  stocks: Array<StockInput>;
+  variantId: Scalars['ID'];
+};
+
+export type MutationProductVariantUpdateArgs = {
+  id: Scalars['ID'];
+  input: ProductVariantInput;
+};
+
+export type MutationProductVariantSetDefaultArgs = {
+  productId: Scalars['ID'];
+  variantId: Scalars['ID'];
+};
+
+export type MutationProductVariantTranslateArgs = {
+  id: Scalars['ID'];
+  input: NameTranslationInput;
+  languageCode: LanguageCodeEnum;
+};
+
+export type MutationProductVariantUpdateMetadataArgs = {
+  id: Scalars['ID'];
+  input: MetaInput;
+};
+
+export type MutationProductVariantClearMetadataArgs = {
+  id: Scalars['ID'];
+  input: MetaPath;
+};
+
+export type MutationProductVariantUpdatePrivateMetadataArgs = {
+  id: Scalars['ID'];
+  input: MetaInput;
+};
+
+export type MutationProductVariantClearPrivateMetadataArgs = {
+  id: Scalars['ID'];
+  input: MetaPath;
+};
+
+export type MutationVariantImageAssignArgs = {
+  imageId: Scalars['ID'];
+  variantId: Scalars['ID'];
+};
+
+export type MutationVariantImageUnassignArgs = {
+  imageId: Scalars['ID'];
+  variantId: Scalars['ID'];
+};
+
+export type MutationPaymentCaptureArgs = {
+  amount?: Maybe<Scalars['PositiveDecimal']>;
+  paymentId: Scalars['ID'];
+};
+
+export type MutationPaymentRefundArgs = {
+  amount?: Maybe<Scalars['PositiveDecimal']>;
+  paymentId: Scalars['ID'];
+};
+
+export type MutationPaymentVoidArgs = {
+  paymentId: Scalars['ID'];
+};
+
+export type MutationPaymentInitializeArgs = {
+  gateway: Scalars['String'];
+  paymentData?: Maybe<Scalars['JSONString']>;
+};
+
+export type MutationPageCreateArgs = {
+  input: PageInput;
+};
+
+export type MutationPageDeleteArgs = {
+  id: Scalars['ID'];
+};
+
+export type MutationPageBulkDeleteArgs = {
+  ids: Array<Maybe<Scalars['ID']>>;
+};
+
+export type MutationPageBulkPublishArgs = {
+  ids: Array<Maybe<Scalars['ID']>>;
+  isPublished: Scalars['Boolean'];
+};
+
+export type MutationPageUpdateArgs = {
+  id: Scalars['ID'];
+  input: PageInput;
+};
+
+export type MutationPageTranslateArgs = {
+  id: Scalars['ID'];
+  input: PageTranslationInput;
+  languageCode: LanguageCodeEnum;
+};
+
+export type MutationDraftOrderCompleteArgs = {
+  id: Scalars['ID'];
+};
+
+export type MutationDraftOrderCreateArgs = {
+  input: DraftOrderCreateInput;
+};
+
+export type MutationDraftOrderDeleteArgs = {
+  id: Scalars['ID'];
+};
+
+export type MutationDraftOrderBulkDeleteArgs = {
+  ids: Array<Maybe<Scalars['ID']>>;
+};
+
+export type MutationDraftOrderLinesBulkDeleteArgs = {
+  ids: Array<Maybe<Scalars['ID']>>;
 };
 
-export type MutationCreateCustomerGroupArgs = {
-  draft: CustomerGroupDraft;
+export type MutationDraftOrderLinesCreateArgs = {
+  id: Scalars['ID'];
+  input: Array<Maybe<OrderLineCreateInput>>;
 };
 
-export type MutationUpdateCustomerGroupArgs = {
-  version: Scalars["Long"];
-  actions: Array<CustomerGroupUpdateAction>;
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
+export type MutationDraftOrderLineDeleteArgs = {
+  id: Scalars['ID'];
 };
 
-export type MutationDeleteCustomerGroupArgs = {
-  version: Scalars["Long"];
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
+export type MutationDraftOrderLineUpdateArgs = {
+  id: Scalars['ID'];
+  input: OrderLineInput;
 };
 
-export type MutationCreateCategoryArgs = {
-  draft: CategoryDraft;
+export type MutationDraftOrderUpdateArgs = {
+  id: Scalars['ID'];
+  input: DraftOrderInput;
 };
 
-export type MutationUpdateCategoryArgs = {
-  version: Scalars["Long"];
-  actions: Array<CategoryUpdateAction>;
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
+export type MutationOrderAddNoteArgs = {
+  order: Scalars['ID'];
+  input: OrderAddNoteInput;
 };
 
-export type MutationDeleteCategoryArgs = {
-  version: Scalars["Long"];
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
+export type MutationOrderCancelArgs = {
+  id: Scalars['ID'];
 };
 
-export type MutationCreateProductTypeArgs = {
-  draft: ProductTypeDraft;
+export type MutationOrderCaptureArgs = {
+  amount: Scalars['PositiveDecimal'];
+  id: Scalars['ID'];
 };
 
-export type MutationUpdateProductTypeArgs = {
-  version: Scalars["Long"];
-  actions: Array<ProductTypeUpdateAction>;
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
+export type MutationOrderClearPrivateMetaArgs = {
+  id: Scalars['ID'];
+  input: MetaPath;
 };
 
-export type MutationDeleteProductTypeArgs = {
-  version: Scalars["Long"];
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
+export type MutationOrderClearMetaArgs = {
+  input: MetaPath;
+  token: Scalars['UUID'];
 };
 
-export type MutationCreateShippingMethodArgs = {
-  draft: ShippingMethodDraft;
+export type MutationOrderFulfillArgs = {
+  input: OrderFulfillInput;
+  order?: Maybe<Scalars['ID']>;
 };
 
-export type MutationUpdateShippingMethodArgs = {
-  version: Scalars["Long"];
-  actions: Array<ShippingMethodUpdateAction>;
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
+export type MutationOrderFulfillmentCancelArgs = {
+  id: Scalars['ID'];
+  input: FulfillmentCancelInput;
 };
 
-export type MutationDeleteShippingMethodArgs = {
-  version: Scalars["Long"];
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
+export type MutationOrderFulfillmentUpdateTrackingArgs = {
+  id: Scalars['ID'];
+  input: FulfillmentUpdateTrackingInput;
 };
 
-export type MutationCreateZoneArgs = {
-  draft: CreateZone;
+export type MutationOrderFulfillmentClearMetaArgs = {
+  id: Scalars['ID'];
+  input: MetaPath;
 };
 
-export type MutationUpdateZoneArgs = {
-  version: Scalars["Long"];
-  actions: Array<ZoneUpdateAction>;
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
+export type MutationOrderFulfillmentClearPrivateMetaArgs = {
+  id: Scalars['ID'];
+  input: MetaPath;
 };
 
-export type MutationDeleteZoneArgs = {
-  version: Scalars["Long"];
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
+export type MutationOrderFulfillmentUpdateMetaArgs = {
+  id: Scalars['ID'];
+  input: MetaInput;
 };
 
-export type MutationCreateTaxCategoryArgs = {
-  draft: TaxCategoryDraft;
+export type MutationOrderFulfillmentUpdatePrivateMetaArgs = {
+  id: Scalars['ID'];
+  input: MetaInput;
 };
 
-export type MutationUpdateTaxCategoryArgs = {
-  version: Scalars["Long"];
-  actions: Array<TaxCategoryUpdateAction>;
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
+export type MutationOrderMarkAsPaidArgs = {
+  id: Scalars['ID'];
 };
 
-export type MutationDeleteTaxCategoryArgs = {
-  version: Scalars["Long"];
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
+export type MutationOrderRefundArgs = {
+  amount: Scalars['PositiveDecimal'];
+  id: Scalars['ID'];
 };
 
-export type MutationCreateDiscountCodeArgs = {
-  draft: DiscountCodeDraft;
+export type MutationOrderUpdateArgs = {
+  id: Scalars['ID'];
+  input: OrderUpdateInput;
 };
 
-export type MutationUpdateDiscountCodeArgs = {
-  id: Scalars["String"];
-  version: Scalars["Long"];
-  actions: Array<DiscountCodeUpdateAction>;
+export type MutationOrderUpdateMetaArgs = {
+  input: MetaInput;
+  token: Scalars['UUID'];
 };
 
-export type MutationDeleteDiscountCodeArgs = {
-  id: Scalars["String"];
-  version: Scalars["Long"];
+export type MutationOrderUpdatePrivateMetaArgs = {
+  id: Scalars['ID'];
+  input: MetaInput;
 };
 
-export type MutationCreateCartDiscountArgs = {
-  draft: CartDiscountDraft;
+export type MutationOrderUpdateShippingArgs = {
+  order: Scalars['ID'];
+  input?: Maybe<OrderUpdateShippingInput>;
 };
 
-export type MutationUpdateCartDiscountArgs = {
-  version: Scalars["Long"];
-  actions: Array<CartDiscountUpdateAction>;
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
+export type MutationOrderVoidArgs = {
+  id: Scalars['ID'];
 };
 
-export type MutationDeleteCartDiscountArgs = {
-  version: Scalars["Long"];
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
+export type MutationOrderBulkCancelArgs = {
+  ids: Array<Maybe<Scalars['ID']>>;
 };
 
-export type MutationCreateProductDiscountArgs = {
-  draft: ProductDiscountDraft;
+export type MutationDeleteMetadataArgs = {
+  id: Scalars['ID'];
+  keys: Array<Scalars['String']>;
 };
 
-export type MutationUpdateProductDiscountArgs = {
-  version: Scalars["Long"];
-  actions: Array<ProductDiscountUpdateAction>;
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
+export type MutationDeletePrivateMetadataArgs = {
+  id: Scalars['ID'];
+  keys: Array<Scalars['String']>;
 };
 
-export type MutationDeleteProductDiscountArgs = {
-  version: Scalars["Long"];
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
+export type MutationUpdateMetadataArgs = {
+  id: Scalars['ID'];
+  input: Array<MetadataInput>;
 };
 
-export type MutationCreateProductArgs = {
-  draft: ProductDraft;
+export type MutationUpdatePrivateMetadataArgs = {
+  id: Scalars['ID'];
+  input: Array<MetadataInput>;
 };
 
-export type MutationUpdateProductArgs = {
-  version: Scalars["Long"];
-  actions: Array<ProductUpdateAction>;
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
+export type MutationAssignNavigationArgs = {
+  menu?: Maybe<Scalars['ID']>;
+  navigationType: NavigationType;
 };
 
-export type MutationDeleteProductArgs = {
-  version: Scalars["Long"];
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
+export type MutationMenuCreateArgs = {
+  input: MenuCreateInput;
 };
 
-export type MutationCustomerSignUpArgs = {
-  draft: CustomerSignUpDraft;
-  storeKey?: Maybe<Scalars["KeyReferenceInput"]>;
+export type MutationMenuDeleteArgs = {
+  id: Scalars['ID'];
 };
 
-export type MutationCustomerSignInArgs = {
-  draft: CustomerSignInDraft;
-  storeKey?: Maybe<Scalars["KeyReferenceInput"]>;
+export type MutationMenuBulkDeleteArgs = {
+  ids: Array<Maybe<Scalars['ID']>>;
 };
 
-export type MutationUpdateCustomerArgs = {
-  version: Scalars["Long"];
-  actions: Array<CustomerUpdateAction>;
-  storeKey?: Maybe<Scalars["KeyReferenceInput"]>;
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
+export type MutationMenuUpdateArgs = {
+  id: Scalars['ID'];
+  input: MenuInput;
 };
 
-export type MutationDeleteCustomerArgs = {
-  version: Scalars["Long"];
-  personalDataErasure?: Maybe<Scalars["Boolean"]>;
-  storeKey?: Maybe<Scalars["KeyReferenceInput"]>;
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
+export type MutationMenuItemCreateArgs = {
+  input: MenuItemCreateInput;
 };
 
-export type MutationCustomerChangePasswordArgs = {
-  id: Scalars["String"];
-  version: Scalars["Long"];
-  currentPassword: Scalars["String"];
-  newPassword: Scalars["String"];
-  storeKey?: Maybe<Scalars["KeyReferenceInput"]>;
+export type MutationMenuItemDeleteArgs = {
+  id: Scalars['ID'];
 };
 
-export type MutationCustomerResetPasswordArgs = {
-  version?: Maybe<Scalars["Long"]>;
-  tokenValue: Scalars["String"];
-  newPassword: Scalars["String"];
-  storeKey?: Maybe<Scalars["KeyReferenceInput"]>;
+export type MutationMenuItemBulkDeleteArgs = {
+  ids: Array<Maybe<Scalars['ID']>>;
 };
 
-export type MutationCustomerConfirmEmailArgs = {
-  version?: Maybe<Scalars["Long"]>;
-  tokenValue: Scalars["String"];
-  storeKey?: Maybe<Scalars["KeyReferenceInput"]>;
+export type MutationMenuItemUpdateArgs = {
+  id: Scalars['ID'];
+  input: MenuItemInput;
 };
 
-export type MutationCustomerCreatePasswordResetTokenArgs = {
-  email: Scalars["String"];
-  ttlMinutes?: Maybe<Scalars["Int"]>;
-  storeKey?: Maybe<Scalars["KeyReferenceInput"]>;
+export type MutationMenuItemTranslateArgs = {
+  id: Scalars['ID'];
+  input: NameTranslationInput;
+  languageCode: LanguageCodeEnum;
 };
 
-export type MutationCustomerCreateEmailVerificationTokenArgs = {
-  id: Scalars["String"];
-  version?: Maybe<Scalars["Long"]>;
-  ttlMinutes: Scalars["Int"];
-  storeKey?: Maybe<Scalars["KeyReferenceInput"]>;
+export type MutationMenuItemMoveArgs = {
+  menu: Scalars['ID'];
+  moves: Array<Maybe<MenuItemMoveInput>>;
 };
 
-export type MutationCustomerSignMeUpArgs = {
-  draft: CustomerSignMeUpDraft;
-  storeKey?: Maybe<Scalars["KeyReferenceInput"]>;
+export type MutationInvoiceRequestArgs = {
+  number?: Maybe<Scalars['String']>;
+  orderId: Scalars['ID'];
 };
 
-export type MutationCustomerSignMeInArgs = {
-  draft: CustomerSignMeInDraft;
-  storeKey?: Maybe<Scalars["KeyReferenceInput"]>;
+export type MutationInvoiceRequestDeleteArgs = {
+  id: Scalars['ID'];
 };
 
-export type MutationUpdateMyCustomerArgs = {
-  version: Scalars["Long"];
-  actions: Array<MyCustomerUpdateAction>;
-  storeKey?: Maybe<Scalars["KeyReferenceInput"]>;
+export type MutationInvoiceCreateArgs = {
+  input: InvoiceCreateInput;
+  orderId: Scalars['ID'];
 };
 
-export type MutationDeleteMyCustomerArgs = {
-  version: Scalars["Long"];
-  personalDataErasure?: Maybe<Scalars["Boolean"]>;
-  storeKey?: Maybe<Scalars["KeyReferenceInput"]>;
+export type MutationInvoiceDeleteArgs = {
+  id: Scalars['ID'];
 };
 
-export type MutationCustomerChangeMyPasswordArgs = {
-  version: Scalars["Long"];
-  currentPassword: Scalars["String"];
-  newPassword: Scalars["String"];
-  storeKey?: Maybe<Scalars["KeyReferenceInput"]>;
+export type MutationInvoiceUpdateArgs = {
+  id: Scalars['ID'];
+  input: UpdateInvoiceInput;
 };
 
-export type MutationCustomerConfirmMyEmailArgs = {
-  tokenValue: Scalars["String"];
-  storeKey?: Maybe<Scalars["KeyReferenceInput"]>;
+export type MutationInvoiceSendEmailArgs = {
+  id: Scalars['ID'];
 };
 
-export type MutationCustomerResetMyPasswordArgs = {
-  tokenValue: Scalars["String"];
-  newPassword: Scalars["String"];
-  storeKey?: Maybe<Scalars["KeyReferenceInput"]>;
+export type MutationGiftCardActivateArgs = {
+  id: Scalars['ID'];
 };
 
-export type MutationCreateInventoryEntryArgs = {
-  draft: InventoryEntryDraft;
+export type MutationGiftCardCreateArgs = {
+  input: GiftCardCreateInput;
 };
 
-export type MutationUpdateInventoryEntryArgs = {
-  id: Scalars["String"];
-  version: Scalars["Long"];
-  actions: Array<InventoryEntryUpdateAction>;
+export type MutationGiftCardDeactivateArgs = {
+  id: Scalars['ID'];
 };
 
-export type MutationDeleteInventoryEntryArgs = {
-  id: Scalars["String"];
-  version: Scalars["Long"];
+export type MutationGiftCardUpdateArgs = {
+  id: Scalars['ID'];
+  input: GiftCardUpdateInput;
 };
 
-export type MutationCreateCartArgs = {
-  draft: CartDraft;
-  storeKey?: Maybe<Scalars["KeyReferenceInput"]>;
+export type MutationPluginUpdateArgs = {
+  id: Scalars['ID'];
+  input: PluginUpdateInput;
 };
 
-export type MutationUpdateCartArgs = {
-  id: Scalars["String"];
-  version: Scalars["Long"];
-  actions: Array<CartUpdateAction>;
-  storeKey?: Maybe<Scalars["KeyReferenceInput"]>;
+export type MutationSaleCreateArgs = {
+  input: SaleInput;
 };
 
-export type MutationDeleteCartArgs = {
-  id: Scalars["String"];
-  version: Scalars["Long"];
-  personalDataErasure?: Maybe<Scalars["Boolean"]>;
-  storeKey?: Maybe<Scalars["KeyReferenceInput"]>;
+export type MutationSaleDeleteArgs = {
+  id: Scalars['ID'];
 };
 
-export type MutationReplicateCartArgs = {
-  reference: ReferenceInput;
+export type MutationSaleBulkDeleteArgs = {
+  ids: Array<Maybe<Scalars['ID']>>;
 };
 
-export type MutationCreateMyCartArgs = {
-  draft: MyCartDraft;
-  storeKey?: Maybe<Scalars["KeyReferenceInput"]>;
+export type MutationSaleUpdateArgs = {
+  id: Scalars['ID'];
+  input: SaleInput;
 };
 
-export type MutationUpdateMyCartArgs = {
-  id: Scalars["String"];
-  version: Scalars["Long"];
-  actions: Array<MyCartUpdateAction>;
-  storeKey?: Maybe<Scalars["KeyReferenceInput"]>;
+export type MutationSaleCataloguesAddArgs = {
+  id: Scalars['ID'];
+  input: CatalogueInput;
 };
 
-export type MutationDeleteMyCartArgs = {
-  id: Scalars["String"];
-  version: Scalars["Long"];
-  storeKey?: Maybe<Scalars["KeyReferenceInput"]>;
+export type MutationSaleCataloguesRemoveArgs = {
+  id: Scalars['ID'];
+  input: CatalogueInput;
 };
 
-export type MutationCreateOrderFromCartArgs = {
-  draft: OrderCartCommand;
-  storeKey?: Maybe<Scalars["KeyReferenceInput"]>;
+export type MutationSaleTranslateArgs = {
+  id: Scalars['ID'];
+  input: NameTranslationInput;
+  languageCode: LanguageCodeEnum;
 };
 
-export type MutationUpdateOrderArgs = {
-  version: Scalars["Long"];
-  actions: Array<OrderUpdateAction>;
-  storeKey?: Maybe<Scalars["KeyReferenceInput"]>;
-  id?: Maybe<Scalars["String"]>;
-  orderNumber?: Maybe<Scalars["String"]>;
+export type MutationVoucherCreateArgs = {
+  input: VoucherInput;
 };
 
-export type MutationDeleteOrderArgs = {
-  version: Scalars["Long"];
-  personalDataErasure?: Maybe<Scalars["Boolean"]>;
-  storeKey?: Maybe<Scalars["KeyReferenceInput"]>;
-  id?: Maybe<Scalars["String"]>;
-  orderNumber?: Maybe<Scalars["String"]>;
+export type MutationVoucherDeleteArgs = {
+  id: Scalars['ID'];
 };
 
-export type MutationCreateMyOrderFromCartArgs = {
-  draft: OrderMyCartCommand;
-  storeKey?: Maybe<Scalars["KeyReferenceInput"]>;
+export type MutationVoucherBulkDeleteArgs = {
+  ids: Array<Maybe<Scalars['ID']>>;
 };
 
-export type MutationCreateShoppingListArgs = {
-  draft: ShoppingListDraft;
+export type MutationVoucherUpdateArgs = {
+  id: Scalars['ID'];
+  input: VoucherInput;
 };
 
-export type MutationUpdateShoppingListArgs = {
-  version: Scalars["Long"];
-  actions: Array<ShoppingListUpdateAction>;
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
+export type MutationVoucherCataloguesAddArgs = {
+  id: Scalars['ID'];
+  input: CatalogueInput;
 };
 
-export type MutationDeleteShoppingListArgs = {
-  version: Scalars["Long"];
-  personalDataErasure?: Maybe<Scalars["Boolean"]>;
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
+export type MutationVoucherCataloguesRemoveArgs = {
+  id: Scalars['ID'];
+  input: CatalogueInput;
 };
 
-export type MutationCreateMyShoppingListArgs = {
-  draft: MyShoppingListDraft;
+export type MutationVoucherTranslateArgs = {
+  id: Scalars['ID'];
+  input: NameTranslationInput;
+  languageCode: LanguageCodeEnum;
 };
 
-export type MutationUpdateMyShoppingListArgs = {
-  id: Scalars["String"];
-  version: Scalars["Long"];
-  actions: Array<MyShoppingListUpdateAction>;
+export type MutationExportProductsArgs = {
+  input: ExportProductsInput;
 };
 
-export type MutationDeleteMyShoppingListArgs = {
-  id: Scalars["String"];
-  version: Scalars["Long"];
+export type MutationCheckoutAddPromoCodeArgs = {
+  checkoutId: Scalars['ID'];
+  promoCode: Scalars['String'];
 };
 
-export type MutationUpdateProjectArgs = {
-  version: Scalars["Long"];
-  actions: Array<ProjectSettingsUpdateAction>;
+export type MutationCheckoutBillingAddressUpdateArgs = {
+  billingAddress: AddressInput;
+  checkoutId: Scalars['ID'];
 };
 
-export type MutationCreateStoreArgs = {
-  draft: CreateStore;
+export type MutationCheckoutCompleteArgs = {
+  checkoutId: Scalars['ID'];
+  paymentData?: Maybe<Scalars['JSONString']>;
+  redirectUrl?: Maybe<Scalars['String']>;
+  storeSource?: Maybe<Scalars['Boolean']>;
 };
 
-export type MutationUpdateStoreArgs = {
-  version: Scalars["Long"];
-  actions: Array<StoreUpdateAction>;
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
+export type MutationCheckoutCreateArgs = {
+  input: CheckoutCreateInput;
 };
 
-export type MutationDeleteStoreArgs = {
-  version: Scalars["Long"];
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
+export type MutationCheckoutCustomerAttachArgs = {
+  checkoutId: Scalars['ID'];
+  customerId?: Maybe<Scalars['ID']>;
 };
 
-export type MutationCreateApiClientArgs = {
-  draft: CreateApiClient;
+export type MutationCheckoutCustomerDetachArgs = {
+  checkoutId: Scalars['ID'];
 };
 
-export type MutationDeleteApiClientArgs = {
-  id: Scalars["String"];
+export type MutationCheckoutEmailUpdateArgs = {
+  checkoutId?: Maybe<Scalars['ID']>;
+  email: Scalars['String'];
 };
 
-export type MyCartDraft = {
-  currency: Scalars["Currency"];
-  country?: Maybe<Scalars["Country"]>;
-  inventoryMode?: Maybe<InventoryMode>;
-  custom?: Maybe<CustomFieldsDraft>;
-  customerEmail?: Maybe<Scalars["String"]>;
-  shippingAddress?: Maybe<AddressInput>;
-  billingAddress?: Maybe<AddressInput>;
-  shippingMethod?: Maybe<ResourceIdentifierInput>;
-  taxMode?: Maybe<TaxMode>;
-  locale?: Maybe<Scalars["Locale"]>;
-  deleteDaysAfterLastModification?: Maybe<Scalars["Int"]>;
-  itemShippingAddresses?: Maybe<Array<AddressInput>>;
-  discountCodes?: Maybe<Array<Scalars["String"]>>;
-  lineItems?: Maybe<Array<MyLineItemDraft>>;
+export type MutationCheckoutLineDeleteArgs = {
+  checkoutId: Scalars['ID'];
+  lineId?: Maybe<Scalars['ID']>;
 };
 
-export type MyCartUpdateAction = {
-  addDiscountCode?: Maybe<AddCartDiscountCode>;
-  addItemShippingAddress?: Maybe<AddCartItemShippingAddress>;
-  addLineItem?: Maybe<AddMyCartLineItem>;
-  addPayment?: Maybe<AddCartPayment>;
-  addShoppingList?: Maybe<AddCartShoppingList>;
-  applyDeltaToLineItemShippingDetailsTargets?: Maybe<
-    ApplyCartDeltaToLineItemShippingDetailsTargets
-  >;
-  changeLineItemQuantity?: Maybe<ChangeCartLineItemQuantity>;
-  changeTaxMode?: Maybe<ChangeMyCartTaxMode>;
-  recalculate?: Maybe<RecalculateCart>;
-  removeDiscountCode?: Maybe<RemoveCartDiscountCode>;
-  removeItemShippingAddress?: Maybe<RemoveCartItemShippingAddress>;
-  removeLineItem?: Maybe<RemoveCartLineItem>;
-  removePayment?: Maybe<RemoveCartPayment>;
-  setBillingAddress?: Maybe<SetCartBillingAddress>;
-  setCountry?: Maybe<SetCartCountry>;
-  setCustomField?: Maybe<SetCartCustomField>;
-  setCustomType?: Maybe<SetCartCustomType>;
-  setCustomerEmail?: Maybe<SetCartCustomerEmail>;
-  setDeleteDaysAfterLastModification?: Maybe<
-    SetCartDeleteDaysAfterLastModification
-  >;
-  setLineItemCustomField?: Maybe<SetCartLineItemCustomField>;
-  setLineItemCustomType?: Maybe<SetCartLineItemCustomType>;
-  setLineItemShippingDetails?: Maybe<SetCartLineItemShippingDetails>;
-  setLocale?: Maybe<SetCartLocale>;
-  setShippingMethod?: Maybe<SetMyCartShippingMethod>;
-  setShippingAddress?: Maybe<SetCartShippingAddress>;
-  updateItemShippingAddress?: Maybe<UpdateCartItemShippingAddress>;
+export type MutationCheckoutLinesAddArgs = {
+  checkoutId: Scalars['ID'];
+  lines: Array<Maybe<CheckoutLineInput>>;
 };
 
-export type MyCustomerUpdateAction = {
-  addAddress?: Maybe<AddCustomerAddress>;
-  addBillingAddressId?: Maybe<AddCustomerBillingAddressId>;
-  addShippingAddressId?: Maybe<AddCustomerShippingAddressId>;
-  changeAddress?: Maybe<ChangeCustomerAddress>;
-  changeEmail?: Maybe<ChangeCustomerEmail>;
-  removeAddress?: Maybe<RemoveCustomerAddress>;
-  removeBillingAddressId?: Maybe<RemoveCustomerBillingAddressId>;
-  removeShippingAddressId?: Maybe<RemoveCustomerShippingAddressId>;
-  setCompanyName?: Maybe<SetCustomerCompanyName>;
-  setCustomField?: Maybe<SetCustomerCustomField>;
-  setCustomType?: Maybe<SetCustomerCustomType>;
-  setLocale?: Maybe<SetCustomerLocale>;
-  setDateOfBirth?: Maybe<SetCustomerDateOfBirth>;
-  setDefaultBillingAddress?: Maybe<SetCustomerDefaultBillingAddress>;
-  setDefaultShippingAddress?: Maybe<SetCustomerDefaultShippingAddress>;
-  setFirstName?: Maybe<SetCustomerFirstName>;
-  setLastName?: Maybe<SetCustomerLastName>;
-  setMiddleName?: Maybe<SetCustomerMiddleName>;
-  setSalutation?: Maybe<SetCustomerSalutation>;
-  setTitle?: Maybe<SetCustomerTitle>;
-  setVatId?: Maybe<SetCustomerVatId>;
+export type MutationCheckoutLinesUpdateArgs = {
+  checkoutId: Scalars['ID'];
+  lines: Array<Maybe<CheckoutLineInput>>;
 };
 
-export type MyLineItemDraft = {
-  productId?: Maybe<Scalars["String"]>;
-  sku?: Maybe<Scalars["String"]>;
-  quantity?: Maybe<Scalars["Long"]>;
-  variantId?: Maybe<Scalars["Int"]>;
-  supplyChannel?: Maybe<ResourceIdentifierInput>;
-  distributionChannel?: Maybe<ResourceIdentifierInput>;
-  custom?: Maybe<CustomFieldsDraft>;
-  shippingDetails?: Maybe<ItemShippingDetailsDraft>;
+export type MutationCheckoutRemovePromoCodeArgs = {
+  checkoutId: Scalars['ID'];
+  promoCode: Scalars['String'];
 };
 
-export type MyShoppingListDraft = {
-  name: Array<LocalizedStringItemInputType>;
-  description?: Maybe<Array<LocalizedStringItemInputType>>;
-  lineItems?: Maybe<Array<ShoppingListLineItemDraft>>;
-  textLineItems?: Maybe<Array<TextLineItemDraft>>;
-  custom?: Maybe<CustomFieldsDraft>;
-  deleteDaysAfterLastModification?: Maybe<Scalars["Int"]>;
+export type MutationCheckoutPaymentCreateArgs = {
+  checkoutId: Scalars['ID'];
+  input: PaymentInput;
 };
 
-export type MyShoppingListUpdateAction = {
-  addLineItem?: Maybe<AddShoppingListLineItem>;
-  addTextLineItem?: Maybe<AddShoppingListTextLineItem>;
-  changeLineItemQuantity?: Maybe<ChangeShoppingListLineItemQuantity>;
-  changeLineItemsOrder?: Maybe<ChangeShoppingListLineItemsOrder>;
-  changeName?: Maybe<ChangeShoppingListName>;
-  changeTextLineItemName?: Maybe<ChangeShoppingListTextLineItemName>;
-  changeTextLineItemQuantity?: Maybe<ChangeShoppingListTextLineItemQuantity>;
-  changeTextLineItemsOrder?: Maybe<ChangeShoppingListTextLineItemsOrder>;
-  removeLineItem?: Maybe<RemoveShoppingListLineItem>;
-  removeTextLineItem?: Maybe<RemoveShoppingListTextLineItem>;
-  setCustomField?: Maybe<SetShoppingListCustomField>;
-  setCustomType?: Maybe<SetShoppingListCustomType>;
-  setDeleteDaysAfterLastModification?: Maybe<
-    SetShoppingListDeleteDaysAfterLastModification
-  >;
-  setDescription?: Maybe<SetShoppingListDescription>;
-  setLineItemCustomField?: Maybe<SetShoppingListLineItemCustomField>;
-  setLineItemCustomType?: Maybe<SetShoppingListLineItemCustomType>;
-  setTextLineItemCustomField?: Maybe<SetShoppingListTextLineItemCustomField>;
-  setTextLineItemCustomType?: Maybe<SetShoppingListTextLineItemCustomType>;
-  setTextLineItemDescription?: Maybe<SetShoppingListTextLineItemDescription>;
+export type MutationCheckoutShippingAddressUpdateArgs = {
+  checkoutId: Scalars['ID'];
+  shippingAddress: AddressInput;
 };
 
-export type NestedAttributeDefinitionType = AttributeDefinitionType & {
-  __typename?: "NestedAttributeDefinitionType";
-  typeReference: Reference;
-  name: Scalars["String"];
+export type MutationCheckoutShippingMethodUpdateArgs = {
+  checkoutId?: Maybe<Scalars['ID']>;
+  shippingMethodId: Scalars['ID'];
 };
 
-export type NumberAttribute = Attribute & {
-  __typename?: "NumberAttribute";
-  value: Scalars["BigDecimal"];
-  name: Scalars["String"];
+export type MutationCheckoutUpdateMetadataArgs = {
+  id: Scalars['ID'];
+  input: MetaInput;
 };
 
-export type NumberAttributeDefinitionType = AttributeDefinitionType & {
-  __typename?: "NumberAttributeDefinitionType";
-  name: Scalars["String"];
+export type MutationCheckoutClearMetadataArgs = {
+  id: Scalars['ID'];
+  input: MetaPath;
 };
 
-export type NumberField = CustomField & {
-  __typename?: "NumberField";
-  value: Scalars["BigDecimal"];
-  name: Scalars["String"];
+export type MutationCheckoutUpdatePrivateMetadataArgs = {
+  id: Scalars['ID'];
+  input: MetaInput;
 };
 
-export type NumberType = FieldType & {
-  __typename?: "NumberType";
-  name: Scalars["String"];
+export type MutationCheckoutClearPrivateMetadataArgs = {
+  id: Scalars['ID'];
+  input: MetaPath;
 };
 
-/** An order can be created from a cart, usually after a checkout process has been completed.
- * [documentation](https://docs.commercetools.com/http-api-projects-orders.html)
- */
-export type Order = Versioned & {
-  __typename?: "Order";
-  customerId?: Maybe<Scalars["String"]>;
-  customer?: Maybe<Customer>;
-  customerEmail?: Maybe<Scalars["String"]>;
-  anonymousId?: Maybe<Scalars["String"]>;
-  lineItems: Array<LineItem>;
-  customLineItems: Array<CustomLineItem>;
-  totalPrice: Money;
-  taxedPrice?: Maybe<TaxedPrice>;
-  shippingAddress?: Maybe<Address>;
-  billingAddress?: Maybe<Address>;
-  inventoryMode: InventoryMode;
-  taxMode: TaxMode;
-  taxRoundingMode: RoundingMode;
-  taxCalculationMode: TaxCalculationMode;
-  customerGroup?: Maybe<CustomerGroup>;
-  customerGroupRef?: Maybe<Reference>;
-  country?: Maybe<Scalars["Country"]>;
-  shippingInfo?: Maybe<ShippingInfo>;
-  discountCodes: Array<DiscountCodeInfo>;
-  refusedGifts: Array<CartDiscount>;
-  refusedGiftsRefs: Array<Reference>;
-  paymentInfo?: Maybe<PaymentInfo>;
-  locale?: Maybe<Scalars["Locale"]>;
-  shippingRateInput?: Maybe<ShippingRateInput>;
-  origin: CartOrigin;
-  storeRef?: Maybe<KeyReference>;
-  store?: Maybe<Store>;
-  itemShippingAddresses: Array<Address>;
-  completedAt?: Maybe<Scalars["DateTime"]>;
-  orderNumber?: Maybe<Scalars["String"]>;
-  orderState: OrderState;
-  stateRef?: Maybe<Reference>;
-  state?: Maybe<State>;
-  shipmentState?: Maybe<ShipmentState>;
-  paymentState?: Maybe<PaymentState>;
-  syncInfo: Array<SyncInfo>;
-  returnInfo: Array<ReturnInfo>;
-  lastMessageSequenceNumber: Scalars["Long"];
-  cartRef?: Maybe<Reference>;
-  cart?: Maybe<Cart>;
-  /** This field contains non-typed data. Consider using `customFields` as a typed alternative. */
-  customFieldsRaw?: Maybe<Array<RawCustomField>>;
-  /** This field would contain type data */
-  customFields?: Maybe<Type>;
-  custom?: Maybe<CustomFieldsType>;
-  id: Scalars["String"];
-  version: Scalars["Long"];
-  createdAt: Scalars["DateTime"];
-  lastModifiedAt: Scalars["DateTime"];
-  createdBy?: Maybe<Initiator>;
-  lastModifiedBy?: Maybe<Initiator>;
-  /** Custom fields are returned as a list instead of an object structure. */
-  customFieldList?: Maybe<Array<CustomField>>;
+export type MutationAppCreateArgs = {
+  input: AppInput;
 };
 
-/** An order can be created from a cart, usually after a checkout process has been completed.
- * [documentation](https://docs.commercetools.com/http-api-projects-orders.html)
- */
-export type OrderCustomFieldsRawArgs = {
-  includeNames?: Maybe<Array<Scalars["String"]>>;
-  excludeNames?: Maybe<Array<Scalars["String"]>>;
+export type MutationAppUpdateArgs = {
+  id: Scalars['ID'];
+  input: AppInput;
 };
 
-/** An order can be created from a cart, usually after a checkout process has been completed.
- * [documentation](https://docs.commercetools.com/http-api-projects-orders.html)
- */
-export type OrderCustomFieldListArgs = {
-  includeNames?: Maybe<Array<Scalars["String"]>>;
-  excludeNames?: Maybe<Array<Scalars["String"]>>;
+export type MutationAppDeleteArgs = {
+  id: Scalars['ID'];
 };
 
-export type OrderCartCommand = {
-  id: Scalars["String"];
-  version: Scalars["Long"];
-  paymentState?: Maybe<PaymentState>;
-  orderState?: Maybe<OrderState>;
-  state?: Maybe<ReferenceInput>;
-  shipmentState?: Maybe<ShipmentState>;
-  orderNumber?: Maybe<Scalars["String"]>;
+export type MutationAppTokenCreateArgs = {
+  input: AppTokenInput;
 };
 
-export type OrderMyCartCommand = {
-  id: Scalars["String"];
-  version: Scalars["Long"];
+export type MutationAppTokenDeleteArgs = {
+  id: Scalars['ID'];
 };
 
-/** Fields to access orders. Includes direct access to a single order and searching for orders. */
-export type OrderQueryInterface = {
+export type MutationAppTokenVerifyArgs = {
+  token: Scalars['String'];
+};
+
+export type MutationAppInstallArgs = {
+  input: AppInstallInput;
+};
+
+export type MutationAppRetryInstallArgs = {
+  activateAfterInstallation?: Maybe<Scalars['Boolean']>;
+  id: Scalars['ID'];
+};
+
+export type MutationAppDeleteFailedInstallationArgs = {
+  id: Scalars['ID'];
+};
+
+export type MutationAppFetchManifestArgs = {
+  manifestUrl: Scalars['String'];
+};
+
+export type MutationAppActivateArgs = {
+  id: Scalars['ID'];
+};
+
+export type MutationAppDeactivateArgs = {
+  id: Scalars['ID'];
+};
+
+export type MutationTokenCreateArgs = {
+  email: Scalars['String'];
+  password: Scalars['String'];
+};
+
+export type MutationTokenRefreshArgs = {
+  csrfToken?: Maybe<Scalars['String']>;
+  refreshToken?: Maybe<Scalars['String']>;
+};
+
+export type MutationTokenVerifyArgs = {
+  token: Scalars['String'];
+};
+
+export type MutationRequestPasswordResetArgs = {
+  email: Scalars['String'];
+  redirectUrl: Scalars['String'];
+};
+
+export type MutationConfirmAccountArgs = {
+  email: Scalars['String'];
+  token: Scalars['String'];
+};
+
+export type MutationSetPasswordArgs = {
+  email: Scalars['String'];
+  password: Scalars['String'];
+  token: Scalars['String'];
+};
+
+export type MutationPasswordChangeArgs = {
+  newPassword: Scalars['String'];
+  oldPassword: Scalars['String'];
+};
+
+export type MutationRequestEmailChangeArgs = {
+  newEmail: Scalars['String'];
+  password: Scalars['String'];
+  redirectUrl: Scalars['String'];
+};
+
+export type MutationConfirmEmailChangeArgs = {
+  token: Scalars['String'];
+};
+
+export type MutationAccountAddressCreateArgs = {
+  input: AddressInput;
+  type?: Maybe<AddressTypeEnum>;
+};
+
+export type MutationAccountAddressUpdateArgs = {
+  id: Scalars['ID'];
+  input: AddressInput;
+};
+
+export type MutationAccountAddressDeleteArgs = {
+  id: Scalars['ID'];
+};
+
+export type MutationAccountSetDefaultAddressArgs = {
+  id: Scalars['ID'];
+  type: AddressTypeEnum;
+};
+
+export type MutationAccountRegisterArgs = {
+  input: AccountRegisterInput;
+};
+
+export type MutationAccountUpdateArgs = {
+  input: AccountInput;
+};
+
+export type MutationAccountRequestDeletionArgs = {
+  redirectUrl: Scalars['String'];
+};
+
+export type MutationAccountDeleteArgs = {
+  token: Scalars['String'];
+};
+
+export type MutationAccountUpdateMetaArgs = {
+  input: MetaInput;
+};
+
+export type MutationAddressCreateArgs = {
+  input: AddressInput;
+  userId: Scalars['ID'];
+};
+
+export type MutationAddressUpdateArgs = {
+  id: Scalars['ID'];
+  input: AddressInput;
+};
+
+export type MutationAddressDeleteArgs = {
+  id: Scalars['ID'];
+};
+
+export type MutationAddressSetDefaultArgs = {
+  addressId: Scalars['ID'];
+  type: AddressTypeEnum;
+  userId: Scalars['ID'];
+};
+
+export type MutationCustomerCreateArgs = {
+  input: UserCreateInput;
+};
+
+export type MutationCustomerUpdateArgs = {
+  id: Scalars['ID'];
+  input: CustomerInput;
+};
+
+export type MutationCustomerDeleteArgs = {
+  id: Scalars['ID'];
+};
+
+export type MutationCustomerBulkDeleteArgs = {
+  ids: Array<Maybe<Scalars['ID']>>;
+};
+
+export type MutationStaffCreateArgs = {
+  input: StaffCreateInput;
+};
+
+export type MutationStaffUpdateArgs = {
+  id: Scalars['ID'];
+  input: StaffUpdateInput;
+};
+
+export type MutationStaffDeleteArgs = {
+  id: Scalars['ID'];
+};
+
+export type MutationStaffBulkDeleteArgs = {
+  ids: Array<Maybe<Scalars['ID']>>;
+};
+
+export type MutationUserAvatarUpdateArgs = {
+  image: Scalars['Upload'];
+};
+
+export type MutationUserBulkSetActiveArgs = {
+  ids: Array<Maybe<Scalars['ID']>>;
+  isActive: Scalars['Boolean'];
+};
+
+export type MutationUserUpdateMetadataArgs = {
+  id: Scalars['ID'];
+  input: MetaInput;
+};
+
+export type MutationUserClearMetadataArgs = {
+  id: Scalars['ID'];
+  input: MetaPath;
+};
+
+export type MutationUserUpdatePrivateMetadataArgs = {
+  id: Scalars['ID'];
+  input: MetaInput;
+};
+
+export type MutationUserClearPrivateMetadataArgs = {
+  id: Scalars['ID'];
+  input: MetaPath;
+};
+
+export type MutationServiceAccountCreateArgs = {
+  input: ServiceAccountInput;
+};
+
+export type MutationServiceAccountUpdateArgs = {
+  id: Scalars['ID'];
+  input: ServiceAccountInput;
+};
+
+export type MutationServiceAccountDeleteArgs = {
+  id: Scalars['ID'];
+};
+
+export type MutationServiceAccountUpdatePrivateMetadataArgs = {
+  id: Scalars['ID'];
+  input: MetaInput;
+};
+
+export type MutationServiceAccountClearPrivateMetadataArgs = {
+  id: Scalars['ID'];
+  input: MetaPath;
+};
+
+export type MutationServiceAccountTokenCreateArgs = {
+  input: ServiceAccountTokenInput;
+};
+
+export type MutationServiceAccountTokenDeleteArgs = {
+  id: Scalars['ID'];
+};
+
+export type MutationPermissionGroupCreateArgs = {
+  input: PermissionGroupCreateInput;
+};
+
+export type MutationPermissionGroupUpdateArgs = {
+  id: Scalars['ID'];
+  input: PermissionGroupUpdateInput;
+};
+
+export type MutationPermissionGroupDeleteArgs = {
+  id: Scalars['ID'];
+};
+
+export type NameTranslationInput = {
+  name?: Maybe<Scalars['String']>;
+};
+
+/** Represents shop's navigation menus. */
+export type Navigation = {
+  __typename?: 'Navigation';
+  /** Main navigation bar. */
+  main?: Maybe<Menu>;
+  /** Secondary navigation bar. */
+  secondary?: Maybe<Menu>;
+};
+
+export enum NavigationType {
+  /** Main storefront navigation. */
+  Main = 'MAIN',
+  /** Secondary storefront navigation. */
+  Secondary = 'SECONDARY'
+}
+
+/** An object with an ID */
+export type Node = {
+  /** The ID of the object. */
+  id: Scalars['ID'];
+};
+
+export type ObjectWithMetadata = {
+  /** List of private metadata items.Requires proper staff permissions to access. */
+  privateMetadata: Array<Maybe<MetadataItem>>;
+  /** List of public metadata items. Can be accessed without permissions. */
+  metadata: Array<Maybe<MetadataItem>>;
+  /**
+   * List of privately stored metadata namespaces.
+   * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
+   */
+  privateMeta: Array<Maybe<MetaStore>>;
+  /**
+   * List of publicly stored metadata namespaces.
+   * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
+   */
+  meta: Array<Maybe<MetaStore>>;
+};
+
+/** Represents an order in the shop. */
+export type Order = Node &
+  ObjectWithMetadata & {
+    __typename?: 'Order';
+    /** The ID of the object. */
+    id: Scalars['ID'];
+    created: Scalars['DateTime'];
+    status: OrderStatus;
+    user?: Maybe<User>;
+    languageCode: Scalars['String'];
+    trackingClientId: Scalars['String'];
+    billingAddress?: Maybe<Address>;
+    shippingAddress?: Maybe<Address>;
+    shippingMethod?: Maybe<ShippingMethod>;
+    shippingMethodName?: Maybe<Scalars['String']>;
+    /** Total price of shipping. */
+    shippingPrice?: Maybe<TaxedMoney>;
+    token: Scalars['String'];
+    voucher?: Maybe<Voucher>;
+    /** List of user gift cards. */
+    giftCards?: Maybe<Array<Maybe<GiftCard>>>;
+    discount?: Maybe<Money>;
+    discountName?: Maybe<Scalars['String']>;
+    translatedDiscountName?: Maybe<Scalars['String']>;
+    displayGrossPrices: Scalars['Boolean'];
+    customerNote: Scalars['String'];
+    weight?: Maybe<Weight>;
+    /** List of private metadata items.Requires proper staff permissions to access. */
+    privateMetadata: Array<Maybe<MetadataItem>>;
+    /** List of public metadata items. Can be accessed without permissions. */
+    metadata: Array<Maybe<MetadataItem>>;
+    /**
+     * List of privately stored metadata namespaces.
+     * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
+     */
+    privateMeta: Array<Maybe<MetaStore>>;
+    /**
+     * List of publicly stored metadata namespaces.
+     * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
+     */
+    meta: Array<Maybe<MetaStore>>;
+    /** List of shipments for the order. */
+    fulfillments: Array<Maybe<Fulfillment>>;
+    /** List of order lines. */
+    lines: Array<Maybe<OrderLine>>;
+    /** List of actions that can be performed in the current state of an order. */
+    actions: Array<Maybe<OrderAction>>;
+    /** Shipping methods that can be used with this order. */
+    availableShippingMethods?: Maybe<Array<Maybe<ShippingMethod>>>;
+    /** List of order invoices. */
+    invoices?: Maybe<Array<Maybe<Invoice>>>;
+    /** User-friendly number of an order. */
+    number?: Maybe<Scalars['String']>;
+    /** Informs if an order is fully paid. */
+    isPaid?: Maybe<Scalars['Boolean']>;
+    /** Internal payment status. */
+    paymentStatus?: Maybe<PaymentChargeStatusEnum>;
+    /** User-friendly payment status. */
+    paymentStatusDisplay?: Maybe<Scalars['String']>;
+    /** List of payments for the order. */
+    payments?: Maybe<Array<Maybe<Payment>>>;
+    /** Total amount of the order. */
+    total?: Maybe<TaxedMoney>;
+    /** The sum of line prices not including shipping. */
+    subtotal?: Maybe<TaxedMoney>;
+    /** User-friendly order status. */
+    statusDisplay?: Maybe<Scalars['String']>;
+    /** Informs whether a draft order can be finalized(turned into a regular order). */
+    canFinalize: Scalars['Boolean'];
+    /** Amount authorized for the order. */
+    totalAuthorized?: Maybe<Money>;
+    /** Amount captured by payment. */
+    totalCaptured?: Maybe<Money>;
+    /** List of events associated with the order. */
+    events?: Maybe<Array<Maybe<OrderEvent>>>;
+    /** The difference between the paid and the order total amount. */
+    totalBalance: Money;
+    /** Email address of the customer. */
+    userEmail?: Maybe<Scalars['String']>;
+    /** Returns True, if order requires shipping. */
+    isShippingRequired: Scalars['Boolean'];
+  };
+
+export enum OrderAction {
+  /** Represents the capture action. */
+  Capture = 'CAPTURE',
+  /** Represents a mark-as-paid action. */
+  MarkAsPaid = 'MARK_AS_PAID',
+  /** Represents a refund action. */
+  Refund = 'REFUND',
+  /** Represents a void action. */
+  Void = 'VOID'
+}
+
+/** Adds note to the order. */
+export type OrderAddNote = {
+  __typename?: 'OrderAddNote';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Order with the note added. */
   order?: Maybe<Order>;
-  orders: OrderQueryResult;
+  /** Order note created. */
+  event?: Maybe<OrderEvent>;
+  orderErrors: Array<OrderError>;
 };
 
-/** Fields to access orders. Includes direct access to a single order and searching for orders. */
-export type OrderQueryInterfaceOrderArgs = {
-  id?: Maybe<Scalars["String"]>;
-  orderNumber?: Maybe<Scalars["String"]>;
+export type OrderAddNoteInput = {
+  /** Note message. */
+  message: Scalars['String'];
 };
 
-/** Fields to access orders. Includes direct access to a single order and searching for orders. */
-export type OrderQueryInterfaceOrdersArgs = {
-  where?: Maybe<Scalars["String"]>;
-  sort?: Maybe<Array<Scalars["String"]>>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
+/** Cancels orders. */
+export type OrderBulkCancel = {
+  __typename?: 'OrderBulkCancel';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Returns how many objects were affected. */
+  count: Scalars['Int'];
+  orderErrors: Array<OrderError>;
 };
 
-export type OrderQueryResult = {
-  __typename?: "OrderQueryResult";
-  offset: Scalars["Int"];
-  count: Scalars["Int"];
-  total: Scalars["Long"];
-  results: Array<Order>;
+/** Cancel an order. */
+export type OrderCancel = {
+  __typename?: 'OrderCancel';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Canceled order. */
+  order?: Maybe<Order>;
+  orderErrors: Array<OrderError>;
 };
 
-export enum OrderState {
-  Confirmed = "Confirmed",
-  Cancelled = "Cancelled",
-  Complete = "Complete",
-  Open = "Open"
+/** Capture an order. */
+export type OrderCapture = {
+  __typename?: 'OrderCapture';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Captured order. */
+  order?: Maybe<Order>;
+  orderErrors: Array<OrderError>;
+};
+
+/** Clears stored metadata value. */
+export type OrderClearMeta = {
+  __typename?: 'OrderClearMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  order?: Maybe<Order>;
+};
+
+/** Clears stored private metadata value. */
+export type OrderClearPrivateMeta = {
+  __typename?: 'OrderClearPrivateMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  order?: Maybe<Order>;
+};
+
+export type OrderCountableConnection = {
+  __typename?: 'OrderCountableConnection';
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  edges: Array<OrderCountableEdge>;
+  /** A total count of items in the collection. */
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type OrderCountableEdge = {
+  __typename?: 'OrderCountableEdge';
+  /** The item at the end of the edge. */
+  node: Order;
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+};
+
+export enum OrderDirection {
+  /** Specifies an ascending sort order. */
+  Asc = 'ASC',
+  /** Specifies a descending sort order. */
+  Desc = 'DESC'
 }
 
-export type OrderUpdateAction = {
-  addDelivery?: Maybe<AddOrderDelivery>;
-  addItemShippingAddress?: Maybe<AddOrderItemShippingAddress>;
-  addParcelToDelivery?: Maybe<AddOrderParcelToDelivery>;
-  addPayment?: Maybe<AddOrderPayment>;
-  addReturnInfo?: Maybe<AddOrderReturnInfo>;
-  changeOrderState?: Maybe<ChangeOrderState>;
-  changePaymentState?: Maybe<ChangeOrderPaymentState>;
-  changeShipmentState?: Maybe<ChangeOrderShipmentState>;
-  importCustomLineItemState?: Maybe<ImportOrderCustomLineItemState>;
-  importLineItemState?: Maybe<ImportOrderLineItemState>;
-  removeDelivery?: Maybe<RemoveOrderDelivery>;
-  removeItemShippingAddress?: Maybe<RemoveOrderItemShippingAddress>;
-  removeParcelFromDelivery?: Maybe<RemoveOrderParcelFromDelivery>;
-  removePayment?: Maybe<RemoveOrderPayment>;
-  setBillingAddress?: Maybe<SetOrderBillingAddress>;
-  setCustomField?: Maybe<SetOrderCustomField>;
-  setCustomLineItemCustomField?: Maybe<SetOrderCustomLineItemCustomField>;
-  setCustomLineItemCustomType?: Maybe<SetOrderCustomLineItemCustomType>;
-  setCustomLineItemShippingDetails?: Maybe<
-    SetOrderCustomLineItemShippingDetails
-  >;
-  setCustomType?: Maybe<SetOrderCustomType>;
-  setCustomerEmail?: Maybe<SetOrderCustomerEmail>;
-  setCustomerId?: Maybe<SetOrderCustomerId>;
-  setDeliveryAddress?: Maybe<SetOrderDeliveryAddress>;
-  setDeliveryItems?: Maybe<SetOrderDeliveryItems>;
-  setLineItemCustomField?: Maybe<SetOrderLineItemCustomField>;
-  setLineItemCustomType?: Maybe<SetOrderLineItemCustomType>;
-  setLineItemShippingDetails?: Maybe<SetOrderLineItemShippingDetails>;
-  setLocale?: Maybe<SetOrderLocale>;
-  setOrderNumber?: Maybe<SetOrderNumber>;
-  setParcelItems?: Maybe<SetOrderParcelItems>;
-  setParcelMeasurements?: Maybe<SetOrderParcelMeasurements>;
-  setParcelTrackingData?: Maybe<SetOrderParcelTrackingData>;
-  setReturnPaymentState?: Maybe<SetOrderReturnPaymentState>;
-  setReturnShipmentState?: Maybe<SetOrderReturnShipmentState>;
-  setShippingAddress?: Maybe<SetOrderShippingAddress>;
-  transitionCustomLineItemState?: Maybe<TransitionOrderCustomLineItemState>;
-  transitionLineItemState?: Maybe<TransitionOrderLineItemState>;
-  transitionState?: Maybe<TransitionOrderState>;
-  updateItemShippingAddress?: Maybe<UpdateOrderItemShippingAddress>;
-  updateSyncInfo?: Maybe<UpdateOrderSyncInfo>;
+export type OrderDraftFilterInput = {
+  customer?: Maybe<Scalars['String']>;
+  created?: Maybe<DateRangeInput>;
+  search?: Maybe<Scalars['String']>;
 };
 
-export type Parcel = {
-  __typename?: "Parcel";
-  id: Scalars["String"];
-  createdAt: Scalars["DateTime"];
-  measurements?: Maybe<ParcelMeasurements>;
-  trackingData?: Maybe<TrackingData>;
-  items: Array<DeliveryItem>;
+export type OrderError = {
+  __typename?: 'OrderError';
+  /**
+   * Name of a field that caused the error. A value of `null` indicates that the
+   * error isn't associated with a particular field.
+   */
+  field?: Maybe<Scalars['String']>;
+  /** The error message. */
+  message?: Maybe<Scalars['String']>;
+  /** The error code. */
+  code: OrderErrorCode;
+  /** Warehouse ID which causes the error. */
+  warehouse?: Maybe<Scalars['ID']>;
+  /** Order line ID which causes the error. */
+  orderLine?: Maybe<Scalars['ID']>;
 };
 
-export type ParcelMeasurements = {
-  __typename?: "ParcelMeasurements";
-  heightInMillimeter?: Maybe<Scalars["Int"]>;
-  lengthInMillimeter?: Maybe<Scalars["Int"]>;
-  widthInMillimeter?: Maybe<Scalars["Int"]>;
-  weightInGram?: Maybe<Scalars["Int"]>;
-};
-
-export type ParcelMeasurementsDraftType = {
-  heightInMillimeter?: Maybe<Scalars["Int"]>;
-  lengthInMillimeter?: Maybe<Scalars["Int"]>;
-  widthInMillimeter?: Maybe<Scalars["Int"]>;
-  weightInGram?: Maybe<Scalars["Int"]>;
-};
-
-/** Payments hold information about the current state of receiving and/or refunding money.
- * [documentation](https://docs.commercetools.com/http-api-projects-payments)
- */
-export type Payment = Versioned & {
-  __typename?: "Payment";
-  key?: Maybe<Scalars["String"]>;
-  customerRef?: Maybe<Reference>;
-  customer?: Maybe<Customer>;
-  anonymousId?: Maybe<Scalars["String"]>;
-  interfaceId?: Maybe<Scalars["String"]>;
-  amountPlanned: Money;
-  amountAuthorized?: Maybe<Money>;
-  authorizedUntil?: Maybe<Scalars["DateTime"]>;
-  amountPaid?: Maybe<Money>;
-  amountRefunded?: Maybe<Money>;
-  paymentMethodInfo: PaymentMethodInfo;
-  paymentStatus: PaymentStatus;
-  transactions: Array<Transaction>;
-  interfaceInteractionsRaw: InterfaceInteractionsRawResult;
-  /** This field contains non-typed data. Consider using `customFields` as a typed alternative. */
-  customFieldsRaw?: Maybe<Array<RawCustomField>>;
-  /** This field would contain type data */
-  customFields?: Maybe<Type>;
-  custom?: Maybe<CustomFieldsType>;
-  id: Scalars["String"];
-  version: Scalars["Long"];
-  createdAt: Scalars["DateTime"];
-  lastModifiedAt: Scalars["DateTime"];
-  createdBy?: Maybe<Initiator>;
-  lastModifiedBy?: Maybe<Initiator>;
-  /** Custom fields are returned as a list instead of an object structure. */
-  customFieldList?: Maybe<Array<CustomField>>;
-};
-
-/** Payments hold information about the current state of receiving and/or refunding money.
- * [documentation](https://docs.commercetools.com/http-api-projects-payments)
- */
-export type PaymentInterfaceInteractionsRawArgs = {
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
-};
-
-/** Payments hold information about the current state of receiving and/or refunding money.
- * [documentation](https://docs.commercetools.com/http-api-projects-payments)
- */
-export type PaymentCustomFieldsRawArgs = {
-  includeNames?: Maybe<Array<Scalars["String"]>>;
-  excludeNames?: Maybe<Array<Scalars["String"]>>;
-};
-
-/** Payments hold information about the current state of receiving and/or refunding money.
- * [documentation](https://docs.commercetools.com/http-api-projects-payments)
- */
-export type PaymentCustomFieldListArgs = {
-  includeNames?: Maybe<Array<Scalars["String"]>>;
-  excludeNames?: Maybe<Array<Scalars["String"]>>;
-};
-
-export type PaymentInfo = {
-  __typename?: "PaymentInfo";
-  payments: Array<Payment>;
-  paymentRefs: Array<Reference>;
-};
-
-export type PaymentMethodInfo = {
-  __typename?: "PaymentMethodInfo";
-  paymentInterface?: Maybe<Scalars["String"]>;
-  method?: Maybe<Scalars["String"]>;
-  name?: Maybe<Scalars["String"]>;
-  nameAllLocales?: Maybe<Array<LocalizedString>>;
-};
-
-export type PaymentMethodInfoNameArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
-};
-
-export type PaymentQueryResult = {
-  __typename?: "PaymentQueryResult";
-  offset: Scalars["Int"];
-  count: Scalars["Int"];
-  total: Scalars["Long"];
-  results: Array<Payment>;
-};
-
-export enum PaymentState {
-  Paid = "Paid",
-  CreditOwed = "CreditOwed",
-  Pending = "Pending",
-  Failed = "Failed",
-  BalanceDue = "BalanceDue"
+/** An enumeration. */
+export enum OrderErrorCode {
+  BillingAddressNotSet = 'BILLING_ADDRESS_NOT_SET',
+  CannotCancelFulfillment = 'CANNOT_CANCEL_FULFILLMENT',
+  CannotCancelOrder = 'CANNOT_CANCEL_ORDER',
+  CannotDelete = 'CANNOT_DELETE',
+  CannotRefund = 'CANNOT_REFUND',
+  CaptureInactivePayment = 'CAPTURE_INACTIVE_PAYMENT',
+  NotEditable = 'NOT_EDITABLE',
+  FulfillOrderLine = 'FULFILL_ORDER_LINE',
+  GraphqlError = 'GRAPHQL_ERROR',
+  Invalid = 'INVALID',
+  ProductNotPublished = 'PRODUCT_NOT_PUBLISHED',
+  ProductUnavailableForPurchase = 'PRODUCT_UNAVAILABLE_FOR_PURCHASE',
+  NotFound = 'NOT_FOUND',
+  OrderNoShippingAddress = 'ORDER_NO_SHIPPING_ADDRESS',
+  PaymentError = 'PAYMENT_ERROR',
+  PaymentMissing = 'PAYMENT_MISSING',
+  Required = 'REQUIRED',
+  ShippingMethodNotApplicable = 'SHIPPING_METHOD_NOT_APPLICABLE',
+  ShippingMethodRequired = 'SHIPPING_METHOD_REQUIRED',
+  TaxError = 'TAX_ERROR',
+  Unique = 'UNIQUE',
+  VoidInactivePayment = 'VOID_INACTIVE_PAYMENT',
+  ZeroQuantity = 'ZERO_QUANTITY',
+  InsufficientStock = 'INSUFFICIENT_STOCK',
+  DuplicatedInputItem = 'DUPLICATED_INPUT_ITEM'
 }
 
-export type PaymentStatus = {
-  __typename?: "PaymentStatus";
-  interfaceCode?: Maybe<Scalars["String"]>;
-  interfaceText?: Maybe<Scalars["String"]>;
-  stateRef?: Maybe<Reference>;
-  state?: Maybe<State>;
+/** History log of the order. */
+export type OrderEvent = Node & {
+  __typename?: 'OrderEvent';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  /** Date when event happened at in ISO 8601 format. */
+  date?: Maybe<Scalars['DateTime']>;
+  /** Order event type. */
+  type?: Maybe<OrderEventsEnum>;
+  /** User who performed the action. */
+  user?: Maybe<User>;
+  /** Content of the event. */
+  message?: Maybe<Scalars['String']>;
+  /** Email of the customer. */
+  email?: Maybe<Scalars['String']>;
+  /** Type of an email sent to the customer. */
+  emailType?: Maybe<OrderEventsEmailsEnum>;
+  /** Amount of money. */
+  amount?: Maybe<Scalars['Float']>;
+  /** The payment ID from the payment gateway. */
+  paymentId?: Maybe<Scalars['String']>;
+  /** The payment gateway of the payment. */
+  paymentGateway?: Maybe<Scalars['String']>;
+  /** Number of items. */
+  quantity?: Maybe<Scalars['Int']>;
+  /** Composed ID of the Fulfillment. */
+  composedId?: Maybe<Scalars['String']>;
+  /** User-friendly number of an order. */
+  orderNumber?: Maybe<Scalars['String']>;
+  /** Number of an invoice related to the order. */
+  invoiceNumber?: Maybe<Scalars['String']>;
+  /** List of oversold lines names. */
+  oversoldItems?: Maybe<Array<Maybe<Scalars['String']>>>;
+  /** The concerned lines. */
+  lines?: Maybe<Array<Maybe<OrderEventOrderLineObject>>>;
+  /** The lines fulfilled. */
+  fulfilledItems?: Maybe<Array<Maybe<FulfillmentLine>>>;
+  /** The warehouse were items were restocked. */
+  warehouse?: Maybe<Warehouse>;
 };
 
-export type PlainEnumValue = {
-  __typename?: "PlainEnumValue";
-  key: Scalars["String"];
-  label: Scalars["String"];
+export type OrderEventCountableConnection = {
+  __typename?: 'OrderEventCountableConnection';
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  edges: Array<OrderEventCountableEdge>;
+  /** A total count of items in the collection. */
+  totalCount?: Maybe<Scalars['Int']>;
 };
 
-export type PlainEnumValueDraft = {
-  key: Scalars["String"];
-  label: Scalars["String"];
+export type OrderEventCountableEdge = {
+  __typename?: 'OrderEventCountableEdge';
+  /** The item at the end of the edge. */
+  node: OrderEvent;
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
 };
 
-export type PlainEnumValueResult = {
-  __typename?: "PlainEnumValueResult";
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
-  total: Scalars["Int"];
-  results: Array<PlainEnumValue>;
+export type OrderEventOrderLineObject = {
+  __typename?: 'OrderEventOrderLineObject';
+  /** The variant quantity. */
+  quantity?: Maybe<Scalars['Int']>;
+  /** The order line. */
+  orderLine?: Maybe<OrderLine>;
+  /** The variant name. */
+  itemName?: Maybe<Scalars['String']>;
 };
 
-export type Point = Geometry & {
-  __typename?: "Point";
-  coordinates: Array<Scalars["Float"]>;
-  type: Scalars["String"];
+/** An enumeration. */
+export enum OrderEventsEmailsEnum {
+  PaymentConfirmation = 'PAYMENT_CONFIRMATION',
+  ShippingConfirmation = 'SHIPPING_CONFIRMATION',
+  TrackingUpdated = 'TRACKING_UPDATED',
+  OrderConfirmation = 'ORDER_CONFIRMATION',
+  OrderCancel = 'ORDER_CANCEL',
+  OrderRefund = 'ORDER_REFUND',
+  FulfillmentConfirmation = 'FULFILLMENT_CONFIRMATION',
+  DigitalLinks = 'DIGITAL_LINKS'
+}
+
+/** An enumeration. */
+export enum OrderEventsEnum {
+  DraftCreated = 'DRAFT_CREATED',
+  DraftAddedProducts = 'DRAFT_ADDED_PRODUCTS',
+  DraftRemovedProducts = 'DRAFT_REMOVED_PRODUCTS',
+  Placed = 'PLACED',
+  PlacedFromDraft = 'PLACED_FROM_DRAFT',
+  OversoldItems = 'OVERSOLD_ITEMS',
+  Canceled = 'CANCELED',
+  OrderMarkedAsPaid = 'ORDER_MARKED_AS_PAID',
+  OrderFullyPaid = 'ORDER_FULLY_PAID',
+  UpdatedAddress = 'UPDATED_ADDRESS',
+  EmailSent = 'EMAIL_SENT',
+  PaymentAuthorized = 'PAYMENT_AUTHORIZED',
+  PaymentCaptured = 'PAYMENT_CAPTURED',
+  ExternalServiceNotification = 'EXTERNAL_SERVICE_NOTIFICATION',
+  PaymentRefunded = 'PAYMENT_REFUNDED',
+  PaymentVoided = 'PAYMENT_VOIDED',
+  PaymentFailed = 'PAYMENT_FAILED',
+  InvoiceRequested = 'INVOICE_REQUESTED',
+  InvoiceGenerated = 'INVOICE_GENERATED',
+  InvoiceUpdated = 'INVOICE_UPDATED',
+  InvoiceSent = 'INVOICE_SENT',
+  FulfillmentCanceled = 'FULFILLMENT_CANCELED',
+  FulfillmentRestockedItems = 'FULFILLMENT_RESTOCKED_ITEMS',
+  FulfillmentFulfilledItems = 'FULFILLMENT_FULFILLED_ITEMS',
+  TrackingUpdated = 'TRACKING_UPDATED',
+  NoteAdded = 'NOTE_ADDED',
+  Other = 'OTHER'
+}
+
+export type OrderFilterInput = {
+  paymentStatus?: Maybe<Array<Maybe<PaymentChargeStatusEnum>>>;
+  status?: Maybe<Array<Maybe<OrderStatusFilter>>>;
+  customer?: Maybe<Scalars['String']>;
+  created?: Maybe<DateRangeInput>;
+  search?: Maybe<Scalars['String']>;
 };
 
-export type PriceFunction = {
-  __typename?: "PriceFunction";
-  function: Scalars["String"];
-  currencyCode: Scalars["Currency"];
+/** Creates new fulfillments for an order. */
+export type OrderFulfill = {
+  __typename?: 'OrderFulfill';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** List of created fulfillments. */
+  fulfillments?: Maybe<Array<Maybe<Fulfillment>>>;
+  /** Fulfilled order. */
+  order?: Maybe<Order>;
+  orderErrors: Array<OrderError>;
 };
 
-export type PriceFunctionDraft = {
-  function: Scalars["String"];
-  currencyCode: Scalars["Currency"];
+export type OrderFulfillInput = {
+  /** List of items informing how to fulfill the order. */
+  lines: Array<OrderFulfillLineInput>;
+  /** If true, send an email notification to the customer. */
+  notifyCustomer?: Maybe<Scalars['Boolean']>;
 };
 
-export type Product = Versioned & {
-  __typename?: "Product";
-  id: Scalars["String"];
-  key?: Maybe<Scalars["String"]>;
-  version: Scalars["Long"];
-  productTypeRef: Reference;
-  productType?: Maybe<ProductTypeDefinition>;
-  masterData: ProductCatalogData;
-  catalogData?: Maybe<ProductCatalogData>;
-  skus: Array<Scalars["String"]>;
-  createdAt: Scalars["DateTime"];
-  lastModifiedAt: Scalars["DateTime"];
-  stateRef?: Maybe<Reference>;
-  state?: Maybe<State>;
-  taxCategoryRef?: Maybe<Reference>;
-  taxCategory?: Maybe<TaxCategory>;
-  createdBy?: Maybe<Initiator>;
-  lastModifiedBy?: Maybe<Initiator>;
+export type OrderFulfillLineInput = {
+  /** The ID of the order line. */
+  orderLineId?: Maybe<Scalars['ID']>;
+  /** List of stock items to create. */
+  stocks: Array<OrderFulfillStockInput>;
 };
 
-export type ProductCatalogDataArgs = {
-  id: Scalars["String"];
+export type OrderFulfillStockInput = {
+  /** The number of line items to be fulfilled from given warehouse. */
+  quantity: Scalars['Int'];
+  /** ID of the warehouse from which the item will be fulfilled. */
+  warehouse: Scalars['ID'];
 };
 
-export type ProductAttributeInput = {
-  name: Scalars["String"];
-  value: Scalars["String"];
-};
-
-export type ProductCatalogData = {
-  __typename?: "ProductCatalogData";
-  current?: Maybe<ProductData>;
-  staged?: Maybe<ProductData>;
-  published: Scalars["Boolean"];
-  hasStagedChanges: Scalars["Boolean"];
-};
-
-export type ProductData = {
-  __typename?: "ProductData";
-  name?: Maybe<Scalars["String"]>;
-  description?: Maybe<Scalars["String"]>;
-  nameAllLocales: Array<LocalizedString>;
-  descriptionAllLocales?: Maybe<Array<LocalizedString>>;
-  slug?: Maybe<Scalars["String"]>;
-  categoryOrderHint?: Maybe<Scalars["String"]>;
-  categoryOrderHints: Array<CategoryOrderHint>;
-  categoriesRef: Array<Reference>;
-  categories: Array<Category>;
-  searchKeyword?: Maybe<Array<SearchKeyword>>;
-  searchKeywords: Array<SearchKeywords>;
-  metaTitle?: Maybe<Scalars["String"]>;
-  metaKeywords?: Maybe<Scalars["String"]>;
-  metaDescription?: Maybe<Scalars["String"]>;
-  masterVariant: ProductVariant;
-  variants: Array<ProductVariant>;
-  allVariants: Array<ProductVariant>;
+/** Represents order line of particular order. */
+export type OrderLine = Node & {
+  __typename?: 'OrderLine';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  productName: Scalars['String'];
+  variantName: Scalars['String'];
+  productSku: Scalars['String'];
+  isShippingRequired: Scalars['Boolean'];
+  quantity: Scalars['Int'];
+  quantityFulfilled: Scalars['Int'];
+  taxRate: Scalars['Float'];
+  digitalContentUrl?: Maybe<DigitalContentUrl>;
+  /** The main thumbnail for the ordered product. */
+  thumbnail?: Maybe<Image>;
+  /** Price of the single item in the order line. */
+  unitPrice?: Maybe<TaxedMoney>;
+  /** Price of the order line. */
+  totalPrice?: Maybe<TaxedMoney>;
+  /** A purchased product variant. Note: this field may be null if the variant has been removed from stock at all. */
   variant?: Maybe<ProductVariant>;
-  skus: Array<Scalars["String"]>;
+  /** Product name in the customer's language */
+  translatedProductName: Scalars['String'];
+  /** Variant name in the customer's language */
+  translatedVariantName: Scalars['String'];
+  /** List of allocations across warehouses. */
+  allocations?: Maybe<Array<Allocation>>;
 };
 
-export type ProductDataNameArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
+/** Represents order line of particular order. */
+export type OrderLineThumbnailArgs = {
+  size?: Maybe<Scalars['Int']>;
 };
 
-export type ProductDataDescriptionArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
+export type OrderLineCreateInput = {
+  /** Number of variant items ordered. */
+  quantity: Scalars['Int'];
+  /** Product variant ID. */
+  variantId: Scalars['ID'];
 };
 
-export type ProductDataSlugArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
+export type OrderLineInput = {
+  /** Number of variant items ordered. */
+  quantity: Scalars['Int'];
 };
 
-export type ProductDataCategoryOrderHintArgs = {
-  categoryId: Scalars["String"];
+/** Mark order as manually paid. */
+export type OrderMarkAsPaid = {
+  __typename?: 'OrderMarkAsPaid';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Order marked as paid. */
+  order?: Maybe<Order>;
+  orderErrors: Array<OrderError>;
 };
 
-export type ProductDataSearchKeywordArgs = {
-  locale: Scalars["Locale"];
+/** Refund an order. */
+export type OrderRefund = {
+  __typename?: 'OrderRefund';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** A refunded order. */
+  order?: Maybe<Order>;
+  orderErrors: Array<OrderError>;
 };
 
-export type ProductDataMetaTitleArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
+export enum OrderSortField {
+  /** Sort orders by number. */
+  Number = 'NUMBER',
+  /** Sort orders by creation date. */
+  CreationDate = 'CREATION_DATE',
+  /** Sort orders by customer. */
+  Customer = 'CUSTOMER',
+  /** Sort orders by payment. */
+  Payment = 'PAYMENT',
+  /** Sort orders by fulfillment status. */
+  FulfillmentStatus = 'FULFILLMENT_STATUS',
+  /** Sort orders by total. */
+  Total = 'TOTAL'
+}
+
+export type OrderSortingInput = {
+  /** Specifies the direction in which to sort products. */
+  direction: OrderDirection;
+  /** Sort orders by the selected field. */
+  field: OrderSortField;
 };
 
-export type ProductDataMetaKeywordsArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
+/** An enumeration. */
+export enum OrderStatus {
+  /** Draft */
+  Draft = 'DRAFT',
+  /** Unfulfilled */
+  Unfulfilled = 'UNFULFILLED',
+  /** Partially fulfilled */
+  PartiallyFulfilled = 'PARTIALLY_FULFILLED',
+  /** Fulfilled */
+  Fulfilled = 'FULFILLED',
+  /** Canceled */
+  Canceled = 'CANCELED'
+}
+
+export enum OrderStatusFilter {
+  ReadyToFulfill = 'READY_TO_FULFILL',
+  ReadyToCapture = 'READY_TO_CAPTURE',
+  Unfulfilled = 'UNFULFILLED',
+  PartiallyFulfilled = 'PARTIALLY_FULFILLED',
+  Fulfilled = 'FULFILLED',
+  Canceled = 'CANCELED'
+}
+
+/** Updates an order. */
+export type OrderUpdate = {
+  __typename?: 'OrderUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  orderErrors: Array<OrderError>;
+  order?: Maybe<Order>;
 };
 
-export type ProductDataMetaDescriptionArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
+export type OrderUpdateInput = {
+  /** Billing address of the customer. */
+  billingAddress?: Maybe<AddressInput>;
+  /** Email address of the customer. */
+  userEmail?: Maybe<Scalars['String']>;
+  /** Shipping address of the customer. */
+  shippingAddress?: Maybe<AddressInput>;
 };
 
-export type ProductDataVariantsArgs = {
-  skus?: Maybe<Array<Scalars["String"]>>;
-  isOnStock?: Maybe<Scalars["Boolean"]>;
-  stockChannelIds?: Maybe<Array<Scalars["String"]>>;
-  hasImages?: Maybe<Scalars["Boolean"]>;
+/** Updates meta for order. */
+export type OrderUpdateMeta = {
+  __typename?: 'OrderUpdateMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  order?: Maybe<Order>;
 };
 
-export type ProductDataAllVariantsArgs = {
-  skus?: Maybe<Array<Scalars["String"]>>;
-  isOnStock?: Maybe<Scalars["Boolean"]>;
-  stockChannelIds?: Maybe<Array<Scalars["String"]>>;
-  hasImages?: Maybe<Scalars["Boolean"]>;
+/** Updates private meta for order. */
+export type OrderUpdatePrivateMeta = {
+  __typename?: 'OrderUpdatePrivateMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  order?: Maybe<Order>;
 };
 
-export type ProductDataVariantArgs = {
-  sku?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
+/** Updates a shipping method of the order. */
+export type OrderUpdateShipping = {
+  __typename?: 'OrderUpdateShipping';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Order with updated shipping method. */
+  order?: Maybe<Order>;
+  orderErrors: Array<OrderError>;
 };
 
-/** A product price can be discounted in two ways:
- *
- * * with a relative or an absolute product discount, which will be automatically
- * applied to all prices in a product that match a discount predicate.
- *   A relative discount reduces the matching price by a fraction (for example 10 %
- * off). An absolute discount reduces the matching price by a fixed amount (for
- * example 10€ off). If more than one product discount matches a price, the
- * discount sort order determines which one will be applied.
- * * with an external product discount, which can then be used to explicitly set a
- * discounted value on a particular product price.
- *
- * The discounted price is stored in the discounted field of the Product Price.
- *
- * Note that when a discount is created, updated or removed it can take up to 15
- * minutes to update all the prices with the discounts.
- *
- * The maximum number of ProductDiscounts that can be active at the same time is **200**.
+export type OrderUpdateShippingInput = {
+  /** ID of the selected shipping method. */
+  shippingMethod?: Maybe<Scalars['ID']>;
+};
+
+/** Void an order. */
+export type OrderVoid = {
+  __typename?: 'OrderVoid';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** A voided order. */
+  order?: Maybe<Order>;
+  orderErrors: Array<OrderError>;
+};
+
+/** A static page that can be manually added by a shop operator through the dashboard. */
+export type Page = Node &
+  ObjectWithMetadata & {
+    __typename?: 'Page';
+    seoTitle?: Maybe<Scalars['String']>;
+    seoDescription?: Maybe<Scalars['String']>;
+    /** The ID of the object. */
+    id: Scalars['ID'];
+    title: Scalars['String'];
+    contentJson: Scalars['JSONString'];
+    publicationDate?: Maybe<Scalars['Date']>;
+    slug: Scalars['String'];
+    created: Scalars['DateTime'];
+    /** List of private metadata items.Requires proper staff permissions to access. */
+    privateMetadata: Array<Maybe<MetadataItem>>;
+    /** List of public metadata items. Can be accessed without permissions. */
+    metadata: Array<Maybe<MetadataItem>>;
+    /**
+     * List of privately stored metadata namespaces.
+     * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
+     */
+    privateMeta: Array<Maybe<MetaStore>>;
+    /**
+     * List of publicly stored metadata namespaces.
+     * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
+     */
+    meta: Array<Maybe<MetaStore>>;
+    /**
+     * Content of the page.
+     * @deprecated Use the `contentJson` field instead.
+     */
+    content: Scalars['String'];
+    /** Returns translated page fields for the given language code. */
+    translation?: Maybe<PageTranslation>;
+    /** Whether the page is published. */
+    isPublished: Scalars['Boolean'];
+  };
+
+/** A static page that can be manually added by a shop operator through the dashboard. */
+export type PageTranslationArgs = {
+  languageCode: LanguageCodeEnum;
+};
+
+/** Deletes pages. */
+export type PageBulkDelete = {
+  __typename?: 'PageBulkDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Returns how many objects were affected. */
+  count: Scalars['Int'];
+  pageErrors: Array<PageError>;
+};
+
+/** Publish pages. */
+export type PageBulkPublish = {
+  __typename?: 'PageBulkPublish';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Returns how many objects were affected. */
+  count: Scalars['Int'];
+  pageErrors: Array<PageError>;
+};
+
+export type PageCountableConnection = {
+  __typename?: 'PageCountableConnection';
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  edges: Array<PageCountableEdge>;
+  /** A total count of items in the collection. */
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type PageCountableEdge = {
+  __typename?: 'PageCountableEdge';
+  /** The item at the end of the edge. */
+  node: Page;
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+};
+
+/** Creates a new page. */
+export type PageCreate = {
+  __typename?: 'PageCreate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  pageErrors: Array<PageError>;
+  page?: Maybe<Page>;
+};
+
+/** Deletes a page. */
+export type PageDelete = {
+  __typename?: 'PageDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  pageErrors: Array<PageError>;
+  page?: Maybe<Page>;
+};
+
+export type PageError = {
+  __typename?: 'PageError';
+  /**
+   * Name of a field that caused the error. A value of `null` indicates that the
+   * error isn't associated with a particular field.
+   */
+  field?: Maybe<Scalars['String']>;
+  /** The error message. */
+  message?: Maybe<Scalars['String']>;
+  /** The error code. */
+  code: PageErrorCode;
+};
+
+/** An enumeration. */
+export enum PageErrorCode {
+  GraphqlError = 'GRAPHQL_ERROR',
+  Invalid = 'INVALID',
+  NotFound = 'NOT_FOUND',
+  Required = 'REQUIRED',
+  Unique = 'UNIQUE'
+}
+
+export type PageFilterInput = {
+  search?: Maybe<Scalars['String']>;
+};
+
+/** The Relay compliant `PageInfo` type, containing data necessary to paginate this connection. */
+export type PageInfo = {
+  __typename?: 'PageInfo';
+  /** When paginating forwards, are there more items? */
+  hasNextPage: Scalars['Boolean'];
+  /** When paginating backwards, are there more items? */
+  hasPreviousPage: Scalars['Boolean'];
+  /** When paginating backwards, the cursor to continue. */
+  startCursor?: Maybe<Scalars['String']>;
+  /** When paginating forwards, the cursor to continue. */
+  endCursor?: Maybe<Scalars['String']>;
+};
+
+export type PageInput = {
+  /** Page internal name. */
+  slug?: Maybe<Scalars['String']>;
+  /** Page title. */
+  title?: Maybe<Scalars['String']>;
+  /** Page content. May consist of ordinary text, HTML and images. */
+  content?: Maybe<Scalars['String']>;
+  /** Page content in JSON format. */
+  contentJson?: Maybe<Scalars['JSONString']>;
+  /** Determines if page is visible in the storefront. */
+  isPublished?: Maybe<Scalars['Boolean']>;
+  /** Publication date. ISO 8601 standard. */
+  publicationDate?: Maybe<Scalars['String']>;
+  /** Search engine optimization fields. */
+  seo?: Maybe<SeoInput>;
+};
+
+export enum PageSortField {
+  /** Sort pages by title. */
+  Title = 'TITLE',
+  /** Sort pages by slug. */
+  Slug = 'SLUG',
+  /** Sort pages by visibility. */
+  Visibility = 'VISIBILITY',
+  /** Sort pages by creation date. */
+  CreationDate = 'CREATION_DATE',
+  /** Sort pages by publication date. */
+  PublicationDate = 'PUBLICATION_DATE'
+}
+
+export type PageSortingInput = {
+  /** Specifies the direction in which to sort products. */
+  direction: OrderDirection;
+  /** Sort pages by the selected field. */
+  field: PageSortField;
+};
+
+export type PageTranslatableContent = Node & {
+  __typename?: 'PageTranslatableContent';
+  seoTitle?: Maybe<Scalars['String']>;
+  seoDescription?: Maybe<Scalars['String']>;
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  title: Scalars['String'];
+  contentJson: Scalars['JSONString'];
+  /**
+   * Content of the page.
+   * @deprecated Use the `contentJson` field instead.
+   */
+  content: Scalars['String'];
+  /** Returns translated page fields for the given language code. */
+  translation?: Maybe<PageTranslation>;
+  /** ('A static page that can be manually added by a shop operator ', 'through the dashboard.') */
+  page?: Maybe<Page>;
+};
+
+export type PageTranslatableContentTranslationArgs = {
+  languageCode: LanguageCodeEnum;
+};
+
+/** Creates/Updates translations for Page. */
+export type PageTranslate = {
+  __typename?: 'PageTranslate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  translationErrors: Array<TranslationError>;
+  page?: Maybe<PageTranslatableContent>;
+};
+
+export type PageTranslation = Node & {
+  __typename?: 'PageTranslation';
+  seoTitle?: Maybe<Scalars['String']>;
+  seoDescription?: Maybe<Scalars['String']>;
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  title: Scalars['String'];
+  contentJson: Scalars['JSONString'];
+  /** Translation language. */
+  language: LanguageDisplay;
+  /**
+   * Translated description of the page.
+   * @deprecated Use the `contentJson` field instead.
+   */
+  content: Scalars['String'];
+};
+
+export type PageTranslationInput = {
+  seoTitle?: Maybe<Scalars['String']>;
+  seoDescription?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars['String']>;
+  content?: Maybe<Scalars['String']>;
+  contentJson?: Maybe<Scalars['JSONString']>;
+};
+
+/** Updates an existing page. */
+export type PageUpdate = {
+  __typename?: 'PageUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  pageErrors: Array<PageError>;
+  page?: Maybe<Page>;
+};
+
+/** Change the password of the logged in user. */
+export type PasswordChange = {
+  __typename?: 'PasswordChange';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** A user instance with a new password. */
+  user?: Maybe<User>;
+  accountErrors: Array<AccountError>;
+};
+
+/** Represents a payment of a given type. */
+export type Payment = Node & {
+  __typename?: 'Payment';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  gateway: Scalars['String'];
+  isActive: Scalars['Boolean'];
+  created: Scalars['DateTime'];
+  modified: Scalars['DateTime'];
+  token: Scalars['String'];
+  checkout?: Maybe<Checkout>;
+  order?: Maybe<Order>;
+  customerIpAddress?: Maybe<Scalars['String']>;
+  /** Internal payment status. */
+  chargeStatus: PaymentChargeStatusEnum;
+  /** List of actions that can be performed in the current state of a payment. */
+  actions: Array<Maybe<OrderAction>>;
+  /** Total amount of the payment. */
+  total?: Maybe<Money>;
+  /** Total amount captured for this payment. */
+  capturedAmount?: Maybe<Money>;
+  /** List of all transactions within this payment. */
+  transactions?: Maybe<Array<Maybe<Transaction>>>;
+  /** Maximum amount of money that can be captured. */
+  availableCaptureAmount?: Maybe<Money>;
+  /** Maximum amount of money that can be refunded. */
+  availableRefundAmount?: Maybe<Money>;
+  /** The details of the card used for this payment. */
+  creditCard?: Maybe<CreditCard>;
+};
+
+/** Captures the authorized payment amount. */
+export type PaymentCapture = {
+  __typename?: 'PaymentCapture';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Updated payment. */
+  payment?: Maybe<Payment>;
+  paymentErrors: Array<PaymentError>;
+};
+
+/** An enumeration. */
+export enum PaymentChargeStatusEnum {
+  NotCharged = 'NOT_CHARGED',
+  Pending = 'PENDING',
+  PartiallyCharged = 'PARTIALLY_CHARGED',
+  FullyCharged = 'FULLY_CHARGED',
+  PartiallyRefunded = 'PARTIALLY_REFUNDED',
+  FullyRefunded = 'FULLY_REFUNDED',
+  Refused = 'REFUSED',
+  Cancelled = 'CANCELLED'
+}
+
+export type PaymentCountableConnection = {
+  __typename?: 'PaymentCountableConnection';
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  edges: Array<PaymentCountableEdge>;
+  /** A total count of items in the collection. */
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type PaymentCountableEdge = {
+  __typename?: 'PaymentCountableEdge';
+  /** The item at the end of the edge. */
+  node: Payment;
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+};
+
+export type PaymentError = {
+  __typename?: 'PaymentError';
+  /**
+   * Name of a field that caused the error. A value of `null` indicates that the
+   * error isn't associated with a particular field.
+   */
+  field?: Maybe<Scalars['String']>;
+  /** The error message. */
+  message?: Maybe<Scalars['String']>;
+  /** The error code. */
+  code: PaymentErrorCode;
+};
+
+/** An enumeration. */
+export enum PaymentErrorCode {
+  BillingAddressNotSet = 'BILLING_ADDRESS_NOT_SET',
+  GraphqlError = 'GRAPHQL_ERROR',
+  Invalid = 'INVALID',
+  NotFound = 'NOT_FOUND',
+  Required = 'REQUIRED',
+  Unique = 'UNIQUE',
+  PartialPaymentNotAllowed = 'PARTIAL_PAYMENT_NOT_ALLOWED',
+  ShippingAddressNotSet = 'SHIPPING_ADDRESS_NOT_SET',
+  InvalidShippingMethod = 'INVALID_SHIPPING_METHOD',
+  ShippingMethodNotSet = 'SHIPPING_METHOD_NOT_SET',
+  PaymentError = 'PAYMENT_ERROR',
+  NotSupportedGateway = 'NOT_SUPPORTED_GATEWAY'
+}
+
+/** Available payment gateway backend with configuration necessary to setup client. */
+export type PaymentGateway = {
+  __typename?: 'PaymentGateway';
+  /** Payment gateway name. */
+  name: Scalars['String'];
+  /** Payment gateway ID. */
+  id: Scalars['ID'];
+  /** Payment gateway client configuration. */
+  config: Array<GatewayConfigLine>;
+  /** Payment gateway supported currencies. */
+  currencies: Array<Maybe<Scalars['String']>>;
+};
+
+/** Initializes payment process when it is required by gateway. */
+export type PaymentInitialize = {
+  __typename?: 'PaymentInitialize';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  initializedPayment?: Maybe<PaymentInitialized>;
+  paymentErrors: Array<PaymentError>;
+};
+
+/**
+ * Server-side data generated by a payment gateway. Optional step when the payment
+ * provider requires an additional action to initialize payment session.
  */
-export type ProductDiscount = Versioned & {
-  __typename?: "ProductDiscount";
-  predicate: Scalars["String"];
-  validFrom?: Maybe<Scalars["DateTime"]>;
-  validUntil?: Maybe<Scalars["DateTime"]>;
-  isActive: Scalars["Boolean"];
-  isValid: Scalars["Boolean"];
-  sortOrder: Scalars["String"];
-  key?: Maybe<Scalars["String"]>;
-  name?: Maybe<Scalars["String"]>;
-  description?: Maybe<Scalars["String"]>;
-  nameAllLocales: Array<LocalizedString>;
-  descriptionAllLocales?: Maybe<Array<LocalizedString>>;
-  value: ProductDiscountValue;
-  id: Scalars["String"];
-  version: Scalars["Long"];
-  createdAt: Scalars["DateTime"];
-  lastModifiedAt: Scalars["DateTime"];
-  createdBy?: Maybe<Initiator>;
-  lastModifiedBy?: Maybe<Initiator>;
+export type PaymentInitialized = {
+  __typename?: 'PaymentInitialized';
+  /** ID of a payment gateway. */
+  gateway: Scalars['String'];
+  /** Payment gateway name. */
+  name: Scalars['String'];
+  /** Initialized data by gateway. */
+  data?: Maybe<Scalars['JSONString']>;
 };
 
-/** A product price can be discounted in two ways:
- *
- * * with a relative or an absolute product discount, which will be automatically
- * applied to all prices in a product that match a discount predicate.
- *   A relative discount reduces the matching price by a fraction (for example 10 %
- * off). An absolute discount reduces the matching price by a fixed amount (for
- * example 10€ off). If more than one product discount matches a price, the
- * discount sort order determines which one will be applied.
- * * with an external product discount, which can then be used to explicitly set a
- * discounted value on a particular product price.
- *
- * The discounted price is stored in the discounted field of the Product Price.
- *
- * Note that when a discount is created, updated or removed it can take up to 15
- * minutes to update all the prices with the discounts.
- *
- * The maximum number of ProductDiscounts that can be active at the same time is **200**.
+export type PaymentInput = {
+  /** A gateway to use with that payment. */
+  gateway: Scalars['String'];
+  /** Client-side generated payment token, representing customer's billing data in a secure manner. */
+  token?: Maybe<Scalars['String']>;
+  /**
+   * Total amount of the transaction, including all taxes and discounts. If no
+   * amount is provided, the checkout total will be used.
+   */
+  amount?: Maybe<Scalars['PositiveDecimal']>;
+  /**
+   * [Deprecated] Billing address. If empty, the billing address associated with
+   * the checkout instance will be used. Use `checkoutCreate` or
+   * `checkoutBillingAddressUpdate` mutations to set it. This field will be removed
+   * after 2020-07-31.
+   */
+  billingAddress?: Maybe<AddressInput>;
+  /**
+   * URL of a storefront view where user should be redirected after requiring
+   * additional actions. Payment with additional actions will not be finished if
+   * this field is not provided.
+   */
+  returnUrl?: Maybe<Scalars['String']>;
+};
+
+/** Refunds the captured payment amount. */
+export type PaymentRefund = {
+  __typename?: 'PaymentRefund';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Updated payment. */
+  payment?: Maybe<Payment>;
+  paymentErrors: Array<PaymentError>;
+};
+
+/** Represents a payment source stored for user in payment gateway, such as credit card. */
+export type PaymentSource = {
+  __typename?: 'PaymentSource';
+  /** Payment gateway name. */
+  gateway: Scalars['String'];
+  /** Stored credit card details if available. */
+  creditCardInfo?: Maybe<CreditCard>;
+};
+
+/** Voids the authorized payment. */
+export type PaymentVoid = {
+  __typename?: 'PaymentVoid';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Updated payment. */
+  payment?: Maybe<Payment>;
+  paymentErrors: Array<PaymentError>;
+};
+
+/** Represents a permission object in a friendly form. */
+export type Permission = {
+  __typename?: 'Permission';
+  /** Internal code for permission. */
+  code: PermissionEnum;
+  /** Describe action(s) allowed to do by permission. */
+  name: Scalars['String'];
+};
+
+/** An enumeration. */
+export enum PermissionEnum {
+  ManageUsers = 'MANAGE_USERS',
+  ManageStaff = 'MANAGE_STAFF',
+  ManageServiceAccounts = 'MANAGE_SERVICE_ACCOUNTS',
+  ManageApps = 'MANAGE_APPS',
+  ManageDiscounts = 'MANAGE_DISCOUNTS',
+  ManagePlugins = 'MANAGE_PLUGINS',
+  ManageGiftCard = 'MANAGE_GIFT_CARD',
+  ManageMenus = 'MANAGE_MENUS',
+  ManageOrders = 'MANAGE_ORDERS',
+  ManagePages = 'MANAGE_PAGES',
+  ManageProducts = 'MANAGE_PRODUCTS',
+  ManageProductTypesAndAttributes = 'MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES',
+  ManageShipping = 'MANAGE_SHIPPING',
+  ManageSettings = 'MANAGE_SETTINGS',
+  ManageTranslations = 'MANAGE_TRANSLATIONS',
+  ManageCheckouts = 'MANAGE_CHECKOUTS'
+}
+
+/** Create new permission group. */
+export type PermissionGroupCreate = {
+  __typename?: 'PermissionGroupCreate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  permissionGroupErrors: Array<PermissionGroupError>;
+  group?: Maybe<Group>;
+};
+
+export type PermissionGroupCreateInput = {
+  /** List of permission code names to assign to this group. */
+  addPermissions?: Maybe<Array<PermissionEnum>>;
+  /** List of users to assign to this group. */
+  addUsers?: Maybe<Array<Scalars['ID']>>;
+  /** Group name. */
+  name: Scalars['String'];
+};
+
+/** Delete permission group. */
+export type PermissionGroupDelete = {
+  __typename?: 'PermissionGroupDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  permissionGroupErrors: Array<PermissionGroupError>;
+  group?: Maybe<Group>;
+};
+
+export type PermissionGroupError = {
+  __typename?: 'PermissionGroupError';
+  /**
+   * Name of a field that caused the error. A value of `null` indicates that the
+   * error isn't associated with a particular field.
+   */
+  field?: Maybe<Scalars['String']>;
+  /** The error message. */
+  message?: Maybe<Scalars['String']>;
+  /** The error code. */
+  code: PermissionGroupErrorCode;
+  /** List of permissions which causes the error. */
+  permissions?: Maybe<Array<PermissionEnum>>;
+  /** List of user IDs which causes the error. */
+  users?: Maybe<Array<Scalars['ID']>>;
+};
+
+/** An enumeration. */
+export enum PermissionGroupErrorCode {
+  AssignNonStaffMember = 'ASSIGN_NON_STAFF_MEMBER',
+  DuplicatedInputItem = 'DUPLICATED_INPUT_ITEM',
+  CannotRemoveFromLastGroup = 'CANNOT_REMOVE_FROM_LAST_GROUP',
+  LeftNotManageablePermission = 'LEFT_NOT_MANAGEABLE_PERMISSION',
+  OutOfScopePermission = 'OUT_OF_SCOPE_PERMISSION',
+  OutOfScopeUser = 'OUT_OF_SCOPE_USER',
+  Required = 'REQUIRED',
+  Unique = 'UNIQUE'
+}
+
+export type PermissionGroupFilterInput = {
+  search?: Maybe<Scalars['String']>;
+};
+
+export enum PermissionGroupSortField {
+  /** Sort permission group accounts by name. */
+  Name = 'NAME'
+}
+
+export type PermissionGroupSortingInput = {
+  /** Specifies the direction in which to sort products. */
+  direction: OrderDirection;
+  /** Sort permission group by the selected field. */
+  field: PermissionGroupSortField;
+};
+
+/** Update permission group. */
+export type PermissionGroupUpdate = {
+  __typename?: 'PermissionGroupUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  permissionGroupErrors: Array<PermissionGroupError>;
+  group?: Maybe<Group>;
+};
+
+export type PermissionGroupUpdateInput = {
+  /** List of permission code names to assign to this group. */
+  addPermissions?: Maybe<Array<PermissionEnum>>;
+  /** List of users to assign to this group. */
+  addUsers?: Maybe<Array<Scalars['ID']>>;
+  /** Group name. */
+  name?: Maybe<Scalars['String']>;
+  /** List of permission code names to unassign from this group. */
+  removePermissions?: Maybe<Array<PermissionEnum>>;
+  /** List of users to unassign from this group. */
+  removeUsers?: Maybe<Array<Scalars['ID']>>;
+};
+
+/** Plugin. */
+export type Plugin = Node & {
+  __typename?: 'Plugin';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  description: Scalars['String'];
+  active: Scalars['Boolean'];
+  configuration?: Maybe<Array<Maybe<ConfigurationItem>>>;
+};
+
+export type PluginCountableConnection = {
+  __typename?: 'PluginCountableConnection';
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  edges: Array<PluginCountableEdge>;
+  /** A total count of items in the collection. */
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type PluginCountableEdge = {
+  __typename?: 'PluginCountableEdge';
+  /** The item at the end of the edge. */
+  node: Plugin;
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+};
+
+export type PluginError = {
+  __typename?: 'PluginError';
+  /**
+   * Name of a field that caused the error. A value of `null` indicates that the
+   * error isn't associated with a particular field.
+   */
+  field?: Maybe<Scalars['String']>;
+  /** The error message. */
+  message?: Maybe<Scalars['String']>;
+  /** The error code. */
+  code: PluginErrorCode;
+};
+
+/** An enumeration. */
+export enum PluginErrorCode {
+  GraphqlError = 'GRAPHQL_ERROR',
+  Invalid = 'INVALID',
+  PluginMisconfigured = 'PLUGIN_MISCONFIGURED',
+  NotFound = 'NOT_FOUND',
+  Required = 'REQUIRED',
+  Unique = 'UNIQUE'
+}
+
+export type PluginFilterInput = {
+  active?: Maybe<Scalars['Boolean']>;
+  search?: Maybe<Scalars['String']>;
+};
+
+export enum PluginSortField {
+  Name = 'NAME',
+  IsActive = 'IS_ACTIVE'
+}
+
+export type PluginSortingInput = {
+  /** Specifies the direction in which to sort products. */
+  direction: OrderDirection;
+  /** Sort plugins by the selected field. */
+  field: PluginSortField;
+};
+
+/** Update plugin configuration. */
+export type PluginUpdate = {
+  __typename?: 'PluginUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  plugin?: Maybe<Plugin>;
+  pluginsErrors: Array<PluginError>;
+};
+
+export type PluginUpdateInput = {
+  /** Indicates whether the plugin should be enabled. */
+  active?: Maybe<Scalars['Boolean']>;
+  /** Configuration of the plugin. */
+  configuration?: Maybe<Array<Maybe<ConfigurationItemInput>>>;
+};
+
+export type PriceRangeInput = {
+  /** Price greater than or equal to. */
+  gte?: Maybe<Scalars['Float']>;
+  /** Price less than or equal to. */
+  lte?: Maybe<Scalars['Float']>;
+};
+
+/** Represents an individual item for sale in the storefront. */
+export type Product = Node &
+  ObjectWithMetadata & {
+    __typename?: 'Product';
+    /** The ID of the object. */
+    id: Scalars['ID'];
+    seoTitle?: Maybe<Scalars['String']>;
+    seoDescription?: Maybe<Scalars['String']>;
+    name: Scalars['String'];
+    descriptionJson: Scalars['JSONString'];
+    publicationDate?: Maybe<Scalars['Date']>;
+    productType: ProductType;
+    slug: Scalars['String'];
+    category?: Maybe<Category>;
+    updatedAt?: Maybe<Scalars['DateTime']>;
+    chargeTaxes: Scalars['Boolean'];
+    weight?: Maybe<Weight>;
+    availableForPurchase?: Maybe<Scalars['Date']>;
+    visibleInListings: Scalars['Boolean'];
+    defaultVariant?: Maybe<ProductVariant>;
+    /** List of private metadata items.Requires proper staff permissions to access. */
+    privateMetadata: Array<Maybe<MetadataItem>>;
+    /** List of public metadata items. Can be accessed without permissions. */
+    metadata: Array<Maybe<MetadataItem>>;
+    /**
+     * List of privately stored metadata namespaces.
+     * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
+     */
+    privateMeta: Array<Maybe<MetaStore>>;
+    /**
+     * List of publicly stored metadata namespaces.
+     * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
+     */
+    meta: Array<Maybe<MetaStore>>;
+    /**
+     * The storefront URL for the product.
+     * @deprecated This field will be removed after 2020-07-31.
+     */
+    url: Scalars['String'];
+    /** The main thumbnail for a product. */
+    thumbnail?: Maybe<Image>;
+    /** Lists the storefront product's pricing, the current price and discounts, only meant for displaying. */
+    pricing?: Maybe<ProductPricingInfo>;
+    /** Whether the product is in stock and visible or not. */
+    isAvailable?: Maybe<Scalars['Boolean']>;
+    /** The price of the cheapest variant (including discounts). */
+    minimalVariantPrice?: Maybe<Money>;
+    /** A type of tax. Assigned by enabled tax gateway */
+    taxType?: Maybe<TaxType>;
+    /** List of attributes assigned to this product. */
+    attributes: Array<SelectedAttribute>;
+    purchaseCost?: Maybe<MoneyRange>;
+    margin?: Maybe<Margin>;
+    /** Get a single product image by ID. */
+    imageById?: Maybe<ProductImage>;
+    /** List of variants for the product. */
+    variants?: Maybe<Array<Maybe<ProductVariant>>>;
+    /** List of images for the product. */
+    images?: Maybe<Array<Maybe<ProductImage>>>;
+    /** List of collections for the product. */
+    collections?: Maybe<Array<Maybe<Collection>>>;
+    /** Returns translated product fields for the given language code. */
+    translation?: Maybe<ProductTranslation>;
+    /** Whether the product is available for purchase. */
+    isAvailableForPurchase?: Maybe<Scalars['Boolean']>;
+    /** Whether the product is published. */
+    isPublished: Scalars['Boolean'];
+    /**
+     * Description of the product.
+     * @deprecated Use the `descriptionJson` field instead.
+     */
+    description: Scalars['String'];
+  };
+
+/** Represents an individual item for sale in the storefront. */
+export type ProductThumbnailArgs = {
+  size?: Maybe<Scalars['Int']>;
+};
+
+/** Represents an individual item for sale in the storefront. */
+export type ProductImageByIdArgs = {
+  id?: Maybe<Scalars['ID']>;
+};
+
+/** Represents an individual item for sale in the storefront. */
+export type ProductTranslationArgs = {
+  languageCode: LanguageCodeEnum;
+};
+
+/** Deletes products. */
+export type ProductBulkDelete = {
+  __typename?: 'ProductBulkDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Returns how many objects were affected. */
+  count: Scalars['Int'];
+  productErrors: Array<ProductError>;
+};
+
+/** Publish products. */
+export type ProductBulkPublish = {
+  __typename?: 'ProductBulkPublish';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Returns how many objects were affected. */
+  count: Scalars['Int'];
+  productErrors: Array<ProductError>;
+};
+
+/** Clears public metadata item for product. */
+export type ProductClearMeta = {
+  __typename?: 'ProductClearMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productErrors: Array<ProductError>;
+  product?: Maybe<Product>;
+};
+
+/** Clears private metadata item for product. */
+export type ProductClearPrivateMeta = {
+  __typename?: 'ProductClearPrivateMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productErrors: Array<ProductError>;
+  product?: Maybe<Product>;
+};
+
+export type ProductCountableConnection = {
+  __typename?: 'ProductCountableConnection';
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  edges: Array<ProductCountableEdge>;
+  /** A total count of items in the collection. */
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type ProductCountableEdge = {
+  __typename?: 'ProductCountableEdge';
+  /** The item at the end of the edge. */
+  node: Product;
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+};
+
+/** Creates a new product. */
+export type ProductCreate = {
+  __typename?: 'ProductCreate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productErrors: Array<ProductError>;
+  product?: Maybe<Product>;
+};
+
+export type ProductCreateInput = {
+  /** List of attributes. */
+  attributes?: Maybe<Array<Maybe<AttributeValueInput>>>;
+  /** Publication date. ISO 8601 standard. */
+  publicationDate?: Maybe<Scalars['Date']>;
+  /** ID of the product's category. */
+  category?: Maybe<Scalars['ID']>;
+  /** Determine if taxes are being charged for the product. */
+  chargeTaxes?: Maybe<Scalars['Boolean']>;
+  /** List of IDs of collections that the product belongs to. */
+  collections?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  /** Product description (HTML/text). */
+  description?: Maybe<Scalars['String']>;
+  /** Product description (JSON). */
+  descriptionJson?: Maybe<Scalars['JSONString']>;
+  /** Determines if product is visible to customers. */
+  isPublished?: Maybe<Scalars['Boolean']>;
+  /** Product name. */
+  name?: Maybe<Scalars['String']>;
+  /** Product slug. */
+  slug?: Maybe<Scalars['String']>;
+  /** Tax rate for enabled tax gateway. */
+  taxCode?: Maybe<Scalars['String']>;
+  /** Search engine optimization fields. */
+  seo?: Maybe<SeoInput>;
+  /** Weight of the Product. */
+  weight?: Maybe<Scalars['WeightScalar']>;
+  /** Stock keeping unit of a product. Note: this field is only used if a product doesn't use variants. */
+  sku?: Maybe<Scalars['String']>;
+  /**
+   * Determines if the inventory of this product should be tracked. If false, the
+   * quantity won't change when customers buy this item. Note: this field is only
+   * used if a product doesn't use variants.
+   */
+  trackInventory?: Maybe<Scalars['Boolean']>;
+  /** Default price for product variant. Note: this field is only used if a product doesn't use variants. */
+  basePrice?: Maybe<Scalars['PositiveDecimal']>;
+  /** Determines if product is visible in product listings (doesn't apply to product collections). */
+  visibleInListings?: Maybe<Scalars['Boolean']>;
+  /** ID of the type that product belongs to. */
+  productType: Scalars['ID'];
+  /** Stocks of a product available for sale. Note: this field is only used if a product doesn't use variants. */
+  stocks?: Maybe<Array<StockInput>>;
+};
+
+/** Deletes a product. */
+export type ProductDelete = {
+  __typename?: 'ProductDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productErrors: Array<ProductError>;
+  product?: Maybe<Product>;
+};
+
+export type ProductError = {
+  __typename?: 'ProductError';
+  /**
+   * Name of a field that caused the error. A value of `null` indicates that the
+   * error isn't associated with a particular field.
+   */
+  field?: Maybe<Scalars['String']>;
+  /** The error message. */
+  message?: Maybe<Scalars['String']>;
+  /** The error code. */
+  code: ProductErrorCode;
+  /** List of attributes IDs which causes the error. */
+  attributes?: Maybe<Array<Scalars['ID']>>;
+};
+
+/** An enumeration. */
+export enum ProductErrorCode {
+  AlreadyExists = 'ALREADY_EXISTS',
+  AttributeAlreadyAssigned = 'ATTRIBUTE_ALREADY_ASSIGNED',
+  AttributeCannotBeAssigned = 'ATTRIBUTE_CANNOT_BE_ASSIGNED',
+  AttributeVariantsDisabled = 'ATTRIBUTE_VARIANTS_DISABLED',
+  DuplicatedInputItem = 'DUPLICATED_INPUT_ITEM',
+  GraphqlError = 'GRAPHQL_ERROR',
+  Invalid = 'INVALID',
+  NotProductsImage = 'NOT_PRODUCTS_IMAGE',
+  NotProductsVariant = 'NOT_PRODUCTS_VARIANT',
+  NotFound = 'NOT_FOUND',
+  Required = 'REQUIRED',
+  Unique = 'UNIQUE',
+  VariantNoDigitalContent = 'VARIANT_NO_DIGITAL_CONTENT'
+}
+
+export enum ProductFieldEnum {
+  Name = 'NAME',
+  Description = 'DESCRIPTION',
+  ProductType = 'PRODUCT_TYPE',
+  Category = 'CATEGORY',
+  Visible = 'VISIBLE',
+  AvailableForPurchase = 'AVAILABLE_FOR_PURCHASE',
+  Searchable = 'SEARCHABLE',
+  ProductWeight = 'PRODUCT_WEIGHT',
+  Collections = 'COLLECTIONS',
+  ChargeTaxes = 'CHARGE_TAXES',
+  ProductImages = 'PRODUCT_IMAGES',
+  VariantSku = 'VARIANT_SKU',
+  VariantPrice = 'VARIANT_PRICE',
+  CostPrice = 'COST_PRICE',
+  VariantWeight = 'VARIANT_WEIGHT',
+  VariantImages = 'VARIANT_IMAGES'
+}
+
+export type ProductFilterInput = {
+  isPublished?: Maybe<Scalars['Boolean']>;
+  collections?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  categories?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  hasCategory?: Maybe<Scalars['Boolean']>;
+  attributes?: Maybe<Array<Maybe<AttributeInput>>>;
+  stockAvailability?: Maybe<StockAvailability>;
+  productType?: Maybe<Scalars['ID']>;
+  stocks?: Maybe<ProductStockFilterInput>;
+  search?: Maybe<Scalars['String']>;
+  price?: Maybe<PriceRangeInput>;
+  minimalPrice?: Maybe<PriceRangeInput>;
+  productTypes?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  ids?: Maybe<Array<Maybe<Scalars['ID']>>>;
+};
+
+/** Represents a product image. */
+export type ProductImage = Node & {
+  __typename?: 'ProductImage';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  sortOrder?: Maybe<Scalars['Int']>;
+  alt: Scalars['String'];
+  /** The URL of the image. */
+  url: Scalars['String'];
+};
+
+/** Represents a product image. */
+export type ProductImageUrlArgs = {
+  size?: Maybe<Scalars['Int']>;
+};
+
+/** Deletes product images. */
+export type ProductImageBulkDelete = {
+  __typename?: 'ProductImageBulkDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Returns how many objects were affected. */
+  count: Scalars['Int'];
+  productErrors: Array<ProductError>;
+};
+
+/**
+ * Create a product image. This mutation must be sent as a `multipart` request.
+ * More detailed specs of the upload format can be found here:
+ * https://github.com/jaydenseric/graphql-multipart-request-spec
  */
-export type ProductDiscountNameArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
+export type ProductImageCreate = {
+  __typename?: 'ProductImageCreate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  product?: Maybe<Product>;
+  image?: Maybe<ProductImage>;
+  productErrors: Array<ProductError>;
 };
 
-/** A product price can be discounted in two ways:
- *
- * * with a relative or an absolute product discount, which will be automatically
- * applied to all prices in a product that match a discount predicate.
- *   A relative discount reduces the matching price by a fraction (for example 10 %
- * off). An absolute discount reduces the matching price by a fixed amount (for
- * example 10€ off). If more than one product discount matches a price, the
- * discount sort order determines which one will be applied.
- * * with an external product discount, which can then be used to explicitly set a
- * discounted value on a particular product price.
- *
- * The discounted price is stored in the discounted field of the Product Price.
- *
- * Note that when a discount is created, updated or removed it can take up to 15
- * minutes to update all the prices with the discounts.
- *
- * The maximum number of ProductDiscounts that can be active at the same time is **200**.
- */
-export type ProductDiscountDescriptionArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
+export type ProductImageCreateInput = {
+  /** Alt text for an image. */
+  alt?: Maybe<Scalars['String']>;
+  /** Represents an image file in a multipart request. */
+  image: Scalars['Upload'];
+  /** ID of an product. */
+  product: Scalars['ID'];
 };
 
-export type ProductDiscountDraft = {
-  value: ProductDiscountValueInput;
-  predicate: Scalars["String"];
-  sortOrder: Scalars["String"];
-  name: Array<LocalizedStringItemInputType>;
-  description?: Maybe<Array<LocalizedStringItemInputType>>;
-  validFrom?: Maybe<Scalars["DateTime"]>;
-  validUntil?: Maybe<Scalars["DateTime"]>;
-  isActive?: Maybe<Scalars["Boolean"]>;
-  key?: Maybe<Scalars["String"]>;
+/** Deletes a product image. */
+export type ProductImageDelete = {
+  __typename?: 'ProductImageDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  product?: Maybe<Product>;
+  image?: Maybe<ProductImage>;
+  productErrors: Array<ProductError>;
 };
 
-export type ProductDiscountQueryResult = {
-  __typename?: "ProductDiscountQueryResult";
-  offset: Scalars["Int"];
-  count: Scalars["Int"];
-  total: Scalars["Long"];
-  results: Array<ProductDiscount>;
+/** Changes ordering of the product image. */
+export type ProductImageReorder = {
+  __typename?: 'ProductImageReorder';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  product?: Maybe<Product>;
+  images?: Maybe<Array<Maybe<ProductImage>>>;
+  productErrors: Array<ProductError>;
 };
 
-export type ProductDiscountUpdateAction = {
-  changeIsActive?: Maybe<ChangeProductDiscountIsActive>;
-  changeName?: Maybe<ChangeProductDiscountName>;
-  changePredicate?: Maybe<ChangeProductDiscountPredicate>;
-  changeSortOrder?: Maybe<ChangeProductDiscountSortOrder>;
-  changeValue?: Maybe<ChangeProductDiscountValue>;
-  setDescription?: Maybe<SetProductDiscountDescription>;
-  setKey?: Maybe<SetProductDiscountKey>;
-  setValidFrom?: Maybe<SetProductDiscountValidFrom>;
-  setValidFromAndUntil?: Maybe<SetProductDiscountValidFromAndUntil>;
-  setValidUntil?: Maybe<SetProductDiscountValidUntil>;
+/** Updates a product image. */
+export type ProductImageUpdate = {
+  __typename?: 'ProductImageUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  product?: Maybe<Product>;
+  image?: Maybe<ProductImage>;
+  productErrors: Array<ProductError>;
 };
 
-export type ProductDiscountValue = {
-  type: Scalars["String"];
+export type ProductImageUpdateInput = {
+  /** Alt text for an image. */
+  alt?: Maybe<Scalars['String']>;
 };
 
-export type ProductDiscountValueInput = {
-  relative?: Maybe<RelativeDiscountValueInput>;
-  absolute?: Maybe<AbsoluteDiscountValueInput>;
-  external?: Maybe<ExternalDiscountValueInput>;
+export type ProductInput = {
+  /** List of attributes. */
+  attributes?: Maybe<Array<Maybe<AttributeValueInput>>>;
+  /** Publication date. ISO 8601 standard. */
+  publicationDate?: Maybe<Scalars['Date']>;
+  /** ID of the product's category. */
+  category?: Maybe<Scalars['ID']>;
+  /** Determine if taxes are being charged for the product. */
+  chargeTaxes?: Maybe<Scalars['Boolean']>;
+  /** List of IDs of collections that the product belongs to. */
+  collections?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  /** Product description (HTML/text). */
+  description?: Maybe<Scalars['String']>;
+  /** Product description (JSON). */
+  descriptionJson?: Maybe<Scalars['JSONString']>;
+  /** Determines if product is visible to customers. */
+  isPublished?: Maybe<Scalars['Boolean']>;
+  /** Product name. */
+  name?: Maybe<Scalars['String']>;
+  /** Product slug. */
+  slug?: Maybe<Scalars['String']>;
+  /** Tax rate for enabled tax gateway. */
+  taxCode?: Maybe<Scalars['String']>;
+  /** Search engine optimization fields. */
+  seo?: Maybe<SeoInput>;
+  /** Weight of the Product. */
+  weight?: Maybe<Scalars['WeightScalar']>;
+  /** Stock keeping unit of a product. Note: this field is only used if a product doesn't use variants. */
+  sku?: Maybe<Scalars['String']>;
+  /**
+   * Determines if the inventory of this product should be tracked. If false, the
+   * quantity won't change when customers buy this item. Note: this field is only
+   * used if a product doesn't use variants.
+   */
+  trackInventory?: Maybe<Scalars['Boolean']>;
+  /** Default price for product variant. Note: this field is only used if a product doesn't use variants. */
+  basePrice?: Maybe<Scalars['PositiveDecimal']>;
+  /** Determines if product is visible in product listings (doesn't apply to product collections). */
+  visibleInListings?: Maybe<Scalars['Boolean']>;
 };
 
-export type ProductDraft = {
-  name: Array<LocalizedStringItemInputType>;
-  productType: ResourceIdentifierInput;
-  slug: Array<LocalizedStringItemInputType>;
-  key?: Maybe<Scalars["String"]>;
-  description?: Maybe<Array<LocalizedStringItemInputType>>;
-  categories?: Maybe<Array<ResourceIdentifierInput>>;
-  categoryOrderHints?: Maybe<Array<CategoryOrderHintInput>>;
-  metaTitle?: Maybe<Array<LocalizedStringItemInputType>>;
-  metaDescription?: Maybe<Array<LocalizedStringItemInputType>>;
-  metaKeywords?: Maybe<Array<LocalizedStringItemInputType>>;
-  masterVariant?: Maybe<ProductVariantInput>;
-  variants?: Maybe<Array<ProductVariantInput>>;
-  taxCategory?: Maybe<ResourceIdentifierInput>;
-  state?: Maybe<ResourceIdentifierInput>;
-  searchKeywords?: Maybe<Array<SearchKeywordInput>>;
-  publish?: Maybe<Scalars["Boolean"]>;
+export type ProductOrder = {
+  /** Specifies the direction in which to sort products. */
+  direction: OrderDirection;
+  /**
+   * Sort product by the selected attribute's values.
+   * Note: this doesn't take translations into account yet.
+   */
+  attributeId?: Maybe<Scalars['ID']>;
+  /** Sort products by the selected field. */
+  field?: Maybe<ProductOrderField>;
 };
 
-export type ProductPrice = {
-  __typename?: "ProductPrice";
-  id?: Maybe<Scalars["String"]>;
-  value: BaseMoney;
-  country?: Maybe<Scalars["Country"]>;
-  customerGroup?: Maybe<Reference>;
-  channel?: Maybe<Reference>;
-  validFrom?: Maybe<Scalars["DateTime"]>;
-  validUntil?: Maybe<Scalars["DateTime"]>;
-  discounted?: Maybe<DiscountedProductPriceValue>;
-  tiers?: Maybe<Array<ProductPriceTier>>;
-  /** This field contains non-typed data. Consider using `customFields` as a typed alternative. */
-  customFieldsRaw?: Maybe<Array<RawCustomField>>;
-  /** This field would contain type data */
-  customFields?: Maybe<Type>;
-  custom?: Maybe<CustomFieldsType>;
-  /** Custom fields are returned as a list instead of an object structure. */
-  customFieldList?: Maybe<Array<CustomField>>;
+export enum ProductOrderField {
+  /** Sort products by name. */
+  Name = 'NAME',
+  /** Sort products by price. */
+  Price = 'PRICE',
+  /** Sort products by a minimal price of a product's variant. */
+  MinimalPrice = 'MINIMAL_PRICE',
+  /** Sort products by update date. */
+  Date = 'DATE',
+  /** Sort products by type. */
+  Type = 'TYPE',
+  /** Sort products by publication status. */
+  Published = 'PUBLISHED',
+  /** Sort products by publication date. */
+  PublicationDate = 'PUBLICATION_DATE',
+  /** Sort products by collection. Note: This option is available only for the `Collection.products` query. */
+  Collection = 'COLLECTION'
+}
+
+/** Represents availability of a product in the storefront. */
+export type ProductPricingInfo = {
+  __typename?: 'ProductPricingInfo';
+  /** Whether it is in sale or not. */
+  onSale?: Maybe<Scalars['Boolean']>;
+  /** The discount amount if in sale (null otherwise). */
+  discount?: Maybe<TaxedMoney>;
+  /** The discount amount in the local currency. */
+  discountLocalCurrency?: Maybe<TaxedMoney>;
+  /** The discounted price range of the product variants. */
+  priceRange?: Maybe<TaxedMoneyRange>;
+  /** The undiscounted price range of the product variants. */
+  priceRangeUndiscounted?: Maybe<TaxedMoneyRange>;
+  /** The discounted price range of the product variants in the local currency. */
+  priceRangeLocalCurrency?: Maybe<TaxedMoneyRange>;
 };
 
-export type ProductPriceCustomFieldsRawArgs = {
-  includeNames?: Maybe<Array<Scalars["String"]>>;
-  excludeNames?: Maybe<Array<Scalars["String"]>>;
+/** Set product availability for purchase date. */
+export type ProductSetAvailabilityForPurchase = {
+  __typename?: 'ProductSetAvailabilityForPurchase';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  product?: Maybe<Product>;
+  productErrors: Array<ProductError>;
 };
 
-export type ProductPriceCustomFieldListArgs = {
-  includeNames?: Maybe<Array<Scalars["String"]>>;
-  excludeNames?: Maybe<Array<Scalars["String"]>>;
+export type ProductStockFilterInput = {
+  warehouseIds?: Maybe<Array<Scalars['ID']>>;
+  quantity?: Maybe<IntRangeInput>;
 };
 
-export type ProductPriceDataInput = {
-  value: BaseMoneyInput;
-  country?: Maybe<Scalars["Country"]>;
-  customerGroup?: Maybe<ReferenceInput>;
-  channel?: Maybe<ResourceIdentifierInput>;
-  validFrom?: Maybe<Scalars["DateTime"]>;
-  validUntil?: Maybe<Scalars["DateTime"]>;
-  tiers?: Maybe<Array<ProductPriceTierInput>>;
-  custom?: Maybe<CustomFieldsDraft>;
+export type ProductTranslatableContent = Node & {
+  __typename?: 'ProductTranslatableContent';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  seoTitle?: Maybe<Scalars['String']>;
+  seoDescription?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  descriptionJson: Scalars['JSONString'];
+  /**
+   * Description of the product.
+   * @deprecated Use the `descriptionJson` field instead.
+   */
+  description: Scalars['String'];
+  /** Returns translated product fields for the given language code. */
+  translation?: Maybe<ProductTranslation>;
+  /** Represents an individual item for sale in the storefront. */
+  product?: Maybe<Product>;
 };
 
-export type ProductPriceTier = {
-  __typename?: "ProductPriceTier";
-  minimumQuantity: Scalars["Int"];
-  value: BaseMoney;
+export type ProductTranslatableContentTranslationArgs = {
+  languageCode: LanguageCodeEnum;
 };
 
-export type ProductPriceTierInput = {
-  minimumQuantity: Scalars["Int"];
-  value: BaseMoneyInput;
+/** Creates/Updates translations for Product. */
+export type ProductTranslate = {
+  __typename?: 'ProductTranslate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  translationErrors: Array<TranslationError>;
+  product?: Maybe<Product>;
 };
 
-export type ProductQueryResult = {
-  __typename?: "ProductQueryResult";
-  offset: Scalars["Int"];
-  count: Scalars["Int"];
-  total: Scalars["Long"];
-  results: Array<Product>;
+export type ProductTranslation = Node & {
+  __typename?: 'ProductTranslation';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  seoTitle?: Maybe<Scalars['String']>;
+  seoDescription?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  descriptionJson: Scalars['JSONString'];
+  /** Translation language. */
+  language: LanguageDisplay;
+  /**
+   * Translated description of the product.
+   * @deprecated Use the `descriptionJson` field instead.
+   */
+  description: Scalars['String'];
 };
 
-export type ProductReferenceIdentifier = {
-  __typename?: "ProductReferenceIdentifier";
-  typeId: Scalars["String"];
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
+/** Represents a type of product. It defines what attributes are available to products of this type. */
+export type ProductType = Node &
+  ObjectWithMetadata & {
+    __typename?: 'ProductType';
+    /** The ID of the object. */
+    id: Scalars['ID'];
+    name: Scalars['String'];
+    slug: Scalars['String'];
+    hasVariants: Scalars['Boolean'];
+    isShippingRequired: Scalars['Boolean'];
+    isDigital: Scalars['Boolean'];
+    weight?: Maybe<Weight>;
+    /** List of private metadata items.Requires proper staff permissions to access. */
+    privateMetadata: Array<Maybe<MetadataItem>>;
+    /** List of public metadata items. Can be accessed without permissions. */
+    metadata: Array<Maybe<MetadataItem>>;
+    /**
+     * List of privately stored metadata namespaces.
+     * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
+     */
+    privateMeta: Array<Maybe<MetaStore>>;
+    /**
+     * List of publicly stored metadata namespaces.
+     * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
+     */
+    meta: Array<Maybe<MetaStore>>;
+    /** List of products of this type. */
+    products?: Maybe<ProductCountableConnection>;
+    /**
+     * A type of tax rate.
+     * @deprecated Use the TaxType instead. It will be removed in Saleor 3.0.
+     */
+    taxRate?: Maybe<TaxRateType>;
+    /** A type of tax. Assigned by enabled tax gateway */
+    taxType?: Maybe<TaxType>;
+    /** Variant attributes of that product type. */
+    variantAttributes?: Maybe<Array<Maybe<Attribute>>>;
+    /** Product attributes of that product type. */
+    productAttributes?: Maybe<Array<Maybe<Attribute>>>;
+    availableAttributes?: Maybe<AttributeCountableConnection>;
+  };
+
+/** Represents a type of product. It defines what attributes are available to products of this type. */
+export type ProductTypeProductsArgs = {
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
 };
 
-export type ProductType = {
-  productTypeId: Scalars["String"];
+/** Represents a type of product. It defines what attributes are available to products of this type. */
+export type ProductTypeAvailableAttributesArgs = {
+  filter?: Maybe<AttributeFilterInput>;
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
 };
 
-export type ProductTypeDefinition = Versioned & {
-  __typename?: "ProductTypeDefinition";
-  key?: Maybe<Scalars["String"]>;
-  name: Scalars["String"];
-  description: Scalars["String"];
-  attributeDefinitions: AttributeDefinitionResult;
-  id: Scalars["String"];
-  version: Scalars["Long"];
-  createdAt: Scalars["DateTime"];
-  lastModifiedAt: Scalars["DateTime"];
-  createdBy?: Maybe<Initiator>;
-  lastModifiedBy?: Maybe<Initiator>;
+/** Deletes product types. */
+export type ProductTypeBulkDelete = {
+  __typename?: 'ProductTypeBulkDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Returns how many objects were affected. */
+  count: Scalars['Int'];
+  productErrors: Array<ProductError>;
 };
 
-export type ProductTypeDefinitionAttributeDefinitionsArgs = {
-  includeNames?: Maybe<Array<Scalars["String"]>>;
-  excludeNames?: Maybe<Array<Scalars["String"]>>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
-  sort?: Maybe<Array<Scalars["String"]>>;
+/** Clears public metadata for product type. */
+export type ProductTypeClearMeta = {
+  __typename?: 'ProductTypeClearMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productErrors: Array<ProductError>;
+  productType?: Maybe<ProductType>;
 };
 
-export type ProductTypeDefinitionQueryResult = {
-  __typename?: "ProductTypeDefinitionQueryResult";
-  offset: Scalars["Int"];
-  count: Scalars["Int"];
-  total: Scalars["Long"];
-  results: Array<ProductTypeDefinition>;
+/** Clears private metadata for product type. */
+export type ProductTypeClearPrivateMeta = {
+  __typename?: 'ProductTypeClearPrivateMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productErrors: Array<ProductError>;
+  productType?: Maybe<ProductType>;
 };
 
-export type ProductTypeDraft = {
-  name: Scalars["String"];
-  description: Scalars["String"];
-  key?: Maybe<Scalars["String"]>;
-  attributeDefinitions?: Maybe<Array<AttributeDefinitionDraft>>;
+export enum ProductTypeConfigurable {
+  Configurable = 'CONFIGURABLE',
+  Simple = 'SIMPLE'
+}
+
+export type ProductTypeCountableConnection = {
+  __typename?: 'ProductTypeCountableConnection';
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  edges: Array<ProductTypeCountableEdge>;
+  /** A total count of items in the collection. */
+  totalCount?: Maybe<Scalars['Int']>;
 };
 
-export type ProductTypeUpdateAction = {
-  setKey?: Maybe<SetKey>;
-  changeName?: Maybe<ChangeName>;
-  changeDescription?: Maybe<ChangeDescription>;
-  removeAttributeDefinition?: Maybe<RemoveAttributeDefinition>;
-  changeLabel?: Maybe<ChangeLabel>;
-  setInputTip?: Maybe<SetInputTip>;
-  changeIsSearchable?: Maybe<ChangeIsSearchable>;
-  changeInputHint?: Maybe<ChangeInputHint>;
-  addAttributeDefinition?: Maybe<AddAttributeDefinition>;
-  changeAttributeOrder?: Maybe<ChangeAttributeOrder>;
-  changeAttributeOrderByName?: Maybe<ChangeAttributeOrderByName>;
-  removeEnumValues?: Maybe<RemoveEnumValues>;
-  addPlainEnumValue?: Maybe<AddPlainEnumValue>;
-  changePlainEnumValueLabel?: Maybe<ChangePlainEnumValueLabel>;
-  changePlainEnumValueOrder?: Maybe<ChangePlainEnumValueOrder>;
-  addLocalizedEnumValue?: Maybe<AddLocalizedEnumValue>;
-  changeLocalizedEnumValueLabel?: Maybe<ChangeLocalizedEnumValueLabel>;
-  changeLocalizedEnumValueOrder?: Maybe<ChangeLocalizedEnumValueOrder>;
-  changeAttributeName?: Maybe<ChangeAttributeName>;
-  changeEnumKey?: Maybe<ChangeEnumKey>;
+export type ProductTypeCountableEdge = {
+  __typename?: 'ProductTypeCountableEdge';
+  /** The item at the end of the edge. */
+  node: ProductType;
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
 };
 
-export type ProductUpdateAction = {
-  moveImageToPosition?: Maybe<MoveProductImageToPosition>;
-  setSearchKeywords?: Maybe<SetSearchKeywords>;
-  revertStagedChanges?: Maybe<RevertStagedChanges>;
-  revertStagedVariantChanges?: Maybe<RevertStagedVariantChanges>;
-  publish?: Maybe<PublishProduct>;
-  unpublish?: Maybe<UnpublishProduct>;
-  transitionState?: Maybe<TransitionProductState>;
-  addAsset?: Maybe<AddProductAsset>;
-  addExternalImage?: Maybe<AddProductExternalImage>;
-  addPrice?: Maybe<AddProductPrice>;
-  addToCategory?: Maybe<AddProductToCategory>;
-  addVariant?: Maybe<AddProductVariant>;
-  changeAssetName?: Maybe<ChangeProductAssetName>;
-  changeAssetOrder?: Maybe<ChangeProductAssetOrder>;
-  changeMasterVariant?: Maybe<ChangeProductMasterVariant>;
-  changeImageLabel?: Maybe<ChangeProductImageLabel>;
-  changeName?: Maybe<ChangeProductName>;
-  changePrice?: Maybe<ChangeProductPrice>;
-  changeSlug?: Maybe<ChangeProductSlug>;
-  removeAsset?: Maybe<RemoveProductAsset>;
-  removeFromCategory?: Maybe<RemoveProductFromCategory>;
-  removeImage?: Maybe<RemoveProductImage>;
-  removePrice?: Maybe<RemoveProductPrice>;
-  removeVariant?: Maybe<RemoveProductVariant>;
-  setAssetCustomField?: Maybe<SetProductAssetCustomField>;
-  setAssetCustomType?: Maybe<SetProductAssetCustomType>;
-  setAssetDescription?: Maybe<SetProductAssetDescription>;
-  setAssetKey?: Maybe<SetProductAssetKey>;
-  setAssetSources?: Maybe<SetProductAssetSources>;
-  setAssetTags?: Maybe<SetProductAssetTags>;
-  setCategoryOrderHint?: Maybe<SetProductCategoryOrderHint>;
-  setDiscountedPrice?: Maybe<SetProductDiscountedPrice>;
-  setAttribute?: Maybe<SetProductAttribute>;
-  setAttributeInAllVariants?: Maybe<SetProductAttributeInAllVariants>;
-  setDescription?: Maybe<SetProductDescription>;
-  setImageLabel?: Maybe<SetProductImageLabel>;
-  setKey?: Maybe<SetProductKey>;
-  setMetaAttributes?: Maybe<SetProductMetaAttributes>;
-  setMetaDescription?: Maybe<SetProductMetaDescription>;
-  setMetaKeywords?: Maybe<SetProductMetaKeywords>;
-  setMetaTitle?: Maybe<SetProductMetaTitle>;
-  setProductPriceCustomField?: Maybe<SetProductPriceCustomField>;
-  setProductPriceCustomType?: Maybe<SetProductPriceCustomType>;
-  setPrices?: Maybe<SetProductPrices>;
-  setSku?: Maybe<SetProductSku>;
-  setTaxCategory?: Maybe<SetProductTaxCategory>;
-  setProductVariantKey?: Maybe<SetProductVariantKey>;
+/** Creates a new product type. */
+export type ProductTypeCreate = {
+  __typename?: 'ProductTypeCreate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productErrors: Array<ProductError>;
+  productType?: Maybe<ProductType>;
 };
 
-export type ProductVariant = {
-  __typename?: "ProductVariant";
-  id: Scalars["Int"];
-  key?: Maybe<Scalars["String"]>;
-  sku?: Maybe<Scalars["String"]>;
-  prices?: Maybe<Array<ProductPrice>>;
-  /** Returns a single price based on the price selection rules. */
-  price?: Maybe<ProductPrice>;
-  images: Array<Image>;
-  assets: Array<Asset>;
-  availability?: Maybe<ProductVariantAvailabilityWithChannels>;
-  /** This field contains non-typed data. Consider using `attributes` as a typed alternative. */
-  attributesRaw: Array<RawProductAttribute>;
-  /** Product attributes */
-  attributes: ProductType;
-  /** Product attributes are returned as a list instead of an object structure. */
-  attributeList: Array<Attribute>;
+/** Deletes a product type. */
+export type ProductTypeDelete = {
+  __typename?: 'ProductTypeDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productErrors: Array<ProductError>;
+  productType?: Maybe<ProductType>;
 };
 
-export type ProductVariantPriceArgs = {
-  currency: Scalars["Currency"];
-  country?: Maybe<Scalars["Country"]>;
-  customerGroupId?: Maybe<Scalars["String"]>;
-  channelId?: Maybe<Scalars["String"]>;
-  date?: Maybe<Scalars["DateTime"]>;
+export enum ProductTypeEnum {
+  Digital = 'DIGITAL',
+  Shippable = 'SHIPPABLE'
+}
+
+export type ProductTypeFilterInput = {
+  search?: Maybe<Scalars['String']>;
+  configurable?: Maybe<ProductTypeConfigurable>;
+  productType?: Maybe<ProductTypeEnum>;
+  ids?: Maybe<Array<Maybe<Scalars['ID']>>>;
 };
 
-export type ProductVariantAttributesRawArgs = {
-  includeNames?: Maybe<Array<Scalars["String"]>>;
-  excludeNames?: Maybe<Array<Scalars["String"]>>;
+export type ProductTypeInput = {
+  /** Name of the product type. */
+  name?: Maybe<Scalars['String']>;
+  /** Product type slug. */
+  slug?: Maybe<Scalars['String']>;
+  /**
+   * Determines if product of this type has multiple variants. This option mainly
+   * simplifies product management in the dashboard. There is always at least one
+   * variant created under the hood.
+   */
+  hasVariants?: Maybe<Scalars['Boolean']>;
+  /** List of attributes shared among all product variants. */
+  productAttributes?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  /** List of attributes used to distinguish between different variants of a product. */
+  variantAttributes?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  /** Determines if shipping is required for products of this variant. */
+  isShippingRequired?: Maybe<Scalars['Boolean']>;
+  /** Determines if products are digital. */
+  isDigital?: Maybe<Scalars['Boolean']>;
+  /** Weight of the ProductType items. */
+  weight?: Maybe<Scalars['WeightScalar']>;
+  /** Tax rate for enabled tax gateway. */
+  taxCode?: Maybe<Scalars['String']>;
 };
 
-export type ProductVariantAttributeListArgs = {
-  includeNames?: Maybe<Array<Scalars["String"]>>;
-  excludeNames?: Maybe<Array<Scalars["String"]>>;
+/** Reorder the attributes of a product type. */
+export type ProductTypeReorderAttributes = {
+  __typename?: 'ProductTypeReorderAttributes';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Product type from which attributes are reordered. */
+  productType?: Maybe<ProductType>;
+  productErrors: Array<ProductError>;
 };
 
-/** Product variant availabilities */
-export type ProductVariantAvailabilitiesResult = {
-  __typename?: "ProductVariantAvailabilitiesResult";
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
-  total: Scalars["Int"];
-  results: Array<ProductVariantAvailabilityWithChannel>;
+export enum ProductTypeSortField {
+  /** Sort products by name. */
+  Name = 'NAME',
+  /** Sort products by type. */
+  Digital = 'DIGITAL',
+  /** Sort products by shipping. */
+  ShippingRequired = 'SHIPPING_REQUIRED'
+}
+
+export type ProductTypeSortingInput = {
+  /** Specifies the direction in which to sort products. */
+  direction: OrderDirection;
+  /** Sort product types by the selected field. */
+  field: ProductTypeSortField;
 };
 
-/** Product variant availability */
-export type ProductVariantAvailability = {
-  __typename?: "ProductVariantAvailability";
-  isOnStock: Scalars["Boolean"];
-  restockableInDays?: Maybe<Scalars["Int"]>;
-  availableQuantity?: Maybe<Scalars["Long"]>;
+/** Updates an existing product type. */
+export type ProductTypeUpdate = {
+  __typename?: 'ProductTypeUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productErrors: Array<ProductError>;
+  productType?: Maybe<ProductType>;
 };
 
-export type ProductVariantAvailabilityWithChannel = {
-  __typename?: "ProductVariantAvailabilityWithChannel";
-  channelRef: Reference;
-  channel?: Maybe<Channel>;
-  availability: ProductVariantAvailability;
+/** Update public metadata for product type. */
+export type ProductTypeUpdateMeta = {
+  __typename?: 'ProductTypeUpdateMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productErrors: Array<ProductError>;
+  productType?: Maybe<ProductType>;
 };
 
-export type ProductVariantAvailabilityWithChannels = {
-  __typename?: "ProductVariantAvailabilityWithChannels";
-  noChannel?: Maybe<ProductVariantAvailability>;
-  channels: ProductVariantAvailabilitiesResult;
+/** Update private metadata for product type. */
+export type ProductTypeUpdatePrivateMeta = {
+  __typename?: 'ProductTypeUpdatePrivateMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productErrors: Array<ProductError>;
+  productType?: Maybe<ProductType>;
 };
 
-export type ProductVariantAvailabilityWithChannelsChannelsArgs = {
-  includeChannelIds?: Maybe<Array<Scalars["String"]>>;
-  excludeChannelIds?: Maybe<Array<Scalars["String"]>>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
+/** Updates an existing product. */
+export type ProductUpdate = {
+  __typename?: 'ProductUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productErrors: Array<ProductError>;
+  product?: Maybe<Product>;
+};
+
+/** Update public metadata for product. */
+export type ProductUpdateMeta = {
+  __typename?: 'ProductUpdateMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productErrors: Array<ProductError>;
+  product?: Maybe<Product>;
+};
+
+/** Update private metadata for product. */
+export type ProductUpdatePrivateMeta = {
+  __typename?: 'ProductUpdatePrivateMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productErrors: Array<ProductError>;
+  product?: Maybe<Product>;
+};
+
+/** Represents a version of a product such as different size or color. */
+export type ProductVariant = Node &
+  ObjectWithMetadata & {
+    __typename?: 'ProductVariant';
+    /** The ID of the object. */
+    id: Scalars['ID'];
+    name: Scalars['String'];
+    sku: Scalars['String'];
+    product: Product;
+    trackInventory: Scalars['Boolean'];
+    weight?: Maybe<Weight>;
+    /** List of private metadata items.Requires proper staff permissions to access. */
+    privateMetadata: Array<Maybe<MetadataItem>>;
+    /** List of public metadata items. Can be accessed without permissions. */
+    metadata: Array<Maybe<MetadataItem>>;
+    /**
+     * List of privately stored metadata namespaces.
+     * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
+     */
+    privateMeta: Array<Maybe<MetaStore>>;
+    /**
+     * List of publicly stored metadata namespaces.
+     * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
+     */
+    meta: Array<Maybe<MetaStore>>;
+    /**
+     * Quantity of a product available for sale.
+     * @deprecated Use the stock field instead. This field will be removed after 2020-07-31.
+     */
+    quantity: Scalars['Int'];
+    /**
+     * Quantity allocated for orders.
+     * @deprecated Use the stock field instead. This field will be removed after 2020-07-31.
+     */
+    quantityAllocated?: Maybe<Scalars['Int']>;
+    /**
+     * Quantity of a product available for sale.
+     * @deprecated Use the quantityAvailable field instead. This field will be removed after 2020-07-31.
+     */
+    stockQuantity: Scalars['Int'];
+    /**
+     * Base price of a product variant. This field is restricted for admins. Use the
+     * pricing field to get the public price for customers.
+     */
+    price?: Maybe<Money>;
+    /** Lists the storefront variant's pricing, the current price and discounts, only meant for displaying. */
+    pricing?: Maybe<VariantPricingInfo>;
+    /**
+     * Whether the variant is in stock and visible or not.
+     * @deprecated Use the stock field instead. This field will be removed after 2020-07-31.
+     */
+    isAvailable?: Maybe<Scalars['Boolean']>;
+    /** List of attributes assigned to this variant. */
+    attributes: Array<SelectedAttribute>;
+    /** Cost price of the variant. */
+    costPrice?: Maybe<Money>;
+    /** Gross margin percentage value. */
+    margin?: Maybe<Scalars['Int']>;
+    /** Total quantity ordered. */
+    quantityOrdered?: Maybe<Scalars['Int']>;
+    /**
+     * Total revenue generated by a variant in given period of time. Note: this field
+     * should be queried using `reportProductSales` query as it uses optimizations
+     * suitable for such calculations.
+     */
+    revenue?: Maybe<TaxedMoney>;
+    /** List of images for the product variant. */
+    images?: Maybe<Array<Maybe<ProductImage>>>;
+    /** Returns translated product variant fields for the given language code. */
+    translation?: Maybe<ProductVariantTranslation>;
+    /** Digital content for the product variant. */
+    digitalContent?: Maybe<DigitalContent>;
+    /** Stocks for the product variant. */
+    stocks?: Maybe<Array<Maybe<Stock>>>;
+    /** Quantity of a product available for sale in one checkout. */
+    quantityAvailable: Scalars['Int'];
+  };
+
+/** Represents a version of a product such as different size or color. */
+export type ProductVariantRevenueArgs = {
+  period?: Maybe<ReportingPeriod>;
+};
+
+/** Represents a version of a product such as different size or color. */
+export type ProductVariantTranslationArgs = {
+  languageCode: LanguageCodeEnum;
+};
+
+/** Represents a version of a product such as different size or color. */
+export type ProductVariantStocksArgs = {
+  countryCode?: Maybe<CountryCode>;
+};
+
+/** Represents a version of a product such as different size or color. */
+export type ProductVariantQuantityAvailableArgs = {
+  countryCode?: Maybe<CountryCode>;
+};
+
+/** Creates product variants for a given product. */
+export type ProductVariantBulkCreate = {
+  __typename?: 'ProductVariantBulkCreate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Returns how many objects were created. */
+  count: Scalars['Int'];
+  /** List of the created variants. */
+  productVariants: Array<ProductVariant>;
+  bulkProductErrors: Array<BulkProductError>;
+};
+
+export type ProductVariantBulkCreateInput = {
+  /** List of attributes specific to this variant. */
+  attributes: Array<Maybe<AttributeValueInput>>;
+  /** Cost price of the variant. */
+  costPrice?: Maybe<Scalars['PositiveDecimal']>;
+  /** Price of the particular variant. */
+  price?: Maybe<Scalars['PositiveDecimal']>;
+  /** Stock keeping unit. */
+  sku: Scalars['String'];
+  /**
+   * Determines if the inventory of this variant should be tracked. If false, the
+   * quantity won't change when customers buy this item.
+   */
+  trackInventory?: Maybe<Scalars['Boolean']>;
+  /** Weight of the Product Variant. */
+  weight?: Maybe<Scalars['WeightScalar']>;
+  /** Stocks of a product available for sale. */
+  stocks?: Maybe<Array<StockInput>>;
+};
+
+/** Deletes product variants. */
+export type ProductVariantBulkDelete = {
+  __typename?: 'ProductVariantBulkDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Returns how many objects were affected. */
+  count: Scalars['Int'];
+  productErrors: Array<ProductError>;
+};
+
+/** Clears public metadata for product variant. */
+export type ProductVariantClearMeta = {
+  __typename?: 'ProductVariantClearMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productErrors: Array<ProductError>;
+  productVariant?: Maybe<ProductVariant>;
+};
+
+/** Clears private metadata for product variant. */
+export type ProductVariantClearPrivateMeta = {
+  __typename?: 'ProductVariantClearPrivateMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productErrors: Array<ProductError>;
+  productVariant?: Maybe<ProductVariant>;
+};
+
+export type ProductVariantCountableConnection = {
+  __typename?: 'ProductVariantCountableConnection';
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  edges: Array<ProductVariantCountableEdge>;
+  /** A total count of items in the collection. */
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type ProductVariantCountableEdge = {
+  __typename?: 'ProductVariantCountableEdge';
+  /** The item at the end of the edge. */
+  node: ProductVariant;
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+};
+
+/** Creates a new variant for a product. */
+export type ProductVariantCreate = {
+  __typename?: 'ProductVariantCreate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productErrors: Array<ProductError>;
+  productVariant?: Maybe<ProductVariant>;
+};
+
+export type ProductVariantCreateInput = {
+  /** List of attributes specific to this variant. */
+  attributes: Array<Maybe<AttributeValueInput>>;
+  /** Cost price of the variant. */
+  costPrice?: Maybe<Scalars['PositiveDecimal']>;
+  /** Price of the particular variant. */
+  price?: Maybe<Scalars['PositiveDecimal']>;
+  /** Stock keeping unit. */
+  sku?: Maybe<Scalars['String']>;
+  /**
+   * Determines if the inventory of this variant should be tracked. If false, the
+   * quantity won't change when customers buy this item.
+   */
+  trackInventory?: Maybe<Scalars['Boolean']>;
+  /** Weight of the Product Variant. */
+  weight?: Maybe<Scalars['WeightScalar']>;
+  /** Product ID of which type is the variant. */
+  product: Scalars['ID'];
+  /** Stocks of a product available for sale. */
+  stocks?: Maybe<Array<StockInput>>;
+};
+
+/** Deletes a product variant. */
+export type ProductVariantDelete = {
+  __typename?: 'ProductVariantDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productErrors: Array<ProductError>;
+  productVariant?: Maybe<ProductVariant>;
+};
+
+export type ProductVariantFilterInput = {
+  search?: Maybe<Scalars['String']>;
+  sku?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
 export type ProductVariantInput = {
-  sku?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
-  prices?: Maybe<Array<ProductPriceDataInput>>;
-  images?: Maybe<Array<ImageInput>>;
-  attributes?: Maybe<Array<ProductAttributeInput>>;
-  assets?: Maybe<Array<AssetDraftInput>>;
+  /** List of attributes specific to this variant. */
+  attributes?: Maybe<Array<Maybe<AttributeValueInput>>>;
+  /** Cost price of the variant. */
+  costPrice?: Maybe<Scalars['PositiveDecimal']>;
+  /** Price of the particular variant. */
+  price?: Maybe<Scalars['PositiveDecimal']>;
+  /** Stock keeping unit. */
+  sku?: Maybe<Scalars['String']>;
+  /**
+   * Determines if the inventory of this variant should be tracked. If false, the
+   * quantity won't change when customers buy this item.
+   */
+  trackInventory?: Maybe<Scalars['Boolean']>;
+  /** Weight of the Product Variant. */
+  weight?: Maybe<Scalars['WeightScalar']>;
 };
 
-/** Project contains information about project. */
-export type ProjectProjection = {
-  __typename?: "ProjectProjection";
-  key: Scalars["String"];
-  name: Scalars["String"];
-  languages: Array<Scalars["Locale"]>;
-  createdAt: Scalars["DateTime"];
-  trialUntil?: Maybe<Scalars["YearMonth"]>;
-  version: Scalars["Long"];
-  externalOAuth?: Maybe<ExternalOAuth>;
-  messages: MessagesConfiguration;
-  countries: Array<Scalars["Country"]>;
-  currencies: Array<Scalars["Currency"]>;
-  shippingRateInputType?: Maybe<ShippingRateInputType>;
+/** Reorder the variants of a product. Mutation updates updated_at on product and triggers PRODUCT_UPDATED webhook. */
+export type ProductVariantReorder = {
+  __typename?: 'ProductVariantReorder';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  product?: Maybe<Product>;
+  productErrors: Array<ProductError>;
 };
 
-export type ProjectSettingsUpdateAction = {
-  changeCountries?: Maybe<ChangeProjectSettingsCountries>;
-  changeCurrencies?: Maybe<ChangeProjectSettingsCurrencies>;
-  changeLanguages?: Maybe<ChangeProjectSettingsLanguages>;
-  changeMessagesConfiguration?: Maybe<
-    ChangeProjectSettingsMessagesConfiguration
-  >;
-  changeMessagesEnabled?: Maybe<ChangeProjectSettingsMessagesEnabled>;
-  changeName?: Maybe<ChangeProjectSettingsName>;
-  setExternalOAuth?: Maybe<SetProjectSettingsExternalOAuth>;
-  setShippingRateInputType?: Maybe<SetProjectSettingsShippingRateInputType>;
+/** Set default variant for a product. Mutation triggers PRODUCT_UPDATED webhook. */
+export type ProductVariantSetDefault = {
+  __typename?: 'ProductVariantSetDefault';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  product?: Maybe<Product>;
+  productErrors: Array<ProductError>;
 };
 
-export type PublishProduct = {
-  scope?: Maybe<PublishScope>;
+/** Creates stocks for product variant. */
+export type ProductVariantStocksCreate = {
+  __typename?: 'ProductVariantStocksCreate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Updated product variant. */
+  productVariant?: Maybe<ProductVariant>;
+  bulkStockErrors: Array<BulkStockError>;
 };
 
-export enum PublishScope {
-  /** Publishes the complete staged projection */
-  All = "All",
-  /** Publishes only prices on the staged projection */
-  Prices = "Prices"
-}
-
-export type Query = CartQueryInterface &
-  CustomerActiveCartInterface &
-  OrderQueryInterface &
-  CustomerQueryInterface &
-  ShoppingListQueryInterface &
-  ShippingMethodsByCartInterface &
-  MeFieldInterface & {
-    __typename?: "Query";
-    /** This field can only be used with an access token created with the password flow or with an anonymous session.
-     *
-     * It gives access to the data that is specific to the customer or the anonymous session linked to the access token.
-     */
-    me: Me;
-    /** This field gives access to the resources (such as carts) that are inside the given store. */
-    inStore: InStore;
-    /** This field gives access to the resources (such as carts) that are inside one of the given stores. */
-    inStores: InStore;
-    customerGroup?: Maybe<CustomerGroup>;
-    customerGroups: CustomerGroupQueryResult;
-    category?: Maybe<Category>;
-    categories: CategoryQueryResult;
-    /** Autocomplete the categories based on category fields like name, description, etc. */
-    categoryAutocomplete: CategorySearchResult;
-    /** Search the categories using full-text search, filtering and sorting */
-    categorySearch: CategorySearchResult;
-    channel?: Maybe<Channel>;
-    channels: ChannelQueryResult;
-    productType?: Maybe<ProductTypeDefinition>;
-    productTypes: ProductTypeDefinitionQueryResult;
-    typeDefinition?: Maybe<TypeDefinition>;
-    typeDefinitions: TypeDefinitionQueryResult;
-    shippingMethod?: Maybe<ShippingMethod>;
-    shippingMethods: ShippingMethodQueryResult;
-    shippingMethodsByCart: Array<ShippingMethod>;
-    shippingMethodsByLocation: Array<ShippingMethod>;
-    zone?: Maybe<Zone>;
-    zones: ZoneQueryResult;
-    taxCategory?: Maybe<TaxCategory>;
-    taxCategories: TaxCategoryQueryResult;
-    discountCode?: Maybe<DiscountCode>;
-    discountCodes: DiscountCodeQueryResult;
-    cartDiscount?: Maybe<CartDiscount>;
-    cartDiscounts: CartDiscountQueryResult;
-    productDiscount?: Maybe<ProductDiscount>;
-    productDiscounts: ProductDiscountQueryResult;
-    product?: Maybe<Product>;
-    products: ProductQueryResult;
-    state?: Maybe<State>;
-    states: StateQueryResult;
-    customer?: Maybe<Customer>;
-    customers: CustomerQueryResult;
-    inventoryEntry?: Maybe<InventoryEntry>;
-    inventoryEntries: InventoryEntryQueryResult;
-    cart?: Maybe<Cart>;
-    carts: CartQueryResult;
-    customerActiveCart?: Maybe<Cart>;
-    order?: Maybe<Order>;
-    orders: OrderQueryResult;
-    shoppingList?: Maybe<ShoppingList>;
-    shoppingLists: ShoppingListQueryResult;
-    payment?: Maybe<Payment>;
-    payments: PaymentQueryResult;
-    project: ProjectProjection;
-    store?: Maybe<Store>;
-    stores: StoreQueryResult;
-    apiClient?: Maybe<ApiClientWithoutSecret>;
-    apiClients: ApiClientWithoutSecretQueryResult;
-  };
-
-export type QueryInStoreArgs = {
-  key: Scalars["KeyReferenceInput"];
+/** Delete stocks from product variant. */
+export type ProductVariantStocksDelete = {
+  __typename?: 'ProductVariantStocksDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Updated product variant. */
+  productVariant?: Maybe<ProductVariant>;
+  stockErrors: Array<StockError>;
 };
 
-export type QueryInStoresArgs = {
-  keys: Array<Scalars["KeyReferenceInput"]>;
+/** Update stocks for product variant. */
+export type ProductVariantStocksUpdate = {
+  __typename?: 'ProductVariantStocksUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Updated product variant. */
+  productVariant?: Maybe<ProductVariant>;
+  bulkStockErrors: Array<BulkStockError>;
 };
 
-export type QueryCustomerGroupArgs = {
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
+export type ProductVariantTranslatableContent = Node & {
+  __typename?: 'ProductVariantTranslatableContent';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  /** Returns translated product variant fields for the given language code. */
+  translation?: Maybe<ProductVariantTranslation>;
+  /** Represents a version of a product such as different size or color. */
+  productVariant?: Maybe<ProductVariant>;
 };
 
-export type QueryCustomerGroupsArgs = {
-  where?: Maybe<Scalars["String"]>;
-  sort?: Maybe<Array<Scalars["String"]>>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
+export type ProductVariantTranslatableContentTranslationArgs = {
+  languageCode: LanguageCodeEnum;
 };
 
-export type QueryCategoryArgs = {
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
+/** Creates/Updates translations for Product Variant. */
+export type ProductVariantTranslate = {
+  __typename?: 'ProductVariantTranslate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  translationErrors: Array<TranslationError>;
+  productVariant?: Maybe<ProductVariant>;
+};
+
+export type ProductVariantTranslation = Node & {
+  __typename?: 'ProductVariantTranslation';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  /** Translation language. */
+  language: LanguageDisplay;
+};
+
+/** Updates an existing variant for product. */
+export type ProductVariantUpdate = {
+  __typename?: 'ProductVariantUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productErrors: Array<ProductError>;
+  productVariant?: Maybe<ProductVariant>;
+};
+
+/** Update public metadata for product variant. */
+export type ProductVariantUpdateMeta = {
+  __typename?: 'ProductVariantUpdateMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productErrors: Array<ProductError>;
+  productVariant?: Maybe<ProductVariant>;
+};
+
+/** Update private metadata for product variant. */
+export type ProductVariantUpdatePrivateMeta = {
+  __typename?: 'ProductVariantUpdatePrivateMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productErrors: Array<ProductError>;
+  productVariant?: Maybe<ProductVariant>;
+};
+
+export type Query = {
+  __typename?: 'Query';
+  /** Look up a webhook by ID. */
+  webhook?: Maybe<Webhook>;
+  /**
+   * List of webhooks.
+   * @deprecated Use webhooks field on app(s) query instead. This field will be removed after 2020-07-31.
+   */
+  webhooks?: Maybe<WebhookCountableConnection>;
+  /** List of all available webhook events. */
+  webhookEvents?: Maybe<Array<Maybe<WebhookEvent>>>;
+  /**
+   * Retrieve a sample payload for a given webhook event based on real data. It can
+   * be useful for some integrations where sample payload is required.
+   */
+  webhookSamplePayload?: Maybe<Scalars['JSONString']>;
+  /** Look up a warehouse by ID. */
+  warehouse?: Maybe<Warehouse>;
+  /** List of warehouses. */
+  warehouses?: Maybe<WarehouseCountableConnection>;
+  /** Returns a list of all translatable items of a given kind. */
+  translations?: Maybe<TranslatableItemConnection>;
+  translation?: Maybe<TranslatableItem>;
+  /** Look up a stock by ID */
+  stock?: Maybe<Stock>;
+  /** List of stocks. */
+  stocks?: Maybe<StockCountableConnection>;
+  /** Return information about the shop. */
+  shop: Shop;
+  /** Look up a shipping zone by ID. */
+  shippingZone?: Maybe<ShippingZone>;
+  /** List of the shop's shipping zones. */
+  shippingZones?: Maybe<ShippingZoneCountableConnection>;
+  /** Look up digital content by ID. */
+  digitalContent?: Maybe<DigitalContent>;
+  /** List of digital content. */
+  digitalContents?: Maybe<DigitalContentCountableConnection>;
+  /** List of the shop's attributes. */
+  attributes?: Maybe<AttributeCountableConnection>;
+  /** Look up an attribute by ID. */
+  attribute?: Maybe<Attribute>;
+  /** List of the shop's categories. */
+  categories?: Maybe<CategoryCountableConnection>;
+  /** Look up a category by ID or slug. */
+  category?: Maybe<Category>;
+  /** Look up a collection by ID. */
+  collection?: Maybe<Collection>;
+  /** List of the shop's collections. */
+  collections?: Maybe<CollectionCountableConnection>;
+  /** Look up a product by ID. */
+  product?: Maybe<Product>;
+  /** List of the shop's products. */
+  products?: Maybe<ProductCountableConnection>;
+  /** Look up a product type by ID. */
+  productType?: Maybe<ProductType>;
+  /** List of the shop's product types. */
+  productTypes?: Maybe<ProductTypeCountableConnection>;
+  /** Look up a product variant by ID or SKU. */
+  productVariant?: Maybe<ProductVariant>;
+  /** List of product variants. */
+  productVariants?: Maybe<ProductVariantCountableConnection>;
+  /** List of top selling products. */
+  reportProductSales?: Maybe<ProductVariantCountableConnection>;
+  /** Look up a payment by ID. */
+  payment?: Maybe<Payment>;
+  /** List of payments. */
+  payments?: Maybe<PaymentCountableConnection>;
+  /** Look up a page by ID or slug. */
+  page?: Maybe<Page>;
+  /** List of the shop's pages. */
+  pages?: Maybe<PageCountableConnection>;
+  /** List of activity events to display on homepage (at the moment it only contains order-events). */
+  homepageEvents?: Maybe<OrderEventCountableConnection>;
+  /** Look up an order by ID. */
+  order?: Maybe<Order>;
+  /** List of orders. */
+  orders?: Maybe<OrderCountableConnection>;
+  /** List of draft orders. */
+  draftOrders?: Maybe<OrderCountableConnection>;
+  /** Return the total sales amount from a specific period. */
+  ordersTotal?: Maybe<TaxedMoney>;
+  /** Look up an order by token. */
+  orderByToken?: Maybe<Order>;
+  /** Look up a navigation menu by ID or name. */
+  menu?: Maybe<Menu>;
+  /** List of the storefront's menus. */
+  menus?: Maybe<MenuCountableConnection>;
+  /** Look up a menu item by ID. */
+  menuItem?: Maybe<MenuItem>;
+  /** List of the storefronts's menu items. */
+  menuItems?: Maybe<MenuItemCountableConnection>;
+  /** Look up a gift card by ID. */
+  giftCard?: Maybe<GiftCard>;
+  /** List of gift cards. */
+  giftCards?: Maybe<GiftCardCountableConnection>;
+  /** Look up a plugin by ID. */
+  plugin?: Maybe<Plugin>;
+  /** List of plugins. */
+  plugins?: Maybe<PluginCountableConnection>;
+  /** Look up a sale by ID. */
+  sale?: Maybe<Sale>;
+  /** List of the shop's sales. */
+  sales?: Maybe<SaleCountableConnection>;
+  /** Look up a voucher by ID. */
+  voucher?: Maybe<Voucher>;
+  /** List of the shop's vouchers. */
+  vouchers?: Maybe<VoucherCountableConnection>;
+  /** Look up a export file by ID. */
+  exportFile?: Maybe<ExportFile>;
+  /** List of export files. */
+  exportFiles?: Maybe<ExportFileCountableConnection>;
+  /** List of all tax rates available from tax gateway. */
+  taxTypes?: Maybe<Array<Maybe<TaxType>>>;
+  /** Look up a checkout by token. */
+  checkout?: Maybe<Checkout>;
+  /** List of checkouts. */
+  checkouts?: Maybe<CheckoutCountableConnection>;
+  /** Look up a checkout line by ID. */
+  checkoutLine?: Maybe<CheckoutLine>;
+  /** List of checkout lines. */
+  checkoutLines?: Maybe<CheckoutLineCountableConnection>;
+  /** List of all apps installations */
+  appsInstallations: Array<AppInstallation>;
+  /** List of the apps. */
+  apps?: Maybe<AppCountableConnection>;
+  /** Look up a app by ID. */
+  app?: Maybe<App>;
+  /** Returns address validation rules. */
+  addressValidationRules?: Maybe<AddressValidationData>;
+  /** Look up an address by ID. */
+  address?: Maybe<Address>;
+  /** List of the shop's customers. */
+  customers?: Maybe<UserCountableConnection>;
+  /** List of permission groups. */
+  permissionGroups?: Maybe<GroupCountableConnection>;
+  /** Look up permission group by ID. */
+  permissionGroup?: Maybe<Group>;
+  /** Return the currently authenticated user. */
+  me?: Maybe<User>;
+  /** List of the shop's staff users. */
+  staffUsers?: Maybe<UserCountableConnection>;
+  /**
+   * List of the service accounts.
+   * @deprecated Use the `apps` query instead. This field will be removed after 2020-07-31.
+   */
+  serviceAccounts?: Maybe<ServiceAccountCountableConnection>;
+  /**
+   * Look up a service account by ID.
+   * @deprecated Use the `app` query instead. This field will be removed after 2020-07-31.
+   */
+  serviceAccount?: Maybe<ServiceAccount>;
+  /** Look up a user by ID. */
+  user?: Maybe<User>;
+  _entities?: Maybe<Array<Maybe<_Entity>>>;
+  _service?: Maybe<_Service>;
+};
+
+export type QueryWebhookArgs = {
+  id: Scalars['ID'];
+};
+
+export type QueryWebhooksArgs = {
+  sortBy?: Maybe<WebhookSortingInput>;
+  filter?: Maybe<WebhookFilterInput>;
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+};
+
+export type QueryWebhookSamplePayloadArgs = {
+  eventType: WebhookSampleEventTypeEnum;
+};
+
+export type QueryWarehouseArgs = {
+  id: Scalars['ID'];
+};
+
+export type QueryWarehousesArgs = {
+  filter?: Maybe<WarehouseFilterInput>;
+  sortBy?: Maybe<WarehouseSortingInput>;
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+};
+
+export type QueryTranslationsArgs = {
+  kind: TranslatableKinds;
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+};
+
+export type QueryTranslationArgs = {
+  id: Scalars['ID'];
+  kind: TranslatableKinds;
+};
+
+export type QueryStockArgs = {
+  id: Scalars['ID'];
+};
+
+export type QueryStocksArgs = {
+  filter?: Maybe<StockFilterInput>;
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+};
+
+export type QueryShippingZoneArgs = {
+  id: Scalars['ID'];
+};
+
+export type QueryShippingZonesArgs = {
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+};
+
+export type QueryDigitalContentArgs = {
+  id: Scalars['ID'];
+};
+
+export type QueryDigitalContentsArgs = {
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+};
+
+export type QueryAttributesArgs = {
+  filter?: Maybe<AttributeFilterInput>;
+  sortBy?: Maybe<AttributeSortingInput>;
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+};
+
+export type QueryAttributeArgs = {
+  id: Scalars['ID'];
 };
 
 export type QueryCategoriesArgs = {
-  where?: Maybe<Scalars["String"]>;
-  sort?: Maybe<Array<Scalars["String"]>>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
+  filter?: Maybe<CategoryFilterInput>;
+  sortBy?: Maybe<CategorySortingInput>;
+  level?: Maybe<Scalars['Int']>;
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
 };
 
-export type QueryCategoryAutocompleteArgs = {
-  locale: Scalars["Locale"];
-  text: Scalars["String"];
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
-  filters?: Maybe<Array<Scalars["SearchFilter"]>>;
-  experimental?: Maybe<Scalars["Boolean"]>;
+export type QueryCategoryArgs = {
+  id?: Maybe<Scalars['ID']>;
+  slug?: Maybe<Scalars['String']>;
 };
 
-export type QueryCategorySearchArgs = {
-  fulltext?: Maybe<LocalizedText>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
-  queryFilters?: Maybe<Array<Scalars["SearchFilter"]>>;
-  filters?: Maybe<Array<Scalars["SearchFilter"]>>;
-  sorts?: Maybe<Array<Scalars["SearchSort"]>>;
-  experimental?: Maybe<Scalars["Boolean"]>;
+export type QueryCollectionArgs = {
+  id?: Maybe<Scalars['ID']>;
+  slug?: Maybe<Scalars['String']>;
 };
 
-export type QueryChannelArgs = {
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
-};
-
-export type QueryChannelsArgs = {
-  where?: Maybe<Scalars["String"]>;
-  sort?: Maybe<Array<Scalars["String"]>>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
-};
-
-export type QueryProductTypeArgs = {
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
-};
-
-export type QueryProductTypesArgs = {
-  where?: Maybe<Scalars["String"]>;
-  sort?: Maybe<Array<Scalars["String"]>>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
-};
-
-export type QueryTypeDefinitionArgs = {
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
-};
-
-export type QueryTypeDefinitionsArgs = {
-  where?: Maybe<Scalars["String"]>;
-  sort?: Maybe<Array<Scalars["String"]>>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
-};
-
-export type QueryShippingMethodArgs = {
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
-};
-
-export type QueryShippingMethodsArgs = {
-  where?: Maybe<Scalars["String"]>;
-  sort?: Maybe<Array<Scalars["String"]>>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
-};
-
-export type QueryShippingMethodsByCartArgs = {
-  id: Scalars["String"];
-};
-
-export type QueryShippingMethodsByLocationArgs = {
-  country: Scalars["Country"];
-  state?: Maybe<Scalars["String"]>;
-  currency?: Maybe<Scalars["Currency"]>;
-};
-
-export type QueryZoneArgs = {
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
-};
-
-export type QueryZonesArgs = {
-  where?: Maybe<Scalars["String"]>;
-  sort?: Maybe<Array<Scalars["String"]>>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
-};
-
-export type QueryTaxCategoryArgs = {
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
-};
-
-export type QueryTaxCategoriesArgs = {
-  where?: Maybe<Scalars["String"]>;
-  sort?: Maybe<Array<Scalars["String"]>>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
-};
-
-export type QueryDiscountCodeArgs = {
-  id: Scalars["String"];
-};
-
-export type QueryDiscountCodesArgs = {
-  where?: Maybe<Scalars["String"]>;
-  sort?: Maybe<Array<Scalars["String"]>>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
-};
-
-export type QueryCartDiscountArgs = {
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
-};
-
-export type QueryCartDiscountsArgs = {
-  where?: Maybe<Scalars["String"]>;
-  sort?: Maybe<Array<Scalars["String"]>>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
-};
-
-export type QueryProductDiscountArgs = {
-  id: Scalars["String"];
-};
-
-export type QueryProductDiscountsArgs = {
-  where?: Maybe<Scalars["String"]>;
-  sort?: Maybe<Array<Scalars["String"]>>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
+export type QueryCollectionsArgs = {
+  filter?: Maybe<CollectionFilterInput>;
+  sortBy?: Maybe<CollectionSortingInput>;
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
 };
 
 export type QueryProductArgs = {
-  sku?: Maybe<Scalars["String"]>;
-  variantKey?: Maybe<Scalars["String"]>;
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
+  id?: Maybe<Scalars['ID']>;
+  slug?: Maybe<Scalars['String']>;
 };
 
 export type QueryProductsArgs = {
-  where?: Maybe<Scalars["String"]>;
-  sort?: Maybe<Array<Scalars["String"]>>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
-  skus?: Maybe<Array<Scalars["String"]>>;
+  filter?: Maybe<ProductFilterInput>;
+  sortBy?: Maybe<ProductOrder>;
+  stockAvailability?: Maybe<StockAvailability>;
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
 };
 
-export type QueryStateArgs = {
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
+export type QueryProductTypeArgs = {
+  id: Scalars['ID'];
 };
 
-export type QueryStatesArgs = {
-  where?: Maybe<Scalars["String"]>;
-  sort?: Maybe<Array<Scalars["String"]>>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
+export type QueryProductTypesArgs = {
+  filter?: Maybe<ProductTypeFilterInput>;
+  sortBy?: Maybe<ProductTypeSortingInput>;
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
 };
 
-export type QueryCustomerArgs = {
-  emailToken?: Maybe<Scalars["String"]>;
-  passwordToken?: Maybe<Scalars["String"]>;
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
+export type QueryProductVariantArgs = {
+  id?: Maybe<Scalars['ID']>;
+  sku?: Maybe<Scalars['String']>;
 };
 
-export type QueryCustomersArgs = {
-  where?: Maybe<Scalars["String"]>;
-  sort?: Maybe<Array<Scalars["String"]>>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
+export type QueryProductVariantsArgs = {
+  ids?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  filter?: Maybe<ProductVariantFilterInput>;
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
 };
 
-export type QueryInventoryEntryArgs = {
-  id: Scalars["String"];
-};
-
-export type QueryInventoryEntriesArgs = {
-  where?: Maybe<Scalars["String"]>;
-  sort?: Maybe<Array<Scalars["String"]>>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
-};
-
-export type QueryCartArgs = {
-  id: Scalars["String"];
-};
-
-export type QueryCartsArgs = {
-  where?: Maybe<Scalars["String"]>;
-  sort?: Maybe<Array<Scalars["String"]>>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
-};
-
-export type QueryCustomerActiveCartArgs = {
-  customerId: Scalars["String"];
-};
-
-export type QueryOrderArgs = {
-  id?: Maybe<Scalars["String"]>;
-  orderNumber?: Maybe<Scalars["String"]>;
-};
-
-export type QueryOrdersArgs = {
-  where?: Maybe<Scalars["String"]>;
-  sort?: Maybe<Array<Scalars["String"]>>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
-};
-
-export type QueryShoppingListArgs = {
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
-};
-
-export type QueryShoppingListsArgs = {
-  where?: Maybe<Scalars["String"]>;
-  sort?: Maybe<Array<Scalars["String"]>>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
+export type QueryReportProductSalesArgs = {
+  period: ReportingPeriod;
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
 };
 
 export type QueryPaymentArgs = {
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
+  id: Scalars['ID'];
 };
 
 export type QueryPaymentsArgs = {
-  where?: Maybe<Scalars["String"]>;
-  sort?: Maybe<Array<Scalars["String"]>>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
 };
 
-export type QueryStoreArgs = {
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
+export type QueryPageArgs = {
+  id?: Maybe<Scalars['ID']>;
+  slug?: Maybe<Scalars['String']>;
 };
 
-export type QueryStoresArgs = {
-  where?: Maybe<Scalars["String"]>;
-  sort?: Maybe<Array<Scalars["String"]>>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
+export type QueryPagesArgs = {
+  sortBy?: Maybe<PageSortingInput>;
+  filter?: Maybe<PageFilterInput>;
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
 };
 
-export type QueryApiClientArgs = {
-  id: Scalars["String"];
+export type QueryHomepageEventsArgs = {
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
 };
 
-export type QueryApiClientsArgs = {
-  where?: Maybe<Scalars["String"]>;
-  sort?: Maybe<Array<Scalars["String"]>>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
+export type QueryOrderArgs = {
+  id: Scalars['ID'];
 };
 
-export type RawCustomField = {
-  __typename?: "RawCustomField";
-  name: Scalars["String"];
-  value: Scalars["Json"];
+export type QueryOrdersArgs = {
+  sortBy?: Maybe<OrderSortingInput>;
+  filter?: Maybe<OrderFilterInput>;
+  created?: Maybe<ReportingPeriod>;
+  status?: Maybe<OrderStatusFilter>;
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
 };
 
-export type RawProductAttribute = {
-  __typename?: "RawProductAttribute";
-  name: Scalars["String"];
-  value: Scalars["Json"];
-  attributeDefinition?: Maybe<AttributeDefinition>;
+export type QueryDraftOrdersArgs = {
+  sortBy?: Maybe<OrderSortingInput>;
+  filter?: Maybe<OrderDraftFilterInput>;
+  created?: Maybe<ReportingPeriod>;
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
 };
 
-export type RecalculateCart = {
-  updateProductData?: Maybe<Scalars["Boolean"]>;
+export type QueryOrdersTotalArgs = {
+  period?: Maybe<ReportingPeriod>;
 };
 
-export type Reference = {
-  __typename?: "Reference";
-  typeId: Scalars["String"];
-  id: Scalars["String"];
+export type QueryOrderByTokenArgs = {
+  token: Scalars['UUID'];
 };
 
-export type ReferenceAttribute = Attribute & {
-  __typename?: "ReferenceAttribute";
-  typeId: Scalars["String"];
-  id: Scalars["String"];
-  name: Scalars["String"];
+export type QueryMenuArgs = {
+  id?: Maybe<Scalars['ID']>;
+  name?: Maybe<Scalars['String']>;
+  slug?: Maybe<Scalars['String']>;
 };
 
-export type ReferenceAttributeDefinitionType = AttributeDefinitionType & {
-  __typename?: "ReferenceAttributeDefinitionType";
-  referenceTypeId: Scalars["String"];
-  name: Scalars["String"];
+export type QueryMenusArgs = {
+  sortBy?: Maybe<MenuSortingInput>;
+  filter?: Maybe<MenuFilterInput>;
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
 };
 
-export type ReferenceField = CustomField & {
-  __typename?: "ReferenceField";
-  typeId: Scalars["String"];
-  id: Scalars["String"];
-  name: Scalars["String"];
+export type QueryMenuItemArgs = {
+  id: Scalars['ID'];
 };
 
-export type ReferenceInput = {
-  typeId: Scalars["String"];
-  id: Scalars["String"];
+export type QueryMenuItemsArgs = {
+  sortBy?: Maybe<MenuItemSortingInput>;
+  filter?: Maybe<MenuItemFilterInput>;
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
 };
 
-export type ReferenceType = FieldType & {
-  __typename?: "ReferenceType";
-  referenceTypeId: Scalars["String"];
-  name: Scalars["String"];
+export type QueryGiftCardArgs = {
+  id: Scalars['ID'];
 };
 
-export type ReferenceTypeDefinitionDraft = {
-  referenceTypeId: Scalars["String"];
+export type QueryGiftCardsArgs = {
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
 };
 
-export type RelativeDiscountValue = CartDiscountValue &
-  ProductDiscountValue & {
-    __typename?: "RelativeDiscountValue";
-    permyriad: Scalars["Int"];
-    type: Scalars["String"];
+export type QueryPluginArgs = {
+  id: Scalars['ID'];
+};
+
+export type QueryPluginsArgs = {
+  filter?: Maybe<PluginFilterInput>;
+  sortBy?: Maybe<PluginSortingInput>;
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+};
+
+export type QuerySaleArgs = {
+  id: Scalars['ID'];
+};
+
+export type QuerySalesArgs = {
+  filter?: Maybe<SaleFilterInput>;
+  sortBy?: Maybe<SaleSortingInput>;
+  query?: Maybe<Scalars['String']>;
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+};
+
+export type QueryVoucherArgs = {
+  id: Scalars['ID'];
+};
+
+export type QueryVouchersArgs = {
+  filter?: Maybe<VoucherFilterInput>;
+  sortBy?: Maybe<VoucherSortingInput>;
+  query?: Maybe<Scalars['String']>;
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+};
+
+export type QueryExportFileArgs = {
+  id: Scalars['ID'];
+};
+
+export type QueryExportFilesArgs = {
+  filter?: Maybe<ExportFileFilterInput>;
+  sortBy?: Maybe<ExportFileSortingInput>;
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+};
+
+export type QueryCheckoutArgs = {
+  token?: Maybe<Scalars['UUID']>;
+};
+
+export type QueryCheckoutsArgs = {
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+};
+
+export type QueryCheckoutLineArgs = {
+  id?: Maybe<Scalars['ID']>;
+};
+
+export type QueryCheckoutLinesArgs = {
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+};
+
+export type QueryAppsArgs = {
+  filter?: Maybe<AppFilterInput>;
+  sortBy?: Maybe<AppSortingInput>;
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+};
+
+export type QueryAppArgs = {
+  id: Scalars['ID'];
+};
+
+export type QueryAddressValidationRulesArgs = {
+  countryCode: CountryCode;
+  countryArea?: Maybe<Scalars['String']>;
+  city?: Maybe<Scalars['String']>;
+  cityArea?: Maybe<Scalars['String']>;
+};
+
+export type QueryAddressArgs = {
+  id: Scalars['ID'];
+};
+
+export type QueryCustomersArgs = {
+  filter?: Maybe<CustomerFilterInput>;
+  sortBy?: Maybe<UserSortingInput>;
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+};
+
+export type QueryPermissionGroupsArgs = {
+  filter?: Maybe<PermissionGroupFilterInput>;
+  sortBy?: Maybe<PermissionGroupSortingInput>;
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+};
+
+export type QueryPermissionGroupArgs = {
+  id: Scalars['ID'];
+};
+
+export type QueryStaffUsersArgs = {
+  filter?: Maybe<StaffUserInput>;
+  sortBy?: Maybe<UserSortingInput>;
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+};
+
+export type QueryServiceAccountsArgs = {
+  filter?: Maybe<ServiceAccountFilterInput>;
+  sortBy?: Maybe<ServiceAccountSortingInput>;
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+};
+
+export type QueryServiceAccountArgs = {
+  id: Scalars['ID'];
+};
+
+export type QueryUserArgs = {
+  id: Scalars['ID'];
+};
+
+export type Query_EntitiesArgs = {
+  representations?: Maybe<Array<Maybe<Scalars['_Any']>>>;
+};
+
+/** Represents a reduced VAT rate for a particular type of goods. */
+export type ReducedRate = {
+  __typename?: 'ReducedRate';
+  /** Reduced VAT rate in percent. */
+  rate: Scalars['Float'];
+  /** A type of goods. */
+  rateType: TaxRateType;
+};
+
+/**
+ * Refresh JWT token. Mutation tries to take refreshToken from the input.If it
+ * fails it will try to take refreshToken from the http-only cookie -refreshToken.
+ * csrfToken is required when refreshToken is provided as a cookie.
+ */
+export type RefreshToken = {
+  __typename?: 'RefreshToken';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** JWT token, required to authenticate. */
+  token?: Maybe<Scalars['String']>;
+  /** A user instance. */
+  user?: Maybe<User>;
+  accountErrors: Array<AccountError>;
+};
+
+export type ReorderInput = {
+  /** The ID of the item to move. */
+  id: Scalars['ID'];
+  /**
+   * The new relative sorting position of the item (from -inf to +inf). 1 moves the
+   * item one position forward, -1 moves the item one position backward, 0 leaves
+   * the item unchanged.
+   */
+  sortOrder?: Maybe<Scalars['Int']>;
+};
+
+export enum ReportingPeriod {
+  Today = 'TODAY',
+  ThisMonth = 'THIS_MONTH'
+}
+
+/** Request email change of the logged in user. */
+export type RequestEmailChange = {
+  __typename?: 'RequestEmailChange';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** A user instance. */
+  user?: Maybe<User>;
+  accountErrors: Array<AccountError>;
+};
+
+/** Sends an email with the account password modification link. */
+export type RequestPasswordReset = {
+  __typename?: 'RequestPasswordReset';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  accountErrors: Array<AccountError>;
+};
+
+/** Sales allow creating discounts for categories, collections or products and are visible to all the customers. */
+export type Sale = Node & {
+  __typename?: 'Sale';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  type: SaleType;
+  value: Scalars['Float'];
+  startDate: Scalars['DateTime'];
+  endDate?: Maybe<Scalars['DateTime']>;
+  /** List of categories this sale applies to. */
+  categories?: Maybe<CategoryCountableConnection>;
+  /** List of collections this sale applies to. */
+  collections?: Maybe<CollectionCountableConnection>;
+  /** List of products this sale applies to. */
+  products?: Maybe<ProductCountableConnection>;
+  /** Returns translated sale fields for the given language code. */
+  translation?: Maybe<SaleTranslation>;
+};
+
+/** Sales allow creating discounts for categories, collections or products and are visible to all the customers. */
+export type SaleCategoriesArgs = {
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+};
+
+/** Sales allow creating discounts for categories, collections or products and are visible to all the customers. */
+export type SaleCollectionsArgs = {
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+};
+
+/** Sales allow creating discounts for categories, collections or products and are visible to all the customers. */
+export type SaleProductsArgs = {
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+};
+
+/** Sales allow creating discounts for categories, collections or products and are visible to all the customers. */
+export type SaleTranslationArgs = {
+  languageCode: LanguageCodeEnum;
+};
+
+/** Adds products, categories, collections to a voucher. */
+export type SaleAddCatalogues = {
+  __typename?: 'SaleAddCatalogues';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Sale of which catalogue IDs will be modified. */
+  sale?: Maybe<Sale>;
+  discountErrors: Array<DiscountError>;
+};
+
+/** Deletes sales. */
+export type SaleBulkDelete = {
+  __typename?: 'SaleBulkDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Returns how many objects were affected. */
+  count: Scalars['Int'];
+  discountErrors: Array<DiscountError>;
+};
+
+export type SaleCountableConnection = {
+  __typename?: 'SaleCountableConnection';
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  edges: Array<SaleCountableEdge>;
+  /** A total count of items in the collection. */
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type SaleCountableEdge = {
+  __typename?: 'SaleCountableEdge';
+  /** The item at the end of the edge. */
+  node: Sale;
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+};
+
+/** Creates a new sale. */
+export type SaleCreate = {
+  __typename?: 'SaleCreate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  discountErrors: Array<DiscountError>;
+  sale?: Maybe<Sale>;
+};
+
+/** Deletes a sale. */
+export type SaleDelete = {
+  __typename?: 'SaleDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  discountErrors: Array<DiscountError>;
+  sale?: Maybe<Sale>;
+};
+
+export type SaleFilterInput = {
+  status?: Maybe<Array<Maybe<DiscountStatusEnum>>>;
+  saleType?: Maybe<DiscountValueTypeEnum>;
+  started?: Maybe<DateTimeRangeInput>;
+  search?: Maybe<Scalars['String']>;
+};
+
+export type SaleInput = {
+  /** Voucher name. */
+  name?: Maybe<Scalars['String']>;
+  /** Fixed or percentage. */
+  type?: Maybe<DiscountValueTypeEnum>;
+  /** Value of the voucher. */
+  value?: Maybe<Scalars['PositiveDecimal']>;
+  /** Products related to the discount. */
+  products?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  /** Categories related to the discount. */
+  categories?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  /** Collections related to the discount. */
+  collections?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  /** Start date of the voucher in ISO 8601 format. */
+  startDate?: Maybe<Scalars['DateTime']>;
+  /** End date of the voucher in ISO 8601 format. */
+  endDate?: Maybe<Scalars['DateTime']>;
+};
+
+/** Removes products, categories, collections from a sale. */
+export type SaleRemoveCatalogues = {
+  __typename?: 'SaleRemoveCatalogues';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Sale of which catalogue IDs will be modified. */
+  sale?: Maybe<Sale>;
+  discountErrors: Array<DiscountError>;
+};
+
+export enum SaleSortField {
+  /** Sort sales by name. */
+  Name = 'NAME',
+  /** Sort sales by start date. */
+  StartDate = 'START_DATE',
+  /** Sort sales by end date. */
+  EndDate = 'END_DATE',
+  /** Sort sales by value. */
+  Value = 'VALUE',
+  /** Sort sales by type. */
+  Type = 'TYPE'
+}
+
+export type SaleSortingInput = {
+  /** Specifies the direction in which to sort products. */
+  direction: OrderDirection;
+  /** Sort sales by the selected field. */
+  field: SaleSortField;
+};
+
+export type SaleTranslatableContent = Node & {
+  __typename?: 'SaleTranslatableContent';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  /** Returns translated sale fields for the given language code. */
+  translation?: Maybe<SaleTranslation>;
+  /** Sales allow creating discounts for categories, collections or products and are visible to all the customers. */
+  sale?: Maybe<Sale>;
+};
+
+export type SaleTranslatableContentTranslationArgs = {
+  languageCode: LanguageCodeEnum;
+};
+
+/** Creates/updates translations for a sale. */
+export type SaleTranslate = {
+  __typename?: 'SaleTranslate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  translationErrors: Array<TranslationError>;
+  sale?: Maybe<Sale>;
+};
+
+export type SaleTranslation = Node & {
+  __typename?: 'SaleTranslation';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  name?: Maybe<Scalars['String']>;
+  /** Translation language. */
+  language: LanguageDisplay;
+};
+
+/** An enumeration. */
+export enum SaleType {
+  /** USD */
+  Fixed = 'FIXED',
+  /** % */
+  Percentage = 'PERCENTAGE'
+}
+
+/** Updates a sale. */
+export type SaleUpdate = {
+  __typename?: 'SaleUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  discountErrors: Array<DiscountError>;
+  sale?: Maybe<Sale>;
+};
+
+/** Represents a custom attribute. */
+export type SelectedAttribute = {
+  __typename?: 'SelectedAttribute';
+  /** Name of an attribute displayed in the interface. */
+  attribute: Attribute;
+  /** Values of an attribute. */
+  values: Array<Maybe<AttributeValue>>;
+};
+
+export type SeoInput = {
+  /** SEO title. */
+  title?: Maybe<Scalars['String']>;
+  /** SEO description. */
+  description?: Maybe<Scalars['String']>;
+};
+
+/** Represents service account data. */
+export type ServiceAccount = Node &
+  ObjectWithMetadata & {
+    __typename?: 'ServiceAccount';
+    /** The ID of the object. */
+    id: Scalars['ID'];
+    /** Name of the service account. */
+    name?: Maybe<Scalars['String']>;
+    /** The date and time when the service account was created. */
+    created?: Maybe<Scalars['DateTime']>;
+    /** Determine if service account will be set active or not. */
+    isActive?: Maybe<Scalars['Boolean']>;
+    /** List of the service's permissions. */
+    permissions?: Maybe<Array<Maybe<Permission>>>;
+    /** Last 4 characters of the tokens. */
+    tokens?: Maybe<Array<Maybe<ServiceAccountToken>>>;
+    /** List of private metadata items.Requires proper staff permissions to access. */
+    privateMetadata: Array<Maybe<MetadataItem>>;
+    /** List of public metadata items. Can be accessed without permissions. */
+    metadata: Array<Maybe<MetadataItem>>;
+    /**
+     * List of privately stored metadata namespaces.
+     * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
+     */
+    privateMeta: Array<Maybe<MetaStore>>;
+    /**
+     * List of publicly stored metadata namespaces.
+     * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
+     */
+    meta: Array<Maybe<MetaStore>>;
   };
 
-export type RelativeDiscountValueInput = {
-  permyriad: Scalars["Int"];
-};
-
-export type RemoveAttributeDefinition = {
-  name: Scalars["String"];
-};
-
-export type RemoveCartCustomLineItem = {
-  customLineItemId: Scalars["String"];
-};
-
-export type RemoveCartDiscountCode = {
-  discountCode: ReferenceInput;
-};
-
-export type RemoveCartItemShippingAddress = {
-  addressKey: Scalars["String"];
-};
-
-export type RemoveCartLineItem = {
-  lineItemId: Scalars["String"];
-  quantity?: Maybe<Scalars["Long"]>;
-  externalPrice?: Maybe<BaseMoneyInput>;
-  externalTotalPrice?: Maybe<ExternalLineItemTotalPriceDraft>;
-  shippingDetailsToRemove?: Maybe<ItemShippingDetailsDraft>;
-};
-
-export type RemoveCartPayment = {
-  payment: ResourceIdentifierInput;
-};
-
-export type RemoveCategoryAsset = {
-  assetKey?: Maybe<Scalars["String"]>;
-  assetId?: Maybe<Scalars["String"]>;
-};
-
-export type RemoveCustomerAddress = {
-  addressId: Scalars["String"];
-};
-
-export type RemoveCustomerBillingAddressId = {
-  addressId: Scalars["String"];
-};
-
-export type RemoveCustomerShippingAddressId = {
-  addressId: Scalars["String"];
-};
-
-export type RemoveCustomerStore = {
-  store: ResourceIdentifierInput;
-};
-
-export type RemoveEnumValues = {
-  attributeName: Scalars["String"];
-  keys: Array<Scalars["String"]>;
-};
-
-export type RemoveInventoryEntryQuantity = {
-  quantity: Scalars["Long"];
-};
-
-export type RemoveOrderDelivery = {
-  deliveryId: Scalars["String"];
-};
-
-export type RemoveOrderItemShippingAddress = {
-  addressKey: Scalars["String"];
-};
-
-export type RemoveOrderParcelFromDelivery = {
-  parcelId: Scalars["String"];
-};
-
-export type RemoveOrderPayment = {
-  payment: ResourceIdentifierInput;
-};
-
-export type RemoveProductAsset = {
-  variantId?: Maybe<Scalars["Int"]>;
-  sku?: Maybe<Scalars["String"]>;
-  catalog?: Maybe<ReferenceInput>;
-  staged?: Maybe<Scalars["Boolean"]>;
-  assetKey?: Maybe<Scalars["String"]>;
-  assetId?: Maybe<Scalars["String"]>;
-};
-
-export type RemoveProductFromCategory = {
-  category: ResourceIdentifierInput;
-  staged?: Maybe<Scalars["Boolean"]>;
-};
-
-export type RemoveProductImage = {
-  variantId?: Maybe<Scalars["Int"]>;
-  sku?: Maybe<Scalars["String"]>;
-  imageUrl: Scalars["String"];
-  staged?: Maybe<Scalars["Boolean"]>;
-};
-
-export type RemoveProductPrice = {
-  priceId?: Maybe<Scalars["String"]>;
-  variantId?: Maybe<Scalars["Int"]>;
-  sku?: Maybe<Scalars["String"]>;
-  price?: Maybe<ProductPriceDataInput>;
-  catalog?: Maybe<ReferenceInput>;
-  staged?: Maybe<Scalars["Boolean"]>;
-};
-
-export type RemoveProductVariant = {
-  id?: Maybe<Scalars["Int"]>;
-  sku?: Maybe<Scalars["String"]>;
-  staged?: Maybe<Scalars["Boolean"]>;
-};
-
-export type RemoveShippingMethodShippingRate = {
-  zone: ResourceIdentifierInput;
-  shippingRate: ShippingRateDraft;
-};
-
-export type RemoveShippingMethodZone = {
-  zone: ResourceIdentifierInput;
-};
-
-export type RemoveShoppingListLineItem = {
-  lineItemId: Scalars["String"];
-  quantity?: Maybe<Scalars["Int"]>;
-};
-
-export type RemoveShoppingListTextLineItem = {
-  textLineItemId: Scalars["String"];
-  quantity?: Maybe<Scalars["Int"]>;
-};
-
-export type RemoveZoneLocation = {
-  location: ZoneLocation;
-};
-
-export type ReservationOrderType = Type & {
-  __typename?: "reservationOrderType";
-  typeRef: Reference;
-  type: TypeDefinition;
-  isReservation?: Maybe<BooleanField>;
-};
-
-export type ResourceIdentifierInput = {
-  typeId?: Maybe<Scalars["String"]>;
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
-};
-
-/** Stores information about returns connected to this order. */
-export type ReturnInfo = {
-  __typename?: "ReturnInfo";
-  items: Array<ReturnItem>;
-  returnTrackingId?: Maybe<Scalars["String"]>;
-  returnDate?: Maybe<Scalars["DateTime"]>;
-};
-
-export type ReturnItem = {
-  type: Scalars["String"];
-  id: Scalars["String"];
-  quantity: Scalars["Long"];
-  comment?: Maybe<Scalars["String"]>;
-  shipmentState: ReturnShipmentState;
-  paymentState: ReturnPaymentState;
-  lastModifiedAt: Scalars["DateTime"];
-  createdAt: Scalars["DateTime"];
-};
-
-export type ReturnItemDraftType = {
-  quantity: Scalars["Long"];
-  lineItemId?: Maybe<Scalars["String"]>;
-  customLineItemId?: Maybe<Scalars["String"]>;
-  comment?: Maybe<Scalars["String"]>;
-  shipmentState: ReturnShipmentState;
-};
-
-export enum ReturnPaymentState {
-  NotRefunded = "NotRefunded",
-  Refunded = "Refunded",
-  Initial = "Initial",
-  NonRefundable = "NonRefundable"
-}
-
-export enum ReturnShipmentState {
-  Unusable = "Unusable",
-  BackInStock = "BackInStock",
-  Returned = "Returned",
-  Advised = "Advised"
-}
-
-export type RevertStagedChanges = {
-  dummy?: Maybe<Scalars["String"]>;
-};
-
-export type RevertStagedVariantChanges = {
-  variantId: Scalars["Int"];
-};
-
-export enum RoundingMode {
-  /** [Round half down](https://en.wikipedia.org/wiki/Rounding#Round_half_down).
-   * Rounding mode used by, e.g., [Avalara Sales TaxII](https://help.avalara.com/kb/001/How_does_Rounding_with_SalesTaxII_work%3F)
+/** Clear private metadata for a service account. */
+export type ServiceAccountClearPrivateMeta = {
+  __typename?: 'ServiceAccountClearPrivateMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
    */
-  HalfDown = "HalfDown",
-  /** [Round half up](https://en.wikipedia.org/wiki/Rounding#Round_half_up) */
-  HalfUp = "HalfUp",
-  /** [Round half to even](https://en.wikipedia.org/wiki/Rounding#Round_half_to_even).
-   * Default rounding mode as used in IEEE 754 computing functions and operators.
+  errors: Array<Error>;
+  accountErrors: Array<AccountError>;
+  serviceAccount?: Maybe<ServiceAccount>;
+};
+
+export type ServiceAccountCountableConnection = {
+  __typename?: 'ServiceAccountCountableConnection';
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  edges: Array<ServiceAccountCountableEdge>;
+  /** A total count of items in the collection. */
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type ServiceAccountCountableEdge = {
+  __typename?: 'ServiceAccountCountableEdge';
+  /** The item at the end of the edge. */
+  node: ServiceAccount;
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+};
+
+/** Creates a new service account. */
+export type ServiceAccountCreate = {
+  __typename?: 'ServiceAccountCreate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
    */
-  HalfEven = "HalfEven"
-}
-
-export type ScoreShippingRateInput = ShippingRateInput & {
-  __typename?: "ScoreShippingRateInput";
-  score: Scalars["Int"];
-  type: Scalars["String"];
-};
-
-export type ScoreShippingRateInputDraft = {
-  score: Scalars["Int"];
-};
-
-export type SearchKeyword = {
-  __typename?: "SearchKeyword";
-  text: Scalars["String"];
-};
-
-export type SearchKeywordInput = {
-  locale: Scalars["Locale"];
-  keywords: Array<CustomSuggestTokenizerInput>;
-};
-
-export type SearchKeywords = {
-  __typename?: "SearchKeywords";
-  locale: Scalars["Locale"];
-  searchKeywords: Array<SearchKeyword>;
-};
-
-/** In order to decide which of the matching items will actually be discounted */
-export enum SelectionMode {
-  MostExpensive = "MostExpensive",
-  Cheapest = "Cheapest"
-}
-
-export type SetAttributeDefinitionType = AttributeDefinitionType & {
-  __typename?: "SetAttributeDefinitionType";
-  elementType: AttributeDefinitionType;
-  name: Scalars["String"];
-};
-
-export type SetCartAnonymousId = {
-  anonymousId?: Maybe<Scalars["String"]>;
-};
-
-export type SetCartBillingAddress = {
-  address?: Maybe<AddressInput>;
-};
-
-export type SetCartCountry = {
-  country?: Maybe<Scalars["Country"]>;
-};
-
-export type SetCartCustomerEmail = {
-  email?: Maybe<Scalars["String"]>;
-};
-
-export type SetCartCustomerGroup = {
-  customerGroup?: Maybe<ResourceIdentifierInput>;
-};
-
-export type SetCartCustomerId = {
-  customerId?: Maybe<Scalars["String"]>;
-};
-
-export type SetCartCustomField = {
-  name: Scalars["String"];
-  value?: Maybe<Scalars["String"]>;
-};
-
-export type SetCartCustomLineItemCustomField = {
-  customLineItemId: Scalars["String"];
-  name: Scalars["String"];
-  value?: Maybe<Scalars["String"]>;
-};
-
-export type SetCartCustomLineItemCustomType = {
-  customLineItemId: Scalars["String"];
-  fields?: Maybe<Array<CustomFieldInput>>;
-  type?: Maybe<ResourceIdentifierInput>;
-  typeKey?: Maybe<Scalars["String"]>;
-  typeId?: Maybe<Scalars["String"]>;
-};
-
-export type SetCartCustomLineItemShippingDetails = {
-  customLineItemId: Scalars["String"];
-  shippingDetails?: Maybe<ItemShippingDetailsDraft>;
-};
-
-export type SetCartCustomLineItemTaxAmount = {
-  customLineItemId: Scalars["String"];
-  externalTaxAmount?: Maybe<ExternalTaxAmountDraft>;
-};
-
-export type SetCartCustomLineItemTaxRate = {
-  customLineItemId: Scalars["String"];
-  externalTaxRate?: Maybe<ExternalTaxRateDraft>;
-};
-
-export type SetCartCustomShippingMethod = {
-  shippingMethodName: Scalars["String"];
-  shippingRate: ShippingRateDraft;
-  taxCategory?: Maybe<ResourceIdentifierInput>;
-  externalTaxRate?: Maybe<ExternalTaxRateDraft>;
-};
-
-export type SetCartCustomType = {
-  fields?: Maybe<Array<CustomFieldInput>>;
-  type?: Maybe<ResourceIdentifierInput>;
-  typeKey?: Maybe<Scalars["String"]>;
-  typeId?: Maybe<Scalars["String"]>;
-};
-
-export type SetCartDeleteDaysAfterLastModification = {
-  deleteDaysAfterLastModification?: Maybe<Scalars["Int"]>;
-};
-
-export type SetCartDiscountCustomField = {
-  name: Scalars["String"];
-  value?: Maybe<Scalars["String"]>;
-};
-
-export type SetCartDiscountCustomType = {
-  fields?: Maybe<Array<CustomFieldInput>>;
-  type?: Maybe<ResourceIdentifierInput>;
-  typeKey?: Maybe<Scalars["String"]>;
-  typeId?: Maybe<Scalars["String"]>;
-};
-
-export type SetCartDiscountDescription = {
-  description?: Maybe<Array<LocalizedStringItemInputType>>;
-};
-
-export type SetCartDiscountKey = {
-  key?: Maybe<Scalars["String"]>;
-};
-
-export type SetCartDiscountValidFrom = {
-  validFrom?: Maybe<Scalars["DateTime"]>;
-};
-
-export type SetCartDiscountValidFromAndUntil = {
-  validFrom?: Maybe<Scalars["DateTime"]>;
-  validUntil?: Maybe<Scalars["DateTime"]>;
-};
-
-export type SetCartDiscountValidUntil = {
-  validUntil?: Maybe<Scalars["DateTime"]>;
-};
-
-export type SetCartLineItemCustomField = {
-  lineItemId: Scalars["String"];
-  name: Scalars["String"];
-  value?: Maybe<Scalars["String"]>;
-};
-
-export type SetCartLineItemCustomType = {
-  lineItemId: Scalars["String"];
-  fields?: Maybe<Array<CustomFieldInput>>;
-  type?: Maybe<ResourceIdentifierInput>;
-  typeKey?: Maybe<Scalars["String"]>;
-  typeId?: Maybe<Scalars["String"]>;
-};
-
-export type SetCartLineItemPrice = {
-  lineItemId: Scalars["String"];
-  externalPrice?: Maybe<BaseMoneyInput>;
-};
-
-export type SetCartLineItemShippingDetails = {
-  lineItemId: Scalars["String"];
-  shippingDetails?: Maybe<ItemShippingDetailsDraft>;
-};
-
-export type SetCartLineItemTaxAmount = {
-  lineItemId: Scalars["String"];
-  externalTaxAmount?: Maybe<ExternalTaxAmountDraft>;
-};
-
-export type SetCartLineItemTaxRate = {
-  lineItemId: Scalars["String"];
-  externalTaxRate?: Maybe<ExternalTaxRateDraft>;
-};
-
-export type SetCartLineItemTotalPrice = {
-  lineItemId: Scalars["String"];
-  externalTotalPrice?: Maybe<ExternalLineItemTotalPriceDraft>;
-};
-
-export type SetCartLocale = {
-  locale?: Maybe<Scalars["Locale"]>;
-};
-
-export type SetCartShippingAddress = {
-  address?: Maybe<AddressInput>;
-};
-
-export type SetCartShippingMethod = {
-  shippingMethod?: Maybe<ResourceIdentifierInput>;
-  externalTaxRate?: Maybe<ExternalTaxRateDraft>;
-};
-
-export type SetCartShippingMethodTaxAmount = {
-  externalTaxAmount?: Maybe<ExternalTaxAmountDraft>;
-};
-
-export type SetCartShippingMethodTaxRate = {
-  externalTaxRate?: Maybe<ExternalTaxRateDraft>;
-};
-
-export type SetCartShippingRateInput = {
-  shippingRateInput?: Maybe<ShippingRateInputDraft>;
-};
-
-export type SetCartTotalTax = {
-  externalTotalGross?: Maybe<MoneyInput>;
-  externalTaxPortions?: Maybe<Array<TaxPortionDraft>>;
-};
-
-export type SetCategoryAssetCustomField = {
-  value?: Maybe<Scalars["String"]>;
-  name: Scalars["String"];
-  assetKey?: Maybe<Scalars["String"]>;
-  assetId?: Maybe<Scalars["String"]>;
-};
-
-export type SetCategoryAssetCustomType = {
-  typeId?: Maybe<Scalars["String"]>;
-  typeKey?: Maybe<Scalars["String"]>;
-  type?: Maybe<ResourceIdentifierInput>;
-  fields?: Maybe<Array<CustomFieldInput>>;
-  assetKey?: Maybe<Scalars["String"]>;
-  assetId?: Maybe<Scalars["String"]>;
-};
-
-export type SetCategoryAssetDescription = {
-  description?: Maybe<Array<LocalizedStringItemInputType>>;
-  assetKey?: Maybe<Scalars["String"]>;
-  assetId?: Maybe<Scalars["String"]>;
-};
-
-export type SetCategoryAssetKey = {
-  assetKey?: Maybe<Scalars["String"]>;
-  assetId: Scalars["String"];
-};
-
-export type SetCategoryAssetSources = {
-  sources?: Maybe<Array<AssetSourceInput>>;
-  assetKey?: Maybe<Scalars["String"]>;
-  assetId?: Maybe<Scalars["String"]>;
-};
-
-export type SetCategoryAssetTags = {
-  tags?: Maybe<Array<Scalars["String"]>>;
-  assetKey?: Maybe<Scalars["String"]>;
-  assetId?: Maybe<Scalars["String"]>;
-};
-
-export type SetCategoryCustomField = {
-  name: Scalars["String"];
-  value?: Maybe<Scalars["String"]>;
-};
-
-export type SetCategoryCustomType = {
-  fields?: Maybe<Array<CustomFieldInput>>;
-  type?: Maybe<ResourceIdentifierInput>;
-  typeKey?: Maybe<Scalars["String"]>;
-  typeId?: Maybe<Scalars["String"]>;
-};
-
-export type SetCategoryDescription = {
-  description?: Maybe<Array<LocalizedStringItemInputType>>;
-};
-
-export type SetCategoryExternalId = {
-  externalId?: Maybe<Scalars["String"]>;
-};
-
-export type SetCategoryKey = {
-  key?: Maybe<Scalars["String"]>;
-};
-
-export type SetCategoryMetaDescription = {
-  metaDescription?: Maybe<Array<LocalizedStringItemInputType>>;
-};
-
-export type SetCategoryMetaKeywords = {
-  metaKeywords?: Maybe<Array<LocalizedStringItemInputType>>;
-};
-
-export type SetCategoryMetaTitle = {
-  metaTitle?: Maybe<Array<LocalizedStringItemInputType>>;
-};
-
-export type SetCustomerCompanyName = {
-  companyName?: Maybe<Scalars["String"]>;
-};
-
-export type SetCustomerCustomField = {
-  name: Scalars["String"];
-  value?: Maybe<Scalars["String"]>;
-};
-
-export type SetCustomerCustomType = {
-  fields?: Maybe<Array<CustomFieldInput>>;
-  type?: Maybe<ResourceIdentifierInput>;
-  typeKey?: Maybe<Scalars["String"]>;
-  typeId?: Maybe<Scalars["String"]>;
-};
-
-export type SetCustomerDateOfBirth = {
-  dateOfBirth?: Maybe<Scalars["Date"]>;
-};
-
-export type SetCustomerDefaultBillingAddress = {
-  addressId?: Maybe<Scalars["String"]>;
-};
-
-export type SetCustomerDefaultShippingAddress = {
-  addressId?: Maybe<Scalars["String"]>;
-};
-
-export type SetCustomerExternalId = {
-  externalId?: Maybe<Scalars["String"]>;
-};
-
-export type SetCustomerFirstName = {
-  firstName?: Maybe<Scalars["String"]>;
-};
-
-export type SetCustomerGroup = {
-  customerGroup?: Maybe<ResourceIdentifierInput>;
-};
-
-export type SetCustomerGroupCustomField = {
-  name: Scalars["String"];
-  value?: Maybe<Scalars["String"]>;
-};
-
-export type SetCustomerGroupCustomType = {
-  typeId?: Maybe<Scalars["String"]>;
-  typeKey?: Maybe<Scalars["String"]>;
-  type?: Maybe<ResourceIdentifierInput>;
-  fields?: Maybe<Array<CustomFieldInput>>;
-};
-
-export type SetCustomerGroupKey = {
-  key?: Maybe<Scalars["String"]>;
-};
-
-export type SetCustomerKey = {
-  key?: Maybe<Scalars["String"]>;
-};
-
-export type SetCustomerLastName = {
-  lastName?: Maybe<Scalars["String"]>;
-};
-
-export type SetCustomerLocale = {
-  locale?: Maybe<Scalars["Locale"]>;
-};
-
-export type SetCustomerMiddleName = {
-  middleName?: Maybe<Scalars["String"]>;
-};
-
-export type SetCustomerNumber = {
-  customerNumber?: Maybe<Scalars["String"]>;
-};
-
-export type SetCustomerSalutation = {
-  salutation?: Maybe<Scalars["String"]>;
-};
-
-export type SetCustomerStores = {
-  stores: Array<ResourceIdentifierInput>;
-};
-
-export type SetCustomerTitle = {
-  title?: Maybe<Scalars["String"]>;
-};
-
-export type SetCustomerVatId = {
-  vatId?: Maybe<Scalars["String"]>;
-};
-
-export type SetDiscountCodeCartPredicate = {
-  cartPredicate?: Maybe<Scalars["String"]>;
-};
-
-export type SetDiscountCodeCustomField = {
-  name: Scalars["String"];
-  value?: Maybe<Scalars["String"]>;
-};
-
-export type SetDiscountCodeCustomType = {
-  fields?: Maybe<Array<CustomFieldInput>>;
-  type?: Maybe<ResourceIdentifierInput>;
-  typeKey?: Maybe<Scalars["String"]>;
-  typeId?: Maybe<Scalars["String"]>;
-};
-
-export type SetDiscountCodeDescription = {
-  description?: Maybe<Array<LocalizedStringItemInputType>>;
-};
-
-export type SetDiscountCodeMaxApplications = {
-  maxApplications?: Maybe<Scalars["Long"]>;
-};
-
-export type SetDiscountCodeMaxApplicationsPerCustomer = {
-  maxApplicationsPerCustomer?: Maybe<Scalars["Long"]>;
-};
-
-export type SetDiscountCodeName = {
-  name?: Maybe<Array<LocalizedStringItemInputType>>;
-};
-
-export type SetDiscountCodeValidFrom = {
-  validFrom?: Maybe<Scalars["DateTime"]>;
-};
-
-export type SetDiscountCodeValidFromAndUntil = {
-  validFrom?: Maybe<Scalars["DateTime"]>;
-  validUntil?: Maybe<Scalars["DateTime"]>;
-};
-
-export type SetDiscountCodeValidUntil = {
-  validUntil?: Maybe<Scalars["DateTime"]>;
-};
-
-export type SetInputTip = {
-  attributeName: Scalars["String"];
-  inputTip?: Maybe<Array<LocalizedStringItemInputType>>;
-};
-
-export type SetInventoryEntryCustomField = {
-  name: Scalars["String"];
-  value?: Maybe<Scalars["String"]>;
-};
-
-export type SetInventoryEntryCustomType = {
-  typeId?: Maybe<Scalars["String"]>;
-  typeKey?: Maybe<Scalars["String"]>;
-  type?: Maybe<ResourceIdentifierInput>;
-  fields?: Maybe<Array<CustomFieldInput>>;
-};
-
-export type SetInventoryEntryExpectedDelivery = {
-  expectedDelivery?: Maybe<Scalars["DateTime"]>;
-};
-
-export type SetInventoryEntryRestockableInDays = {
-  restockableInDays?: Maybe<Scalars["Int"]>;
-};
-
-export type SetInventoryEntrySupplyChannel = {
-  supplyChannel?: Maybe<ResourceIdentifierInput>;
-};
-
-export type SetKey = {
-  key?: Maybe<Scalars["String"]>;
-};
-
-export type SetMyCartShippingMethod = {
-  shippingMethod?: Maybe<ResourceIdentifierInput>;
-};
-
-export type SetOrderBillingAddress = {
-  address?: Maybe<AddressInput>;
-};
-
-export type SetOrderCustomerEmail = {
-  email?: Maybe<Scalars["String"]>;
-};
-
-export type SetOrderCustomerId = {
-  customerId?: Maybe<Scalars["String"]>;
-};
-
-export type SetOrderCustomField = {
-  name: Scalars["String"];
-  value?: Maybe<Scalars["String"]>;
-};
-
-export type SetOrderCustomLineItemCustomField = {
-  customLineItemId: Scalars["String"];
-  name: Scalars["String"];
-  value?: Maybe<Scalars["String"]>;
-};
-
-export type SetOrderCustomLineItemCustomType = {
-  customLineItemId: Scalars["String"];
-  fields?: Maybe<Array<CustomFieldInput>>;
-  type?: Maybe<ResourceIdentifierInput>;
-  typeKey?: Maybe<Scalars["String"]>;
-  typeId?: Maybe<Scalars["String"]>;
-};
-
-export type SetOrderCustomLineItemShippingDetails = {
-  customLineItemId: Scalars["String"];
-  shippingDetails?: Maybe<ItemShippingDetailsDraftType>;
-};
-
-export type SetOrderCustomType = {
-  fields?: Maybe<Array<CustomFieldInput>>;
-  type?: Maybe<ResourceIdentifierInput>;
-  typeKey?: Maybe<Scalars["String"]>;
-  typeId?: Maybe<Scalars["String"]>;
-};
-
-export type SetOrderDeliveryAddress = {
-  deliveryId: Scalars["String"];
-  address?: Maybe<AddressInput>;
-};
-
-export type SetOrderDeliveryItems = {
-  deliveryId: Scalars["String"];
-  items: Array<DeliveryItemDraftType>;
-};
-
-export type SetOrderLineItemCustomField = {
-  lineItemId: Scalars["String"];
-  name: Scalars["String"];
-  value?: Maybe<Scalars["String"]>;
-};
-
-export type SetOrderLineItemCustomType = {
-  lineItemId: Scalars["String"];
-  fields?: Maybe<Array<CustomFieldInput>>;
-  type?: Maybe<ResourceIdentifierInput>;
-  typeKey?: Maybe<Scalars["String"]>;
-  typeId?: Maybe<Scalars["String"]>;
-};
-
-export type SetOrderLineItemShippingDetails = {
-  lineItemId: Scalars["String"];
-  shippingDetails?: Maybe<ItemShippingDetailsDraftType>;
-};
-
-export type SetOrderLocale = {
-  locale?: Maybe<Scalars["Locale"]>;
-};
-
-export type SetOrderNumber = {
-  orderNumber?: Maybe<Scalars["String"]>;
-};
-
-export type SetOrderParcelItems = {
-  parcelId: Scalars["String"];
-  items: Array<DeliveryItemDraftType>;
-};
-
-export type SetOrderParcelMeasurements = {
-  parcelId: Scalars["String"];
-  measurements?: Maybe<ParcelMeasurementsDraftType>;
-};
-
-export type SetOrderParcelTrackingData = {
-  parcelId: Scalars["String"];
-  trackingData?: Maybe<TrackingDataDraftType>;
-};
-
-export type SetOrderReturnPaymentState = {
-  returnItemId: Scalars["String"];
-  paymentState: ReturnPaymentState;
-};
-
-export type SetOrderReturnShipmentState = {
-  returnItemId: Scalars["String"];
-  shipmentState: ReturnShipmentState;
-};
-
-export type SetOrderShippingAddress = {
-  address?: Maybe<AddressInput>;
-};
-
-export type SetProductAssetCustomField = {
-  variantId?: Maybe<Scalars["Int"]>;
-  sku?: Maybe<Scalars["String"]>;
-  catalog?: Maybe<ReferenceInput>;
-  staged?: Maybe<Scalars["Boolean"]>;
-  value?: Maybe<Scalars["String"]>;
-  name: Scalars["String"];
-  assetKey?: Maybe<Scalars["String"]>;
-  assetId?: Maybe<Scalars["String"]>;
-};
-
-export type SetProductAssetCustomType = {
-  variantId?: Maybe<Scalars["Int"]>;
-  sku?: Maybe<Scalars["String"]>;
-  catalog?: Maybe<ReferenceInput>;
-  staged?: Maybe<Scalars["Boolean"]>;
-  typeId?: Maybe<Scalars["String"]>;
-  typeKey?: Maybe<Scalars["String"]>;
-  type?: Maybe<ResourceIdentifierInput>;
-  fields?: Maybe<Array<CustomFieldInput>>;
-  assetKey?: Maybe<Scalars["String"]>;
-  assetId?: Maybe<Scalars["String"]>;
-};
-
-export type SetProductAssetDescription = {
-  variantId?: Maybe<Scalars["Int"]>;
-  sku?: Maybe<Scalars["String"]>;
-  catalog?: Maybe<ReferenceInput>;
-  staged?: Maybe<Scalars["Boolean"]>;
-  description?: Maybe<Array<LocalizedStringItemInputType>>;
-  assetKey?: Maybe<Scalars["String"]>;
-  assetId?: Maybe<Scalars["String"]>;
-};
-
-export type SetProductAssetKey = {
-  variantId?: Maybe<Scalars["Int"]>;
-  sku?: Maybe<Scalars["String"]>;
-  catalog?: Maybe<ReferenceInput>;
-  staged?: Maybe<Scalars["Boolean"]>;
-  assetKey?: Maybe<Scalars["String"]>;
-  assetId: Scalars["String"];
-};
-
-export type SetProductAssetSources = {
-  variantId?: Maybe<Scalars["Int"]>;
-  sku?: Maybe<Scalars["String"]>;
-  catalog?: Maybe<ReferenceInput>;
-  staged?: Maybe<Scalars["Boolean"]>;
-  sources?: Maybe<Array<AssetSourceInput>>;
-  assetKey?: Maybe<Scalars["String"]>;
-  assetId?: Maybe<Scalars["String"]>;
-};
-
-export type SetProductAssetTags = {
-  variantId?: Maybe<Scalars["Int"]>;
-  sku?: Maybe<Scalars["String"]>;
-  catalog?: Maybe<ReferenceInput>;
-  staged?: Maybe<Scalars["Boolean"]>;
-  tags?: Maybe<Array<Scalars["String"]>>;
-  assetKey?: Maybe<Scalars["String"]>;
-  assetId?: Maybe<Scalars["String"]>;
-};
-
-export type SetProductAttribute = {
-  variantId?: Maybe<Scalars["Int"]>;
-  sku?: Maybe<Scalars["String"]>;
-  name: Scalars["String"];
-  value?: Maybe<Scalars["String"]>;
-  staged?: Maybe<Scalars["Boolean"]>;
-};
-
-export type SetProductAttributeInAllVariants = {
-  name: Scalars["String"];
-  value?: Maybe<Scalars["String"]>;
-  staged?: Maybe<Scalars["Boolean"]>;
-};
-
-export type SetProductCategoryOrderHint = {
-  categoryId: Scalars["String"];
-  orderHint?: Maybe<Scalars["String"]>;
-  staged?: Maybe<Scalars["Boolean"]>;
-};
-
-export type SetProductDescription = {
-  description?: Maybe<Array<LocalizedStringItemInputType>>;
-  staged?: Maybe<Scalars["Boolean"]>;
-};
-
-export type SetProductDiscountDescription = {
-  description?: Maybe<Array<LocalizedStringItemInputType>>;
-};
-
-export type SetProductDiscountedPrice = {
-  priceId: Scalars["String"];
-  discounted?: Maybe<DiscountedProductPriceValueInput>;
-  catalog?: Maybe<ReferenceInput>;
-  staged?: Maybe<Scalars["Boolean"]>;
-};
-
-export type SetProductDiscountKey = {
-  key?: Maybe<Scalars["String"]>;
-};
-
-export type SetProductDiscountValidFrom = {
-  validFrom?: Maybe<Scalars["DateTime"]>;
-};
-
-export type SetProductDiscountValidFromAndUntil = {
-  validFrom?: Maybe<Scalars["DateTime"]>;
-  validUntil?: Maybe<Scalars["DateTime"]>;
-};
-
-export type SetProductDiscountValidUntil = {
-  validUntil?: Maybe<Scalars["DateTime"]>;
-};
-
-export type SetProductImageLabel = {
-  variantId?: Maybe<Scalars["Int"]>;
-  sku?: Maybe<Scalars["String"]>;
-  imageUrl: Scalars["String"];
-  label?: Maybe<Scalars["String"]>;
-  staged?: Maybe<Scalars["Boolean"]>;
-};
-
-export type SetProductKey = {
-  key?: Maybe<Scalars["String"]>;
-};
-
-export type SetProductMetaAttributes = {
-  metaDescription?: Maybe<Array<LocalizedStringItemInputType>>;
-  metaKeywords?: Maybe<Array<LocalizedStringItemInputType>>;
-  metaTitle?: Maybe<Array<LocalizedStringItemInputType>>;
-  staged?: Maybe<Scalars["Boolean"]>;
-};
-
-export type SetProductMetaDescription = {
-  metaDescription?: Maybe<Array<LocalizedStringItemInputType>>;
-  staged?: Maybe<Scalars["Boolean"]>;
-};
-
-export type SetProductMetaKeywords = {
-  metaKeywords?: Maybe<Array<LocalizedStringItemInputType>>;
-  staged?: Maybe<Scalars["Boolean"]>;
-};
-
-export type SetProductMetaTitle = {
-  metaTitle?: Maybe<Array<LocalizedStringItemInputType>>;
-  staged?: Maybe<Scalars["Boolean"]>;
-};
-
-export type SetProductPriceCustomField = {
-  priceId: Scalars["String"];
-  catalog?: Maybe<ReferenceInput>;
-  staged?: Maybe<Scalars["Boolean"]>;
-  name: Scalars["String"];
-  value?: Maybe<Scalars["String"]>;
-};
-
-export type SetProductPriceCustomType = {
-  priceId: Scalars["String"];
-  catalog?: Maybe<ReferenceInput>;
-  staged?: Maybe<Scalars["Boolean"]>;
-  fields?: Maybe<Array<CustomFieldInput>>;
-  type?: Maybe<ResourceIdentifierInput>;
-  typeKey?: Maybe<Scalars["String"]>;
-  typeId?: Maybe<Scalars["String"]>;
-};
-
-export type SetProductPrices = {
-  variantId?: Maybe<Scalars["Int"]>;
-  sku?: Maybe<Scalars["String"]>;
-  prices: Array<ProductPriceDataInput>;
-  catalog?: Maybe<ReferenceInput>;
-  staged?: Maybe<Scalars["Boolean"]>;
-};
-
-export type SetProductSku = {
-  variantId: Scalars["Int"];
-  sku?: Maybe<Scalars["String"]>;
-  staged?: Maybe<Scalars["Boolean"]>;
-};
-
-export type SetProductTaxCategory = {
-  taxCategory?: Maybe<ResourceIdentifierInput>;
-};
-
-export type SetProductVariantKey = {
-  variantId?: Maybe<Scalars["Int"]>;
-  sku?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
-  staged?: Maybe<Scalars["Boolean"]>;
-};
-
-export type SetProjectSettingsExternalOAuth = {
-  externalOAuth?: Maybe<ExternalOAuthDraft>;
-};
-
-export type SetProjectSettingsShippingRateInputType = {
-  shippingRateInputType?: Maybe<ShippingRateInputTypeInput>;
-};
-
-export type SetSearchKeywords = {
-  searchKeywords: Array<SearchKeywordInput>;
-  staged?: Maybe<Scalars["Boolean"]>;
-};
-
-export type SetShippingMethodDescription = {
-  description?: Maybe<Scalars["String"]>;
-};
-
-export type SetShippingMethodKey = {
-  key?: Maybe<Scalars["String"]>;
-};
-
-export type SetShippingMethodPredicate = {
-  predicate?: Maybe<Scalars["String"]>;
-};
-
-export type SetShoppingListAnonymousId = {
-  anonymousId?: Maybe<Scalars["String"]>;
-};
-
-export type SetShoppingListCustomer = {
-  customer?: Maybe<ResourceIdentifierInput>;
-};
-
-export type SetShoppingListCustomField = {
-  name: Scalars["String"];
-  value?: Maybe<Scalars["String"]>;
-};
-
-export type SetShoppingListCustomType = {
-  fields?: Maybe<Array<CustomFieldInput>>;
-  type?: Maybe<ResourceIdentifierInput>;
-  typeKey?: Maybe<Scalars["String"]>;
-  typeId?: Maybe<Scalars["String"]>;
-};
-
-export type SetShoppingListDeleteDaysAfterLastModification = {
-  deleteDaysAfterLastModification?: Maybe<Scalars["Int"]>;
-};
-
-export type SetShoppingListDescription = {
-  description?: Maybe<Array<LocalizedStringItemInputType>>;
-};
-
-export type SetShoppingListKey = {
-  key?: Maybe<Scalars["String"]>;
-};
-
-export type SetShoppingListLineItemCustomField = {
-  lineItemId: Scalars["String"];
-  name: Scalars["String"];
-  value?: Maybe<Scalars["String"]>;
-};
-
-export type SetShoppingListLineItemCustomType = {
-  lineItemId: Scalars["String"];
-  fields?: Maybe<Array<CustomFieldInput>>;
-  type?: Maybe<ResourceIdentifierInput>;
-  typeKey?: Maybe<Scalars["String"]>;
-  typeId?: Maybe<Scalars["String"]>;
-};
-
-export type SetShoppingListSlug = {
-  slug?: Maybe<Array<LocalizedStringItemInputType>>;
-};
-
-export type SetShoppingListTextLineItemCustomField = {
-  textLineItemId: Scalars["String"];
-  name: Scalars["String"];
-  value?: Maybe<Scalars["String"]>;
-};
-
-export type SetShoppingListTextLineItemCustomType = {
-  textLineItemId: Scalars["String"];
-  fields?: Maybe<Array<CustomFieldInput>>;
-  type?: Maybe<ResourceIdentifierInput>;
-  typeKey?: Maybe<Scalars["String"]>;
-  typeId?: Maybe<Scalars["String"]>;
-};
-
-export type SetShoppingListTextLineItemDescription = {
-  textLineItemId: Scalars["String"];
-  description?: Maybe<Array<LocalizedStringItemInputType>>;
-};
-
-export type SetStoreLanguages = {
-  languages?: Maybe<Array<Scalars["Locale"]>>;
-};
-
-export type SetStoreName = {
-  name?: Maybe<Array<LocalizedStringItemInputType>>;
-};
-
-export type SetTaxCategoryKey = {
-  key?: Maybe<Scalars["String"]>;
-};
-
-export type SetType = FieldType & {
-  __typename?: "SetType";
-  elementType: FieldType;
-  name: Scalars["String"];
-};
-
-export type SetZoneDescription = {
-  description?: Maybe<Scalars["String"]>;
-};
-
-export type SetZoneKey = {
-  key?: Maybe<Scalars["String"]>;
-};
-
-export enum ShipmentState {
-  Delayed = "Delayed",
-  Backorder = "Backorder",
-  Partial = "Partial",
-  Pending = "Pending",
-  Ready = "Ready",
-  Shipped = "Shipped"
-}
-
-export type ShippingInfo = {
-  __typename?: "ShippingInfo";
-  shippingMethodName: Scalars["String"];
-  price: Money;
-  shippingRate: ShippingRate;
-  taxRate?: Maybe<TaxRate>;
-  taxCategory?: Maybe<Reference>;
-  deliveries: Array<Delivery>;
-  discountedPrice?: Maybe<DiscountedLineItemPrice>;
-  taxedPrice?: Maybe<TaxedItemPrice>;
-  shippingMethodState: ShippingMethodState;
-  shippingMethod?: Maybe<ShippingMethod>;
-  shippingMethodRef?: Maybe<Reference>;
-};
-
-export type ShippingMethod = Versioned & {
-  __typename?: "ShippingMethod";
-  id: Scalars["String"];
-  version: Scalars["Long"];
-  name: Scalars["String"];
-  description?: Maybe<Scalars["String"]>;
-  zoneRates: Array<ZoneRate>;
-  isDefault: Scalars["Boolean"];
-  predicate?: Maybe<Scalars["String"]>;
-  createdAt: Scalars["DateTime"];
-  lastModifiedAt: Scalars["DateTime"];
-  key?: Maybe<Scalars["String"]>;
-  lastModifiedBy?: Maybe<Initiator>;
-  createdBy?: Maybe<Initiator>;
-  taxCategoryRef?: Maybe<Reference>;
-  taxCategory?: Maybe<TaxCategory>;
-};
-
-export type ShippingMethodDraft = {
-  name: Scalars["String"];
-  description?: Maybe<Scalars["String"]>;
-  taxCategory: ResourceIdentifierInput;
-  zoneRates?: Maybe<Array<ZoneRateDraft>>;
-  isDefault: Scalars["Boolean"];
-  predicate?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
-};
-
-export type ShippingMethodQueryResult = {
-  __typename?: "ShippingMethodQueryResult";
-  offset: Scalars["Int"];
-  count: Scalars["Int"];
-  total: Scalars["Long"];
-  results: Array<ShippingMethod>;
-};
-
-/** A field to retrieve available shipping methods for a cart. */
-export type ShippingMethodsByCartInterface = {
-  shippingMethodsByCart: Array<ShippingMethod>;
-};
-
-/** A field to retrieve available shipping methods for a cart. */
-export type ShippingMethodsByCartInterfaceShippingMethodsByCartArgs = {
-  id: Scalars["String"];
-};
-
-export enum ShippingMethodState {
-  /** Either there is no predicate defined for the ShippingMethod or the given predicate matches the cart */
-  MatchesCart = "MatchesCart",
-  /** The ShippingMethod predicate does not match the cart. Ordering this cart will
-   * fail with error ShippingMethodDoesNotMatchCart
+  errors: Array<Error>;
+  /** The newly created authentication token. */
+  authToken?: Maybe<Scalars['String']>;
+  accountErrors: Array<AccountError>;
+  serviceAccount?: Maybe<ServiceAccount>;
+};
+
+/** Deletes a service account. */
+export type ServiceAccountDelete = {
+  __typename?: 'ServiceAccountDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
    */
-  DoesNotMatchCart = "DoesNotMatchCart"
+  errors: Array<Error>;
+  accountErrors: Array<AccountError>;
+  serviceAccount?: Maybe<ServiceAccount>;
+};
+
+export type ServiceAccountFilterInput = {
+  search?: Maybe<Scalars['String']>;
+  isActive?: Maybe<Scalars['Boolean']>;
+};
+
+export type ServiceAccountInput = {
+  /** Name of the service account. */
+  name?: Maybe<Scalars['String']>;
+  /** Determine if this service account should be enabled. */
+  isActive?: Maybe<Scalars['Boolean']>;
+  /** List of permission code names to assign to this service account. */
+  permissions?: Maybe<Array<Maybe<PermissionEnum>>>;
+};
+
+export enum ServiceAccountSortField {
+  /** Sort service accounts by name. */
+  Name = 'NAME',
+  /** Sort service accounts by creation date. */
+  CreationDate = 'CREATION_DATE'
 }
 
-export type ShippingMethodUpdateAction = {
-  addShippingRate?: Maybe<AddShippingMethodShippingRate>;
-  addZone?: Maybe<AddShippingMethodZone>;
-  changeIsDefault?: Maybe<ChangeShippingMethodIsDefault>;
-  changeName?: Maybe<ChangeShippingMethodName>;
-  changeTaxCategory?: Maybe<ChangeShippingMethodTaxCategory>;
-  removeShippingRate?: Maybe<RemoveShippingMethodShippingRate>;
-  removeZone?: Maybe<RemoveShippingMethodZone>;
-  setDescription?: Maybe<SetShippingMethodDescription>;
-  setKey?: Maybe<SetShippingMethodKey>;
-  setPredicate?: Maybe<SetShippingMethodPredicate>;
+export type ServiceAccountSortingInput = {
+  /** Specifies the direction in which to sort products. */
+  direction: OrderDirection;
+  /** Sort service accounts by the selected field. */
+  field: ServiceAccountSortField;
 };
 
-/** Shipping Rate */
-export type ShippingRate = {
-  __typename?: "ShippingRate";
-  price: Money;
-  freeAbove?: Maybe<Money>;
-  isMatching?: Maybe<Scalars["Boolean"]>;
-  tiers: Array<ShippingRatePriceTier>;
+/** Represents token data. */
+export type ServiceAccountToken = Node & {
+  __typename?: 'ServiceAccountToken';
+  /** Name of the authenticated token. */
+  name?: Maybe<Scalars['String']>;
+  /** Last 4 characters of the token. */
+  authToken?: Maybe<Scalars['String']>;
+  /** The ID of the object. */
+  id: Scalars['ID'];
 };
 
-export type ShippingRateCartClassificationPriceTier = ShippingRatePriceTier & {
-  __typename?: "ShippingRateCartClassificationPriceTier";
-  value: Scalars["String"];
-  price: Money;
-  isMatching?: Maybe<Scalars["Boolean"]>;
-  type: Scalars["String"];
+/** Creates a new token. */
+export type ServiceAccountTokenCreate = {
+  __typename?: 'ServiceAccountTokenCreate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** The newly created authentication token. */
+  authToken?: Maybe<Scalars['String']>;
+  accountErrors: Array<AccountError>;
+  serviceAccountToken?: Maybe<ServiceAccountToken>;
 };
 
-export type ShippingRateCartScorePriceTier = ShippingRatePriceTier & {
-  __typename?: "ShippingRateCartScorePriceTier";
-  score: Scalars["Int"];
+/** Deletes an authentication token assigned to service account. */
+export type ServiceAccountTokenDelete = {
+  __typename?: 'ServiceAccountTokenDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  accountErrors: Array<AccountError>;
+  serviceAccountToken?: Maybe<ServiceAccountToken>;
+};
+
+export type ServiceAccountTokenInput = {
+  /** Name of the token. */
+  name?: Maybe<Scalars['String']>;
+  /** ID of service account. */
+  serviceAccount: Scalars['ID'];
+};
+
+/** Updates an existing service account. */
+export type ServiceAccountUpdate = {
+  __typename?: 'ServiceAccountUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  accountErrors: Array<AccountError>;
+  serviceAccount?: Maybe<ServiceAccount>;
+};
+
+/** Updates private metadata for a service account. */
+export type ServiceAccountUpdatePrivateMeta = {
+  __typename?: 'ServiceAccountUpdatePrivateMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  accountErrors: Array<AccountError>;
+  serviceAccount?: Maybe<ServiceAccount>;
+};
+
+/** Sets the user's password from the token sent by email using the RequestPasswordReset mutation. */
+export type SetPassword = {
+  __typename?: 'SetPassword';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** JWT token, required to authenticate. */
+  token?: Maybe<Scalars['String']>;
+  /** JWT refresh token, required to re-generate access token. */
+  refreshToken?: Maybe<Scalars['String']>;
+  /** CSRF token required to re-generate access token. */
+  csrfToken?: Maybe<Scalars['String']>;
+  /** A user instance. */
+  user?: Maybe<User>;
+  accountErrors: Array<AccountError>;
+};
+
+export type ShippingError = {
+  __typename?: 'ShippingError';
+  /**
+   * Name of a field that caused the error. A value of `null` indicates that the
+   * error isn't associated with a particular field.
+   */
+  field?: Maybe<Scalars['String']>;
+  /** The error message. */
+  message?: Maybe<Scalars['String']>;
+  /** The error code. */
+  code: ShippingErrorCode;
+  /** List of warehouse IDs which causes the error. */
+  warehouses?: Maybe<Array<Scalars['ID']>>;
+};
+
+/** An enumeration. */
+export enum ShippingErrorCode {
+  AlreadyExists = 'ALREADY_EXISTS',
+  GraphqlError = 'GRAPHQL_ERROR',
+  Invalid = 'INVALID',
+  MaxLessThanMin = 'MAX_LESS_THAN_MIN',
+  NotFound = 'NOT_FOUND',
+  Required = 'REQUIRED',
+  Unique = 'UNIQUE',
+  DuplicatedInputItem = 'DUPLICATED_INPUT_ITEM'
+}
+
+/** Shipping method are the methods you'll use to get customer's orders to them. They are directly exposed to the customers. */
+export type ShippingMethod = Node & {
+  __typename?: 'ShippingMethod';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  name: Scalars['String'];
   price?: Maybe<Money>;
-  priceFunction?: Maybe<PriceFunction>;
-  isMatching?: Maybe<Scalars["Boolean"]>;
-  type: Scalars["String"];
+  minimumOrderPrice?: Maybe<Money>;
+  maximumOrderPrice?: Maybe<Money>;
+  minimumOrderWeight?: Maybe<Weight>;
+  maximumOrderWeight?: Maybe<Weight>;
+  /** Type of the shipping method. */
+  type?: Maybe<ShippingMethodTypeEnum>;
+  /** Returns translated shipping method fields for the given language code. */
+  translation?: Maybe<ShippingMethodTranslation>;
 };
 
-export type ShippingRateCartValuePriceTier = ShippingRatePriceTier & {
-  __typename?: "ShippingRateCartValuePriceTier";
-  minimumCentAmount: Scalars["Int"];
-  price: Money;
-  isMatching?: Maybe<Scalars["Boolean"]>;
-  type: Scalars["String"];
+/** Shipping method are the methods you'll use to get customer's orders to them. They are directly exposed to the customers. */
+export type ShippingMethodTranslationArgs = {
+  languageCode: LanguageCodeEnum;
 };
 
-export type ShippingRateDraft = {
-  price: MoneyDraft;
-  freeAbove?: Maybe<MoneyDraft>;
-  tiers?: Maybe<Array<ShippingRatePriceTierDraft>>;
+export type ShippingMethodTranslatableContent = Node & {
+  __typename?: 'ShippingMethodTranslatableContent';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  /** Returns translated shipping method fields for the given language code. */
+  translation?: Maybe<ShippingMethodTranslation>;
+  /** Shipping method are the methods you'll use to get customer's orders  to them. They are directly exposed to the customers. */
+  shippingMethod?: Maybe<ShippingMethod>;
 };
 
-export type ShippingRateInput = {
-  type: Scalars["String"];
+export type ShippingMethodTranslatableContentTranslationArgs = {
+  languageCode: LanguageCodeEnum;
 };
 
-export type ShippingRateInputDraft = {
-  Classification?: Maybe<ClassificationShippingRateInputDraft>;
-  Score?: Maybe<ScoreShippingRateInputDraft>;
+export type ShippingMethodTranslation = Node & {
+  __typename?: 'ShippingMethodTranslation';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  name?: Maybe<Scalars['String']>;
+  /** Translation language. */
+  language: LanguageDisplay;
 };
 
-export type ShippingRateInputLocalizedEnumValue = {
-  __typename?: "ShippingRateInputLocalizedEnumValue";
-  key: Scalars["String"];
-  label?: Maybe<Scalars["String"]>;
-  labelAllLocales: Array<LocalizedString>;
-};
-
-export type ShippingRateInputLocalizedEnumValueLabelArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
-};
-
-export type ShippingRateInputType = {
-  type: Scalars["String"];
-};
-
-export type ShippingRateInputTypeInput = {
-  CartValue?: Maybe<CartValueInput>;
-  CartClassification?: Maybe<CartClassificationInput>;
-  CartScore?: Maybe<CartScoreInput>;
-};
-
-export type ShippingRatePriceTier = {
-  type: Scalars["String"];
-};
-
-export type ShippingRatePriceTierCartClassificationDraft = {
-  value: Scalars["String"];
-  price: MoneyDraft;
-};
-
-export type ShippingRatePriceTierCartScoreDraft = {
-  score: Scalars["Int"];
-  price?: Maybe<MoneyDraft>;
-  priceFunction?: Maybe<PriceFunctionDraft>;
-};
-
-export type ShippingRatePriceTierCartValueDraft = {
-  minimumCentAmount: Scalars["Int"];
-  price: MoneyDraft;
-};
-
-export type ShippingRatePriceTierDraft = {
-  CartValue?: Maybe<ShippingRatePriceTierCartValueDraft>;
-  CartClassification?: Maybe<ShippingRatePriceTierCartClassificationDraft>;
-  CartScore?: Maybe<ShippingRatePriceTierCartScoreDraft>;
-};
-
-export type ShippingTarget = CartDiscountTarget & {
-  __typename?: "ShippingTarget";
-  type: Scalars["String"];
-};
-
-export type ShippingTargetDraft = {
-  addressKey: Scalars["String"];
-  quantity: Scalars["Long"];
-};
-
-export type ShippingTargetDraftType = {
-  addressKey: Scalars["String"];
-  quantity: Scalars["Long"];
-};
-
-export type ShippingTargetInput = {
-  dummy?: Maybe<Scalars["String"]>;
-};
-
-export type ShoppingList = Versioned & {
-  __typename?: "ShoppingList";
-  key?: Maybe<Scalars["String"]>;
-  name?: Maybe<Scalars["String"]>;
-  nameAllLocales: Array<LocalizedString>;
-  description?: Maybe<Scalars["String"]>;
-  descriptionAllLocales?: Maybe<Array<LocalizedString>>;
-  slug?: Maybe<Scalars["String"]>;
-  slugAllLocales?: Maybe<Array<LocalizedString>>;
-  customerRef?: Maybe<Reference>;
-  customer?: Maybe<Customer>;
-  anonymousId?: Maybe<Scalars["String"]>;
-  lineItems: Array<ShoppingListLineItem>;
-  textLineItems: Array<TextLineItem>;
-  custom?: Maybe<CustomFieldsType>;
-  deleteDaysAfterLastModification?: Maybe<Scalars["Int"]>;
-  id: Scalars["String"];
-  version: Scalars["Long"];
-  createdAt: Scalars["DateTime"];
-  lastModifiedAt: Scalars["DateTime"];
-  createdBy?: Maybe<Initiator>;
-  lastModifiedBy?: Maybe<Initiator>;
-};
-
-export type ShoppingListNameArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
-};
-
-export type ShoppingListDescriptionArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
-};
-
-export type ShoppingListSlugArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
-};
-
-export type ShoppingListDraft = {
-  name: Array<LocalizedStringItemInputType>;
-  description?: Maybe<Array<LocalizedStringItemInputType>>;
-  lineItems?: Maybe<Array<ShoppingListLineItemDraft>>;
-  textLineItems?: Maybe<Array<TextLineItemDraft>>;
-  custom?: Maybe<CustomFieldsDraft>;
-  deleteDaysAfterLastModification?: Maybe<Scalars["Int"]>;
-  key?: Maybe<Scalars["String"]>;
-  customer?: Maybe<ResourceIdentifierInput>;
-  slug?: Maybe<Array<LocalizedStringItemInputType>>;
-  anonymousId?: Maybe<Scalars["String"]>;
-};
-
-export type ShoppingListLineItem = {
-  __typename?: "ShoppingListLineItem";
-  id: Scalars["String"];
-  productId: Scalars["String"];
-  variantId?: Maybe<Scalars["Int"]>;
-  productTypeRef: Reference;
-  productType: ProductTypeDefinition;
-  quantity: Scalars["Int"];
-  addedAt: Scalars["DateTime"];
-  name?: Maybe<Scalars["String"]>;
-  nameAllLocales: Array<LocalizedString>;
-  deactivatedAt?: Maybe<Scalars["DateTime"]>;
-  custom?: Maybe<CustomFieldsType>;
-  productSlug?: Maybe<Scalars["String"]>;
-  variant?: Maybe<ProductVariant>;
-};
-
-export type ShoppingListLineItemNameArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
-};
-
-export type ShoppingListLineItemProductSlugArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
-};
-
-export type ShoppingListLineItemDraft = {
-  productId?: Maybe<Scalars["String"]>;
-  sku?: Maybe<Scalars["String"]>;
-  variantId?: Maybe<Scalars["Int"]>;
-  quantity?: Maybe<Scalars["Int"]>;
-  custom?: Maybe<CustomFieldsDraft>;
-  addedAt?: Maybe<Scalars["DateTime"]>;
-};
-
-/** Fields to access shopping lists. Includes direct access to a single list and searching for shopping lists. */
-export type ShoppingListQueryInterface = {
-  shoppingList?: Maybe<ShoppingList>;
-  shoppingLists: ShoppingListQueryResult;
-};
-
-/** Fields to access shopping lists. Includes direct access to a single list and searching for shopping lists. */
-export type ShoppingListQueryInterfaceShoppingListArgs = {
-  id?: Maybe<Scalars["String"]>;
-  key?: Maybe<Scalars["String"]>;
-};
-
-/** Fields to access shopping lists. Includes direct access to a single list and searching for shopping lists. */
-export type ShoppingListQueryInterfaceShoppingListsArgs = {
-  where?: Maybe<Scalars["String"]>;
-  sort?: Maybe<Array<Scalars["String"]>>;
-  limit?: Maybe<Scalars["Int"]>;
-  offset?: Maybe<Scalars["Int"]>;
-};
-
-export type ShoppingListQueryResult = {
-  __typename?: "ShoppingListQueryResult";
-  offset: Scalars["Int"];
-  count: Scalars["Int"];
-  total: Scalars["Long"];
-  results: Array<ShoppingList>;
-};
-
-export type ShoppingListUpdateAction = {
-  addLineItem?: Maybe<AddShoppingListLineItem>;
-  addTextLineItem?: Maybe<AddShoppingListTextLineItem>;
-  changeLineItemQuantity?: Maybe<ChangeShoppingListLineItemQuantity>;
-  changeLineItemsOrder?: Maybe<ChangeShoppingListLineItemsOrder>;
-  changeName?: Maybe<ChangeShoppingListName>;
-  changeTextLineItemName?: Maybe<ChangeShoppingListTextLineItemName>;
-  changeTextLineItemQuantity?: Maybe<ChangeShoppingListTextLineItemQuantity>;
-  changeTextLineItemsOrder?: Maybe<ChangeShoppingListTextLineItemsOrder>;
-  removeLineItem?: Maybe<RemoveShoppingListLineItem>;
-  removeTextLineItem?: Maybe<RemoveShoppingListTextLineItem>;
-  setAnonymousId?: Maybe<SetShoppingListAnonymousId>;
-  setCustomField?: Maybe<SetShoppingListCustomField>;
-  setCustomType?: Maybe<SetShoppingListCustomType>;
-  setCustomer?: Maybe<SetShoppingListCustomer>;
-  setDeleteDaysAfterLastModification?: Maybe<
-    SetShoppingListDeleteDaysAfterLastModification
-  >;
-  setDescription?: Maybe<SetShoppingListDescription>;
-  setKey?: Maybe<SetShoppingListKey>;
-  setLineItemCustomField?: Maybe<SetShoppingListLineItemCustomField>;
-  setLineItemCustomType?: Maybe<SetShoppingListLineItemCustomType>;
-  setSlug?: Maybe<SetShoppingListSlug>;
-  setTextLineItemCustomField?: Maybe<SetShoppingListTextLineItemCustomField>;
-  setTextLineItemCustomType?: Maybe<SetShoppingListTextLineItemCustomType>;
-  setTextLineItemDescription?: Maybe<SetShoppingListTextLineItemDescription>;
-};
-
-export type SimpleAttributeTypeDraft = {
-  dummy?: Maybe<Scalars["String"]>;
-};
-
-/** Describes how this discount interacts with other discounts */
-export enum StackingMode {
-  /** Don’t apply any more matching discounts after this one. */
-  StopAfterThisDiscount = "StopAfterThisDiscount",
-  /** Default. Continue applying other matching discounts after applying this one. */
-  Stacking = "Stacking"
+/** An enumeration. */
+export enum ShippingMethodTypeEnum {
+  Price = 'PRICE',
+  Weight = 'WEIGHT'
 }
 
-/** [State](http://dev.commercetools.com/http-api-projects-states.html) */
-export type State = Versioned & {
-  __typename?: "State";
-  id: Scalars["String"];
-  version: Scalars["Long"];
-  key?: Maybe<Scalars["String"]>;
-  type: StateType;
-  roles: Array<StateRole>;
-  name?: Maybe<Scalars["String"]>;
-  nameAllLocales?: Maybe<Array<LocalizedString>>;
-  description?: Maybe<Scalars["String"]>;
-  descriptionAllLocales?: Maybe<Array<LocalizedString>>;
-  builtIn: Scalars["Boolean"];
-  transitionsRef?: Maybe<Array<Reference>>;
-  transitions?: Maybe<Array<State>>;
-  initial: Scalars["Boolean"];
-  createdAt: Scalars["DateTime"];
-  lastModifiedAt: Scalars["DateTime"];
-  createdBy?: Maybe<Initiator>;
-  lastModifiedBy?: Maybe<Initiator>;
-};
-
-/** [State](http://dev.commercetools.com/http-api-projects-states.html) */
-export type StateNameArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
-};
-
-/** [State](http://dev.commercetools.com/http-api-projects-states.html) */
-export type StateDescriptionArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
-};
-
-export type StateQueryResult = {
-  __typename?: "StateQueryResult";
-  offset: Scalars["Int"];
-  count: Scalars["Int"];
-  total: Scalars["Long"];
-  results: Array<State>;
-};
-
-export enum StateRole {
-  Return = "Return",
-  ReviewIncludedInStatistics = "ReviewIncludedInStatistics"
-}
-
-export enum StateType {
-  OrderState = "OrderState",
-  ProductState = "ProductState",
-  ReviewState = "ReviewState",
-  PaymentState = "PaymentState",
-  LineItemState = "LineItemState"
-}
-
-/** [BETA] Stores allow defining different contexts for a project. */
-export type Store = Versioned & {
-  __typename?: "Store";
-  id: Scalars["String"];
-  version: Scalars["Long"];
-  key: Scalars["String"];
-  name?: Maybe<Scalars["String"]>;
-  nameAllLocales?: Maybe<Array<LocalizedString>>;
-  languages?: Maybe<Array<Scalars["Locale"]>>;
-  createdAt: Scalars["DateTime"];
-  lastModifiedAt: Scalars["DateTime"];
-  createdBy?: Maybe<Initiator>;
-  lastModifiedBy?: Maybe<Initiator>;
-};
-
-/** [BETA] Stores allow defining different contexts for a project. */
-export type StoreNameArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
-};
-
-export type StoreQueryResult = {
-  __typename?: "StoreQueryResult";
-  offset: Scalars["Int"];
-  count: Scalars["Int"];
-  total: Scalars["Long"];
-  results: Array<Store>;
-};
-
-export type StoreUpdateAction = {
-  setLanguages?: Maybe<SetStoreLanguages>;
-  setName?: Maybe<SetStoreName>;
-};
-
-export type StringAttribute = Attribute & {
-  __typename?: "StringAttribute";
-  value: Scalars["String"];
-  name: Scalars["String"];
-};
-
-export type StringField = CustomField & {
-  __typename?: "StringField";
-  value: Scalars["String"];
-  name: Scalars["String"];
-};
-
-export type StringType = FieldType & {
-  __typename?: "StringType";
-  name: Scalars["String"];
-};
-
-export type SubRate = {
-  __typename?: "SubRate";
-  name: Scalars["String"];
-  amount: Scalars["Float"];
-};
-
-export type SubRateDraft = {
-  name: Scalars["String"];
-  amount: Scalars["Float"];
-};
-
-/** Stores information about order synchronization activities (like export or import). */
-// This file is generated do not change it.
-
-export type SyncInfo = {
-  __typename?: "SyncInfo";
-  channelRef: Reference;
-  channel?: Maybe<Channel>;
-  externalId?: Maybe<Scalars["String"]>;
-  syncedAt: Scalars["DateTime"];
-};
-
-export enum TaxCalculationMode {
-  /** This calculation mode calculates the taxes on the unit price before multiplying with the quantity.
-   * E.g. `($1.08 * 1.19 = $1.2852 -> $1.29 rounded) * 3 = $3.87`
+/** Deletes shipping prices. */
+export type ShippingPriceBulkDelete = {
+  __typename?: 'ShippingPriceBulkDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
    */
-  UnitPriceLevel = "UnitPriceLevel",
-  /** Default. This calculation mode calculates the taxes after the unit price is multiplied with the quantity.
-   * E.g. `($1.08 * 3 = $3.24) * 1.19 = $3.8556 -> $3.86 rounded`
+  errors: Array<Error>;
+  /** Returns how many objects were affected. */
+  count: Scalars['Int'];
+  shippingErrors: Array<ShippingError>;
+};
+
+/** Creates a new shipping price. */
+export type ShippingPriceCreate = {
+  __typename?: 'ShippingPriceCreate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
    */
-  LineItemLevel = "LineItemLevel"
-}
-
-/** Tax Categories define how products are to be taxed in different countries. */
-export type TaxCategory = Versioned & {
-  __typename?: "TaxCategory";
-  name: Scalars["String"];
-  description?: Maybe<Scalars["String"]>;
-  rates: Array<TaxRate>;
-  key?: Maybe<Scalars["String"]>;
-  id: Scalars["String"];
-  version: Scalars["Long"];
-  createdAt: Scalars["DateTime"];
-  lastModifiedAt: Scalars["DateTime"];
-  createdBy?: Maybe<Initiator>;
-  lastModifiedBy?: Maybe<Initiator>;
+  errors: Array<Error>;
+  /** A shipping zone to which the shipping method belongs. */
+  shippingZone?: Maybe<ShippingZone>;
+  shippingErrors: Array<ShippingError>;
+  shippingMethod?: Maybe<ShippingMethod>;
 };
 
-export type TaxCategoryAddTaxRate = {
-  taxRate: TaxRateDraft;
-};
-
-export type TaxCategoryChangeName = {
-  name: Scalars["String"];
-};
-
-export type TaxCategoryDraft = {
-  name: Scalars["String"];
-  description?: Maybe<Scalars["String"]>;
-  rates?: Maybe<Array<TaxRateDraft>>;
-  key?: Maybe<Scalars["String"]>;
-};
-
-export type TaxCategoryQueryResult = {
-  __typename?: "TaxCategoryQueryResult";
-  offset: Scalars["Int"];
-  count: Scalars["Int"];
-  total: Scalars["Long"];
-  results: Array<TaxCategory>;
-};
-
-export type TaxCategoryRemoveTaxRate = {
-  taxRateId: Scalars["String"];
-};
-
-export type TaxCategoryReplaceTaxRate = {
-  taxRateId: Scalars["String"];
-  taxRate: TaxRateDraft;
-};
-
-export type TaxCategorySetDescription = {
-  description?: Maybe<Scalars["String"]>;
-};
-
-export type TaxCategoryUpdateAction = {
-  changeName?: Maybe<TaxCategoryChangeName>;
-  setDescription?: Maybe<TaxCategorySetDescription>;
-  addTaxRate?: Maybe<TaxCategoryAddTaxRate>;
-  replaceTaxRate?: Maybe<TaxCategoryReplaceTaxRate>;
-  removeTaxRate?: Maybe<TaxCategoryRemoveTaxRate>;
-  setKey?: Maybe<SetTaxCategoryKey>;
-};
-
-export type TaxedItemPrice = {
-  __typename?: "TaxedItemPrice";
-  totalNet: Money;
-  totalGross: Money;
-};
-
-export type TaxedPrice = {
-  __typename?: "TaxedPrice";
-  totalNet: Money;
-  totalGross: Money;
-  taxPortions: Array<TaxPortion>;
-};
-
-export enum TaxMode {
-  /** No taxes are added to the cart. */
-  Disabled = "Disabled",
-  /** The tax amounts and the tax rates as well as the tax portions are set externally per ExternalTaxAmountDraft.
-   * A cart with this tax mode can only be ordered if the cart itself and all line items, all custom line items and
-   * the shipping method have an external tax amount and rate set
+/** Deletes a shipping price. */
+export type ShippingPriceDelete = {
+  __typename?: 'ShippingPriceDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
    */
-  ExternalAmount = "ExternalAmount",
-  /** The tax rates are set externally per ExternalTaxRateDraft. A cart with this tax mode can only be ordered if all
-   * line items, all custom line items and the shipping method have an external tax rate set. The totalNet and
-   * totalGross as well as the taxPortions fields are calculated by the platform according to the taxRoundingMode.
-   */
-  External = "External",
-  /** The tax rates are selected by the platform from the TaxCategories based on the cart shipping address.
-   * The totalNet and totalGross as well as the taxPortions fields are calculated by the platform according to the
-   * taxRoundingMode.
-   */
-  Platform = "Platform"
-}
+  errors: Array<Error>;
+  /** A shipping method to delete. */
+  shippingMethod?: Maybe<ShippingMethod>;
+  /** A shipping zone to which the shipping method belongs. */
+  shippingZone?: Maybe<ShippingZone>;
+  shippingErrors: Array<ShippingError>;
+};
 
-/** Represents the portions that sum up to the totalGross field of a TaxedPrice. The portions are calculated
- * from the TaxRates. If a tax rate has SubRates, they are used and can be identified by name. Tax portions
- * from line items that have the same rate and name will be accumulated to the same tax portion.
+export type ShippingPriceInput = {
+  /** Name of the shipping method. */
+  name?: Maybe<Scalars['String']>;
+  /** Shipping price of the shipping method. */
+  price?: Maybe<Scalars['PositiveDecimal']>;
+  /** Minimum order price to use this shipping method. */
+  minimumOrderPrice?: Maybe<Scalars['PositiveDecimal']>;
+  /** Maximum order price to use this shipping method. */
+  maximumOrderPrice?: Maybe<Scalars['PositiveDecimal']>;
+  /** Minimum order weight to use this shipping method. */
+  minimumOrderWeight?: Maybe<Scalars['WeightScalar']>;
+  /** Maximum order weight to use this shipping method. */
+  maximumOrderWeight?: Maybe<Scalars['WeightScalar']>;
+  /** Shipping type: price or weight based. */
+  type?: Maybe<ShippingMethodTypeEnum>;
+  /** Shipping zone this method belongs to. */
+  shippingZone?: Maybe<Scalars['ID']>;
+};
+
+/** Creates/Updates translations for shipping method. */
+export type ShippingPriceTranslate = {
+  __typename?: 'ShippingPriceTranslate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  translationErrors: Array<TranslationError>;
+  shippingMethod?: Maybe<ShippingMethod>;
+};
+
+/** Updates a new shipping price. */
+export type ShippingPriceUpdate = {
+  __typename?: 'ShippingPriceUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** A shipping zone to which the shipping method belongs. */
+  shippingZone?: Maybe<ShippingZone>;
+  shippingErrors: Array<ShippingError>;
+  shippingMethod?: Maybe<ShippingMethod>;
+};
+
+/**
+ * Represents a shipping zone in the shop. Zones are the concept used only for
+ * grouping shipping methods in the dashboard, and are never exposed to the
+ * customers directly.
  */
-export type TaxPortion = {
-  __typename?: "TaxPortion";
-  rate: Scalars["Float"];
-  amount: Money;
-  name?: Maybe<Scalars["String"]>;
+export type ShippingZone = Node & {
+  __typename?: 'ShippingZone';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  default: Scalars['Boolean'];
+  /** Lowest and highest prices for the shipping. */
+  priceRange?: Maybe<MoneyRange>;
+  /** List of countries available for the method. */
+  countries?: Maybe<Array<Maybe<CountryDisplay>>>;
+  /** List of shipping methods available for orders shipped to countries within this shipping zone. */
+  shippingMethods?: Maybe<Array<Maybe<ShippingMethod>>>;
+  /** List of warehouses for shipping zone. */
+  warehouses?: Maybe<Array<Maybe<Warehouse>>>;
 };
 
-export type TaxPortionDraft = {
-  name?: Maybe<Scalars["String"]>;
-  rate: Scalars["Float"];
-  amount: MoneyInput;
+/** Deletes shipping zones. */
+export type ShippingZoneBulkDelete = {
+  __typename?: 'ShippingZoneBulkDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Returns how many objects were affected. */
+  count: Scalars['Int'];
+  shippingErrors: Array<ShippingError>;
 };
 
-export type TaxRate = {
-  __typename?: "TaxRate";
-  name: Scalars["String"];
-  amount: Scalars["Float"];
-  includedInPrice: Scalars["Boolean"];
-  country: Scalars["Country"];
-  state?: Maybe<Scalars["String"]>;
-  id?: Maybe<Scalars["String"]>;
-  subRates: Array<SubRate>;
+export type ShippingZoneCountableConnection = {
+  __typename?: 'ShippingZoneCountableConnection';
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  edges: Array<ShippingZoneCountableEdge>;
+  /** A total count of items in the collection. */
+  totalCount?: Maybe<Scalars['Int']>;
 };
 
-export type TaxRateDraft = {
-  name: Scalars["String"];
-  amount?: Maybe<Scalars["Float"]>;
-  includedInPrice: Scalars["Boolean"];
-  country: Scalars["Country"];
-  state?: Maybe<Scalars["String"]>;
-  subRates?: Maybe<Array<SubRateDraft>>;
+export type ShippingZoneCountableEdge = {
+  __typename?: 'ShippingZoneCountableEdge';
+  /** The item at the end of the edge. */
+  node: ShippingZone;
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
 };
 
-export type TextAttributeDefinitionType = AttributeDefinitionType & {
-  __typename?: "TextAttributeDefinitionType";
-  name: Scalars["String"];
+/** Creates a new shipping zone. */
+export type ShippingZoneCreate = {
+  __typename?: 'ShippingZoneCreate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  shippingErrors: Array<ShippingError>;
+  shippingZone?: Maybe<ShippingZone>;
 };
 
-/** UI hint telling what kind of edit control should be displayed for a text attribute. */
-export enum TextInputHint {
-  MultiLine = "MultiLine",
-  SingleLine = "SingleLine"
+export type ShippingZoneCreateInput = {
+  /** Shipping zone's name. Visible only to the staff. */
+  name?: Maybe<Scalars['String']>;
+  /** List of countries in this shipping zone. */
+  countries?: Maybe<Array<Maybe<Scalars['String']>>>;
+  /** Default shipping zone will be used for countries not covered by other zones. */
+  default?: Maybe<Scalars['Boolean']>;
+  /** List of warehouses to assign to a shipping zone */
+  addWarehouses?: Maybe<Array<Maybe<Scalars['ID']>>>;
+};
+
+/** Deletes a shipping zone. */
+export type ShippingZoneDelete = {
+  __typename?: 'ShippingZoneDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  shippingErrors: Array<ShippingError>;
+  shippingZone?: Maybe<ShippingZone>;
+};
+
+/** Updates a new shipping zone. */
+export type ShippingZoneUpdate = {
+  __typename?: 'ShippingZoneUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  shippingErrors: Array<ShippingError>;
+  shippingZone?: Maybe<ShippingZone>;
+};
+
+export type ShippingZoneUpdateInput = {
+  /** Shipping zone's name. Visible only to the staff. */
+  name?: Maybe<Scalars['String']>;
+  /** List of countries in this shipping zone. */
+  countries?: Maybe<Array<Maybe<Scalars['String']>>>;
+  /** Default shipping zone will be used for countries not covered by other zones. */
+  default?: Maybe<Scalars['Boolean']>;
+  /** List of warehouses to assign to a shipping zone */
+  addWarehouses?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  /** List of warehouses to unassign from a shipping zone */
+  removeWarehouses?: Maybe<Array<Maybe<Scalars['ID']>>>;
+};
+
+/** Represents a shop resource containing general shop data and configuration. */
+export type Shop = {
+  __typename?: 'Shop';
+  /** List of available payment gateways. */
+  availablePaymentGateways: Array<PaymentGateway>;
+  /**
+   * Customer's geolocalization data.
+   * @deprecated Server-side geolocalization will be dropped in Saleor 3.0.
+   */
+  geolocalization?: Maybe<Geolocalization>;
+  /**
+   * List of configured authorization keys. Authorization keys are used to enable
+   * third-party OAuth authorization (currently Facebook or Google).
+   */
+  authorizationKeys: Array<Maybe<AuthorizationKey>>;
+  /** List of countries available in the shop. */
+  countries: Array<CountryDisplay>;
+  /**
+   * List of available currencies.
+   * @deprecated This field will be removed in Saleor 3.0
+   */
+  currencies: Array<Maybe<Scalars['String']>>;
+  /**
+   * Shop's default currency.
+   * @deprecated This field will be removed in Saleor 3.0
+   */
+  defaultCurrency: Scalars['String'];
+  /** Shop's default country. */
+  defaultCountry?: Maybe<CountryDisplay>;
+  /** Default shop's email sender's name. */
+  defaultMailSenderName?: Maybe<Scalars['String']>;
+  /** Default shop's email sender's address. */
+  defaultMailSenderAddress?: Maybe<Scalars['String']>;
+  /** Shop's description. */
+  description?: Maybe<Scalars['String']>;
+  /** Shop's domain data. */
+  domain: Domain;
+  /**
+   * Collection displayed on homepage.
+   * @deprecated Use the `collection` query with the `slug` parameter. This field will be removed in Saleor 3.0
+   */
+  homepageCollection?: Maybe<Collection>;
+  /** List of the shops's supported languages. */
+  languages: Array<Maybe<LanguageDisplay>>;
+  /** Shop's name. */
+  name: Scalars['String'];
+  /**
+   * Shop's navigation.
+   * @deprecated Fetch menus using the `menu` query with `slug` parameter.
+   */
+  navigation?: Maybe<Navigation>;
+  /** List of available permissions. */
+  permissions: Array<Maybe<Permission>>;
+  /** List of possible phone prefixes. */
+  phonePrefixes: Array<Maybe<Scalars['String']>>;
+  /** Header text. */
+  headerText?: Maybe<Scalars['String']>;
+  /** Include taxes in prices. */
+  includeTaxesInPrices: Scalars['Boolean'];
+  /** Display prices with tax in store. */
+  displayGrossPrices: Scalars['Boolean'];
+  /** Charge taxes on shipping. */
+  chargeTaxesOnShipping: Scalars['Boolean'];
+  /** Enable inventory tracking. */
+  trackInventoryByDefault?: Maybe<Scalars['Boolean']>;
+  /** Default weight unit. */
+  defaultWeightUnit?: Maybe<WeightUnitsEnum>;
+  /** Returns translated shop fields for the given language code. */
+  translation?: Maybe<ShopTranslation>;
+  /** Enable automatic fulfillment for all digital products. */
+  automaticFulfillmentDigitalProducts?: Maybe<Scalars['Boolean']>;
+  /** Default number of max downloads per digital content URL. */
+  defaultDigitalMaxDownloads?: Maybe<Scalars['Int']>;
+  /** Default number of days which digital content URL will be valid. */
+  defaultDigitalUrlValidDays?: Maybe<Scalars['Int']>;
+  /** Company address. */
+  companyAddress?: Maybe<Address>;
+  /** URL of a view where customers can set their password. */
+  customerSetPasswordUrl?: Maybe<Scalars['String']>;
+  /** List of staff notification recipients. */
+  staffNotificationRecipients?: Maybe<Array<Maybe<StaffNotificationRecipient>>>;
+};
+
+/** Represents a shop resource containing general shop data and configuration. */
+export type ShopAvailablePaymentGatewaysArgs = {
+  currency?: Maybe<Scalars['String']>;
+};
+
+/** Represents a shop resource containing general shop data and configuration. */
+export type ShopCountriesArgs = {
+  languageCode?: Maybe<LanguageCodeEnum>;
+};
+
+/** Represents a shop resource containing general shop data and configuration. */
+export type ShopTranslationArgs = {
+  languageCode: LanguageCodeEnum;
+};
+
+/** Update the shop's address. If the `null` value is passed, the currently selected address will be deleted. */
+export type ShopAddressUpdate = {
+  __typename?: 'ShopAddressUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Updated shop. */
+  shop?: Maybe<Shop>;
+  shopErrors: Array<ShopError>;
+};
+
+/** Updates site domain of the shop. */
+export type ShopDomainUpdate = {
+  __typename?: 'ShopDomainUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Updated shop. */
+  shop?: Maybe<Shop>;
+  shopErrors: Array<ShopError>;
+};
+
+export type ShopError = {
+  __typename?: 'ShopError';
+  /**
+   * Name of a field that caused the error. A value of `null` indicates that the
+   * error isn't associated with a particular field.
+   */
+  field?: Maybe<Scalars['String']>;
+  /** The error message. */
+  message?: Maybe<Scalars['String']>;
+  /** The error code. */
+  code: ShopErrorCode;
+};
+
+/** An enumeration. */
+export enum ShopErrorCode {
+  AlreadyExists = 'ALREADY_EXISTS',
+  CannotFetchTaxRates = 'CANNOT_FETCH_TAX_RATES',
+  GraphqlError = 'GRAPHQL_ERROR',
+  Invalid = 'INVALID',
+  NotFound = 'NOT_FOUND',
+  Required = 'REQUIRED',
+  Unique = 'UNIQUE'
 }
 
-export type TextLineItem = {
-  __typename?: "TextLineItem";
-  id: Scalars["String"];
-  name?: Maybe<Scalars["String"]>;
-  nameAllLocales: Array<LocalizedString>;
-  description?: Maybe<Scalars["String"]>;
-  descriptionAllLocales?: Maybe<Array<LocalizedString>>;
-  quantity: Scalars["Int"];
-  custom?: Maybe<CustomFieldsType>;
-  addedAt: Scalars["DateTime"];
+/** Fetch tax rates. */
+export type ShopFetchTaxRates = {
+  __typename?: 'ShopFetchTaxRates';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Updated shop. */
+  shop?: Maybe<Shop>;
+  shopErrors: Array<ShopError>;
 };
 
-export type TextLineItemNameArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
+export type ShopSettingsInput = {
+  /** Header text. */
+  headerText?: Maybe<Scalars['String']>;
+  /** SEO description. */
+  description?: Maybe<Scalars['String']>;
+  /** Include taxes in prices. */
+  includeTaxesInPrices?: Maybe<Scalars['Boolean']>;
+  /** Display prices with tax in store. */
+  displayGrossPrices?: Maybe<Scalars['Boolean']>;
+  /** Charge taxes on shipping. */
+  chargeTaxesOnShipping?: Maybe<Scalars['Boolean']>;
+  /** Enable inventory tracking. */
+  trackInventoryByDefault?: Maybe<Scalars['Boolean']>;
+  /** Default weight unit. */
+  defaultWeightUnit?: Maybe<WeightUnitsEnum>;
+  /** Enable automatic fulfillment for all digital products. */
+  automaticFulfillmentDigitalProducts?: Maybe<Scalars['Boolean']>;
+  /** Default number of max downloads per digital content URL. */
+  defaultDigitalMaxDownloads?: Maybe<Scalars['Int']>;
+  /** Default number of days which digital content URL will be valid. */
+  defaultDigitalUrlValidDays?: Maybe<Scalars['Int']>;
+  /** Default email sender's name. */
+  defaultMailSenderName?: Maybe<Scalars['String']>;
+  /** Default email sender's address. */
+  defaultMailSenderAddress?: Maybe<Scalars['String']>;
+  /** URL of a view where customers can set their password. */
+  customerSetPasswordUrl?: Maybe<Scalars['String']>;
 };
 
-export type TextLineItemDescriptionArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
+/** Creates/Updates translations for Shop Settings. */
+export type ShopSettingsTranslate = {
+  __typename?: 'ShopSettingsTranslate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Updated shop. */
+  shop?: Maybe<Shop>;
+  translationErrors: Array<TranslationError>;
 };
 
-export type TextLineItemDraft = {
-  name: Array<LocalizedStringItemInputType>;
-  description?: Maybe<Array<LocalizedStringItemInputType>>;
-  quantity?: Maybe<Scalars["Int"]>;
-  custom?: Maybe<CustomFieldsDraft>;
-  addedAt?: Maybe<Scalars["DateTime"]>;
+export type ShopSettingsTranslationInput = {
+  headerText?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
 };
 
-export type TimeAttribute = Attribute & {
-  __typename?: "TimeAttribute";
-  value: Scalars["Time"];
-  name: Scalars["String"];
+/** Updates shop settings. */
+export type ShopSettingsUpdate = {
+  __typename?: 'ShopSettingsUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Updated shop. */
+  shop?: Maybe<Shop>;
+  shopErrors: Array<ShopError>;
 };
 
-export type TimeAttributeDefinitionType = AttributeDefinitionType & {
-  __typename?: "TimeAttributeDefinitionType";
-  name: Scalars["String"];
+export type ShopTranslation = Node & {
+  __typename?: 'ShopTranslation';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  headerText: Scalars['String'];
+  description: Scalars['String'];
+  /** Translation language. */
+  language: LanguageDisplay;
 };
 
-export type TimeField = CustomField & {
-  __typename?: "TimeField";
-  value: Scalars["Time"];
-  name: Scalars["String"];
+export type SiteDomainInput = {
+  /** Domain name for shop. */
+  domain?: Maybe<Scalars['String']>;
+  /** Shop site name. */
+  name?: Maybe<Scalars['String']>;
 };
 
-export type TimeType = FieldType & {
-  __typename?: "TimeType";
-  name: Scalars["String"];
+/** Deletes staff users. */
+export type StaffBulkDelete = {
+  __typename?: 'StaffBulkDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Returns how many objects were affected. */
+  count: Scalars['Int'];
+  staffErrors: Array<StaffError>;
 };
 
-export type TrackingData = {
-  __typename?: "TrackingData";
-  trackingId?: Maybe<Scalars["String"]>;
-  carrier?: Maybe<Scalars["String"]>;
-  provider?: Maybe<Scalars["String"]>;
-  providerTransaction?: Maybe<Scalars["String"]>;
-  isReturn: Scalars["Boolean"];
+/** Creates a new staff user. */
+export type StaffCreate = {
+  __typename?: 'StaffCreate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  staffErrors: Array<StaffError>;
+  user?: Maybe<User>;
 };
 
-export type TrackingDataDraftType = {
-  trackingId?: Maybe<Scalars["String"]>;
-  carrier?: Maybe<Scalars["String"]>;
-  provider?: Maybe<Scalars["String"]>;
-  providerTransaction?: Maybe<Scalars["String"]>;
-  isReturn?: Maybe<Scalars["Boolean"]>;
+export type StaffCreateInput = {
+  /** Given name. */
+  firstName?: Maybe<Scalars['String']>;
+  /** Family name. */
+  lastName?: Maybe<Scalars['String']>;
+  /** The unique email address of the user. */
+  email?: Maybe<Scalars['String']>;
+  /** User account is active. */
+  isActive?: Maybe<Scalars['Boolean']>;
+  /** A note about the user. */
+  note?: Maybe<Scalars['String']>;
+  /** List of permission group IDs to which user should be assigned. */
+  addGroups?: Maybe<Array<Scalars['ID']>>;
+  /** URL of a view where users should be redirected to set the password. URL in RFC 1808 format. */
+  redirectUrl?: Maybe<Scalars['String']>;
 };
 
-export type Transaction = {
-  __typename?: "Transaction";
-  id: Scalars["String"];
-  timestamp?: Maybe<Scalars["DateTime"]>;
-  type?: Maybe<TransactionType>;
-  amount: Money;
-  interactionId?: Maybe<Scalars["String"]>;
-  state: TransactionState;
+/** Deletes a staff user. */
+export type StaffDelete = {
+  __typename?: 'StaffDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  staffErrors: Array<StaffError>;
+  user?: Maybe<User>;
 };
 
-export enum TransactionState {
-  Failure = "Failure",
-  Success = "Success",
-  Pending = "Pending",
-  Initial = "Initial"
+export type StaffError = {
+  __typename?: 'StaffError';
+  /**
+   * Name of a field that caused the error. A value of `null` indicates that the
+   * error isn't associated with a particular field.
+   */
+  field?: Maybe<Scalars['String']>;
+  /** The error message. */
+  message?: Maybe<Scalars['String']>;
+  /** The error code. */
+  code: AccountErrorCode;
+  /** List of permissions which causes the error. */
+  permissions?: Maybe<Array<PermissionEnum>>;
+  /** List of permission group IDs which cause the error. */
+  groups?: Maybe<Array<Scalars['ID']>>;
+  /** List of user IDs which causes the error. */
+  users?: Maybe<Array<Scalars['ID']>>;
+};
+
+export enum StaffMemberStatus {
+  Active = 'ACTIVE',
+  Deactivated = 'DEACTIVATED'
 }
 
-export enum TransactionType {
-  Chargeback = "Chargeback",
-  Refund = "Refund",
-  Charge = "Charge",
-  CancelAuthorization = "CancelAuthorization",
-  Authorization = "Authorization"
+/**
+ * Represents a recipient of email notifications send by Saleor, such as
+ * notifications about new orders. Notifications can be assigned to staff users or
+ * arbitrary email addresses.
+ */
+export type StaffNotificationRecipient = Node & {
+  __typename?: 'StaffNotificationRecipient';
+  /** Returns a user subscribed to email notifications. */
+  user?: Maybe<User>;
+  /** Determines if a notification active. */
+  active?: Maybe<Scalars['Boolean']>;
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  /** Returns email address of a user subscribed to email notifications. */
+  email?: Maybe<Scalars['String']>;
+};
+
+/** Creates a new staff notification recipient. */
+export type StaffNotificationRecipientCreate = {
+  __typename?: 'StaffNotificationRecipientCreate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  shopErrors: Array<ShopError>;
+  staffNotificationRecipient?: Maybe<StaffNotificationRecipient>;
+};
+
+/** Delete staff notification recipient. */
+export type StaffNotificationRecipientDelete = {
+  __typename?: 'StaffNotificationRecipientDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  shopErrors: Array<ShopError>;
+  staffNotificationRecipient?: Maybe<StaffNotificationRecipient>;
+};
+
+export type StaffNotificationRecipientInput = {
+  /** The ID of the user subscribed to email notifications.. */
+  user?: Maybe<Scalars['ID']>;
+  /** Email address of a user subscribed to email notifications. */
+  email?: Maybe<Scalars['String']>;
+  /** Determines if a notification active. */
+  active?: Maybe<Scalars['Boolean']>;
+};
+
+/** Updates a staff notification recipient. */
+export type StaffNotificationRecipientUpdate = {
+  __typename?: 'StaffNotificationRecipientUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  shopErrors: Array<ShopError>;
+  staffNotificationRecipient?: Maybe<StaffNotificationRecipient>;
+};
+
+/** Updates an existing staff user. */
+export type StaffUpdate = {
+  __typename?: 'StaffUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  staffErrors: Array<StaffError>;
+  user?: Maybe<User>;
+};
+
+export type StaffUpdateInput = {
+  /** Given name. */
+  firstName?: Maybe<Scalars['String']>;
+  /** Family name. */
+  lastName?: Maybe<Scalars['String']>;
+  /** The unique email address of the user. */
+  email?: Maybe<Scalars['String']>;
+  /** User account is active. */
+  isActive?: Maybe<Scalars['Boolean']>;
+  /** A note about the user. */
+  note?: Maybe<Scalars['String']>;
+  /** List of permission group IDs to which user should be assigned. */
+  addGroups?: Maybe<Array<Scalars['ID']>>;
+  /** List of permission group IDs from which user should be unassigned. */
+  removeGroups?: Maybe<Array<Scalars['ID']>>;
+};
+
+export type StaffUserInput = {
+  status?: Maybe<StaffMemberStatus>;
+  search?: Maybe<Scalars['String']>;
+};
+
+/** Represents stock. */
+export type Stock = Node & {
+  __typename?: 'Stock';
+  warehouse: Warehouse;
+  productVariant: ProductVariant;
+  /** Quantity of a product in the warehouse's possession, including the allocated stock that is waiting for shipment. */
+  quantity: Scalars['Int'];
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  /** Quantity allocated for orders */
+  quantityAllocated: Scalars['Int'];
+};
+
+export enum StockAvailability {
+  InStock = 'IN_STOCK',
+  OutOfStock = 'OUT_OF_STOCK'
 }
 
-export type TransitionOrderCustomLineItemState = {
-  customLineItemId: Scalars["String"];
-  quantity: Scalars["Long"];
-  fromState: ResourceIdentifierInput;
-  toState: ResourceIdentifierInput;
-  actualTransitionDate?: Maybe<Scalars["DateTime"]>;
+export type StockCountableConnection = {
+  __typename?: 'StockCountableConnection';
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  edges: Array<StockCountableEdge>;
+  /** A total count of items in the collection. */
+  totalCount?: Maybe<Scalars['Int']>;
 };
 
-export type TransitionOrderLineItemState = {
-  lineItemId: Scalars["String"];
-  quantity: Scalars["Long"];
-  fromState: ResourceIdentifierInput;
-  toState: ResourceIdentifierInput;
-  actualTransitionDate?: Maybe<Scalars["DateTime"]>;
+export type StockCountableEdge = {
+  __typename?: 'StockCountableEdge';
+  /** The item at the end of the edge. */
+  node: Stock;
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
 };
 
-export type TransitionOrderState = {
-  state: ResourceIdentifierInput;
-  force?: Maybe<Scalars["Boolean"]>;
+export type StockError = {
+  __typename?: 'StockError';
+  /**
+   * Name of a field that caused the error. A value of `null` indicates that the
+   * error isn't associated with a particular field.
+   */
+  field?: Maybe<Scalars['String']>;
+  /** The error message. */
+  message?: Maybe<Scalars['String']>;
+  /** The error code. */
+  code: StockErrorCode;
 };
 
-export type TransitionProductState = {
-  state: ReferenceInput;
-  force?: Maybe<Scalars["Boolean"]>;
+/** An enumeration. */
+export enum StockErrorCode {
+  AlreadyExists = 'ALREADY_EXISTS',
+  GraphqlError = 'GRAPHQL_ERROR',
+  Invalid = 'INVALID',
+  NotFound = 'NOT_FOUND',
+  Required = 'REQUIRED',
+  Unique = 'UNIQUE'
+}
+
+export type StockFilterInput = {
+  quantity?: Maybe<Scalars['Float']>;
+  search?: Maybe<Scalars['String']>;
 };
 
-export type Type = {
-  typeRef: Reference;
-  type?: Maybe<TypeDefinition>;
+export type StockInput = {
+  /** Warehouse in which stock is located. */
+  warehouse: Scalars['ID'];
+  /** Quantity of items available for sell. */
+  quantity?: Maybe<Scalars['Int']>;
 };
 
-/** Types define the structure of custom fields which can be attached to different entities throughout the platform. */
-export type TypeDefinition = Versioned & {
-  __typename?: "TypeDefinition";
-  key: Scalars["String"];
-  name?: Maybe<Scalars["String"]>;
-  description?: Maybe<Scalars["String"]>;
-  nameAllLocales: Array<LocalizedString>;
-  descriptionAllLocales?: Maybe<Array<LocalizedString>>;
-  resourceTypeIds: Array<Scalars["String"]>;
-  fieldDefinitions: Array<FieldDefinition>;
-  id: Scalars["String"];
-  version: Scalars["Long"];
-  createdAt: Scalars["DateTime"];
-  lastModifiedAt: Scalars["DateTime"];
-  createdBy?: Maybe<Initiator>;
-  lastModifiedBy?: Maybe<Initiator>;
+/** Represents a monetary value with taxes. In cases where taxes were not applied, net and gross values will be equal. */
+export type TaxedMoney = {
+  __typename?: 'TaxedMoney';
+  /** Currency code. */
+  currency: Scalars['String'];
+  /** Amount of money including taxes. */
+  gross: Money;
+  /** Amount of money without taxes. */
+  net: Money;
+  /** Amount of taxes. */
+  tax: Money;
 };
 
-/** Types define the structure of custom fields which can be attached to different entities throughout the platform. */
-export type TypeDefinitionNameArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
+/** Represents a range of monetary values. */
+export type TaxedMoneyRange = {
+  __typename?: 'TaxedMoneyRange';
+  /** Lower bound of a price range. */
+  start?: Maybe<TaxedMoney>;
+  /** Upper bound of a price range. */
+  stop?: Maybe<TaxedMoney>;
 };
 
-/** Types define the structure of custom fields which can be attached to different entities throughout the platform. */
-export type TypeDefinitionDescriptionArgs = {
-  locale?: Maybe<Scalars["Locale"]>;
-  acceptLanguage?: Maybe<Array<Scalars["Locale"]>>;
+/** An enumeration. */
+export enum TaxRateType {
+  Accommodation = 'ACCOMMODATION',
+  AdmissionToCulturalEvents = 'ADMISSION_TO_CULTURAL_EVENTS',
+  AdmissionToEntertainmentEvents = 'ADMISSION_TO_ENTERTAINMENT_EVENTS',
+  AdmissionToSportingEvents = 'ADMISSION_TO_SPORTING_EVENTS',
+  Advertising = 'ADVERTISING',
+  AgriculturalSupplies = 'AGRICULTURAL_SUPPLIES',
+  BabyFoodstuffs = 'BABY_FOODSTUFFS',
+  Bikes = 'BIKES',
+  Books = 'BOOKS',
+  ChildrensClothing = 'CHILDRENS_CLOTHING',
+  DomesticFuel = 'DOMESTIC_FUEL',
+  DomesticServices = 'DOMESTIC_SERVICES',
+  EBooks = 'E_BOOKS',
+  Foodstuffs = 'FOODSTUFFS',
+  Hotels = 'HOTELS',
+  Medical = 'MEDICAL',
+  Newspapers = 'NEWSPAPERS',
+  PassengerTransport = 'PASSENGER_TRANSPORT',
+  Pharmaceuticals = 'PHARMACEUTICALS',
+  PropertyRenovations = 'PROPERTY_RENOVATIONS',
+  Restaurants = 'RESTAURANTS',
+  SocialHousing = 'SOCIAL_HOUSING',
+  Standard = 'STANDARD',
+  Water = 'WATER',
+  Wine = 'WINE'
+}
+
+/** Representation of tax types fetched from tax gateway. */
+export type TaxType = {
+  __typename?: 'TaxType';
+  /** Description of the tax type. */
+  description?: Maybe<Scalars['String']>;
+  /** External tax code used to identify given tax group. */
+  taxCode?: Maybe<Scalars['String']>;
 };
 
-/** Types define the structure of custom fields which can be attached to different entities throughout the platform. */
-export type TypeDefinitionFieldDefinitionsArgs = {
-  includeNames?: Maybe<Array<Scalars["String"]>>;
-  excludeNames?: Maybe<Array<Scalars["String"]>>;
+/** An object representing a single payment. */
+export type Transaction = Node & {
+  __typename?: 'Transaction';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  created: Scalars['DateTime'];
+  payment: Payment;
+  token: Scalars['String'];
+  kind: TransactionKind;
+  isSuccess: Scalars['Boolean'];
+  error?: Maybe<TransactionError>;
+  /** Total amount of the transaction. */
+  amount?: Maybe<Money>;
 };
 
-export type TypeDefinitionQueryResult = {
-  __typename?: "TypeDefinitionQueryResult";
-  offset: Scalars["Int"];
-  count: Scalars["Int"];
-  total: Scalars["Long"];
-  results: Array<TypeDefinition>;
+/** An enumeration. */
+export enum TransactionError {
+  /** incorrect_number */
+  TransactionerrorIncorrectNumber = 'TRANSACTIONERROR_INCORRECT_NUMBER',
+  /** invalid_number */
+  TransactionerrorInvalidNumber = 'TRANSACTIONERROR_INVALID_NUMBER',
+  /** incorrect_cvv */
+  TransactionerrorIncorrectCvv = 'TRANSACTIONERROR_INCORRECT_CVV',
+  /** invalid_cvv */
+  TransactionerrorInvalidCvv = 'TRANSACTIONERROR_INVALID_CVV',
+  /** incorrect_zip */
+  TransactionerrorIncorrectZip = 'TRANSACTIONERROR_INCORRECT_ZIP',
+  /** incorrect_address */
+  TransactionerrorIncorrectAddress = 'TRANSACTIONERROR_INCORRECT_ADDRESS',
+  /** invalid_expiry_date */
+  TransactionerrorInvalidExpiryDate = 'TRANSACTIONERROR_INVALID_EXPIRY_DATE',
+  /** expired */
+  TransactionerrorExpired = 'TRANSACTIONERROR_EXPIRED',
+  /** processing_error */
+  TransactionerrorProcessingError = 'TRANSACTIONERROR_PROCESSING_ERROR',
+  /** declined */
+  TransactionerrorDeclined = 'TRANSACTIONERROR_DECLINED'
+}
+
+/** An enumeration. */
+export enum TransactionKind {
+  /** Authorization */
+  Auth = 'AUTH',
+  /** Pending */
+  Pending = 'PENDING',
+  /** Action to confirm */
+  ActionToConfirm = 'ACTION_TO_CONFIRM',
+  /** Refund */
+  Refund = 'REFUND',
+  /** Refund in progress */
+  RefundOngoing = 'REFUND_ONGOING',
+  /** Capture */
+  Capture = 'CAPTURE',
+  /** Void */
+  Void = 'VOID',
+  /** Confirm */
+  Confirm = 'CONFIRM',
+  /** Cancel */
+  Cancel = 'CANCEL'
+}
+
+export type TranslatableItem =
+  | ProductTranslatableContent
+  | CollectionTranslatableContent
+  | CategoryTranslatableContent
+  | AttributeTranslatableContent
+  | AttributeValueTranslatableContent
+  | ProductVariantTranslatableContent
+  | PageTranslatableContent
+  | ShippingMethodTranslatableContent
+  | SaleTranslatableContent
+  | VoucherTranslatableContent
+  | MenuItemTranslatableContent;
+
+export type TranslatableItemConnection = {
+  __typename?: 'TranslatableItemConnection';
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  edges: Array<TranslatableItemEdge>;
+  /** A total count of items in the collection. */
+  totalCount?: Maybe<Scalars['Int']>;
 };
 
-export type UnpublishProduct = {
-  dummy?: Maybe<Scalars["String"]>;
+export type TranslatableItemEdge = {
+  __typename?: 'TranslatableItemEdge';
+  /** The item at the end of the edge. */
+  node: TranslatableItem;
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
 };
 
-export type UpdateCartItemShippingAddress = {
-  address: AddressInput;
+export enum TranslatableKinds {
+  Attribute = 'ATTRIBUTE',
+  AttributeValue = 'ATTRIBUTE_VALUE',
+  Category = 'CATEGORY',
+  Collection = 'COLLECTION',
+  MenuItem = 'MENU_ITEM',
+  Page = 'PAGE',
+  Product = 'PRODUCT',
+  Sale = 'SALE',
+  ShippingMethod = 'SHIPPING_METHOD',
+  Variant = 'VARIANT',
+  Voucher = 'VOUCHER'
+}
+
+export type TranslationError = {
+  __typename?: 'TranslationError';
+  /**
+   * Name of a field that caused the error. A value of `null` indicates that the
+   * error isn't associated with a particular field.
+   */
+  field?: Maybe<Scalars['String']>;
+  /** The error message. */
+  message?: Maybe<Scalars['String']>;
+  /** The error code. */
+  code: TranslationErrorCode;
 };
 
-export type UpdateOrderItemShippingAddress = {
-  address: AddressInput;
+/** An enumeration. */
+export enum TranslationErrorCode {
+  GraphqlError = 'GRAPHQL_ERROR',
+  NotFound = 'NOT_FOUND',
+  Required = 'REQUIRED'
+}
+
+export type TranslationInput = {
+  seoTitle?: Maybe<Scalars['String']>;
+  seoDescription?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  descriptionJson?: Maybe<Scalars['JSONString']>;
 };
 
-export type UpdateOrderSyncInfo = {
-  channel: ResourceIdentifierInput;
-  syncedAt?: Maybe<Scalars["DateTime"]>;
-  externalId?: Maybe<Scalars["String"]>;
+export type UpdateInvoiceInput = {
+  /** Invoice number */
+  number?: Maybe<Scalars['String']>;
+  /** URL of an invoice to download. */
+  url?: Maybe<Scalars['String']>;
 };
 
-/** Versioned object have an ID and version and modification. Every update of this object changes it's version. */
-export type Versioned = {
-  id: Scalars["String"];
-  version: Scalars["Long"];
-  createdAt: Scalars["DateTime"];
-  lastModifiedAt: Scalars["DateTime"];
-  createdBy?: Maybe<Initiator>;
-  lastModifiedBy?: Maybe<Initiator>;
+/** Updates metadata of an object. */
+export type UpdateMetadata = {
+  __typename?: 'UpdateMetadata';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  metadataErrors: Array<MetadataError>;
+  item?: Maybe<ObjectWithMetadata>;
 };
 
-export type WhitespaceSuggestTokenizerInput = {
-  dummy?: Maybe<Scalars["String"]>;
+/** Updates private metadata of an object. */
+export type UpdatePrivateMetadata = {
+  __typename?: 'UpdatePrivateMetadata';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  metadataErrors: Array<MetadataError>;
+  item?: Maybe<ObjectWithMetadata>;
 };
 
-/** Zones allow defining ShippingRates for specific Locations. */
-export type Zone = Versioned & {
-  __typename?: "Zone";
-  name: Scalars["String"];
-  key?: Maybe<Scalars["String"]>;
-  description?: Maybe<Scalars["String"]>;
-  locations: Array<Location>;
-  id: Scalars["String"];
-  version: Scalars["Long"];
-  createdAt: Scalars["DateTime"];
-  lastModifiedAt: Scalars["DateTime"];
-  createdBy?: Maybe<Initiator>;
-  lastModifiedBy?: Maybe<Initiator>;
+/** Represents user data. */
+export type User = Node &
+  ObjectWithMetadata & {
+    __typename?: 'User';
+    /** The ID of the object. */
+    id: Scalars['ID'];
+    lastLogin?: Maybe<Scalars['DateTime']>;
+    email: Scalars['String'];
+    firstName: Scalars['String'];
+    lastName: Scalars['String'];
+    isStaff: Scalars['Boolean'];
+    isActive: Scalars['Boolean'];
+    /** A note about the customer. */
+    note?: Maybe<Scalars['String']>;
+    dateJoined: Scalars['DateTime'];
+    defaultShippingAddress?: Maybe<Address>;
+    defaultBillingAddress?: Maybe<Address>;
+    /** List of private metadata items.Requires proper staff permissions to access. */
+    privateMetadata: Array<Maybe<MetadataItem>>;
+    /** List of public metadata items. Can be accessed without permissions. */
+    metadata: Array<Maybe<MetadataItem>>;
+    /**
+     * List of privately stored metadata namespaces.
+     * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
+     */
+    privateMeta: Array<Maybe<MetaStore>>;
+    /**
+     * List of publicly stored metadata namespaces.
+     * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
+     */
+    meta: Array<Maybe<MetaStore>>;
+    /** List of all user's addresses. */
+    addresses?: Maybe<Array<Maybe<Address>>>;
+    /** Returns the last open checkout of this user. */
+    checkout?: Maybe<Checkout>;
+    /** List of the user gift cards. */
+    giftCards?: Maybe<GiftCardCountableConnection>;
+    /** List of user's orders. */
+    orders?: Maybe<OrderCountableConnection>;
+    /**
+     * List of user's permissions.
+     * @deprecated Will be removed in Saleor 2.11.Use the `userPermissions` instead.
+     */
+    permissions?: Maybe<Array<Maybe<Permission>>>;
+    /** List of user's permissions. */
+    userPermissions?: Maybe<Array<Maybe<UserPermission>>>;
+    /** List of user's permission groups. */
+    permissionGroups?: Maybe<Array<Maybe<Group>>>;
+    /** List of user's permission groups which user can manage. */
+    editableGroups?: Maybe<Array<Maybe<Group>>>;
+    avatar?: Maybe<Image>;
+    /** List of events associated with the user. */
+    events?: Maybe<Array<Maybe<CustomerEvent>>>;
+    /** List of stored payment sources. */
+    storedPaymentSources?: Maybe<Array<Maybe<PaymentSource>>>;
+  };
+
+/** Represents user data. */
+export type UserGiftCardsArgs = {
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
 };
 
-export type ZoneLocation = {
-  country: Scalars["Country"];
-  state?: Maybe<Scalars["String"]>;
+/** Represents user data. */
+export type UserOrdersArgs = {
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
 };
 
-export type ZoneQueryResult = {
-  __typename?: "ZoneQueryResult";
-  offset: Scalars["Int"];
-  count: Scalars["Int"];
-  total: Scalars["Long"];
-  results: Array<Zone>;
+/** Represents user data. */
+export type UserAvatarArgs = {
+  size?: Maybe<Scalars['Int']>;
 };
 
-export type ZoneRate = {
-  __typename?: "ZoneRate";
-  shippingRates: Array<ShippingRate>;
-  zoneRef?: Maybe<Reference>;
-  zone?: Maybe<Zone>;
+/** Deletes a user avatar. Only for staff members. */
+export type UserAvatarDelete = {
+  __typename?: 'UserAvatarDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** An updated user instance. */
+  user?: Maybe<User>;
+  accountErrors: Array<AccountError>;
 };
 
-export type ZoneRateDraft = {
-  zone: ResourceIdentifierInput;
-  shippingRates?: Maybe<Array<ShippingRateDraft>>;
+/**
+ * Create a user avatar. Only for staff members. This mutation must be sent as a
+ * `multipart` request. More detailed specs of the upload format can be found here:
+ * https://github.com/jaydenseric/graphql-multipart-request-spec
+ */
+export type UserAvatarUpdate = {
+  __typename?: 'UserAvatarUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** An updated user instance. */
+  user?: Maybe<User>;
+  accountErrors: Array<AccountError>;
 };
 
-export type ZoneUpdateAction = {
-  addLocation?: Maybe<AddZoneLocation>;
-  changeName?: Maybe<ChangeZoneName>;
-  removeLocation?: Maybe<RemoveZoneLocation>;
-  setDescription?: Maybe<SetZoneDescription>;
-  setKey?: Maybe<SetZoneKey>;
+/** Activate or deactivate users. */
+export type UserBulkSetActive = {
+  __typename?: 'UserBulkSetActive';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Returns how many objects were affected. */
+  count: Scalars['Int'];
+  accountErrors: Array<AccountError>;
 };
+
+/** Clear metadata for user. */
+export type UserClearMeta = {
+  __typename?: 'UserClearMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  accountErrors: Array<AccountError>;
+  user?: Maybe<User>;
+};
+
+/** Clear private metadata for user. */
+export type UserClearPrivateMeta = {
+  __typename?: 'UserClearPrivateMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  accountErrors: Array<AccountError>;
+  user?: Maybe<User>;
+};
+
+export type UserCountableConnection = {
+  __typename?: 'UserCountableConnection';
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  edges: Array<UserCountableEdge>;
+  /** A total count of items in the collection. */
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type UserCountableEdge = {
+  __typename?: 'UserCountableEdge';
+  /** The item at the end of the edge. */
+  node: User;
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+};
+
+export type UserCreateInput = {
+  /** Billing address of the customer. */
+  defaultBillingAddress?: Maybe<AddressInput>;
+  /** Shipping address of the customer. */
+  defaultShippingAddress?: Maybe<AddressInput>;
+  /** Given name. */
+  firstName?: Maybe<Scalars['String']>;
+  /** Family name. */
+  lastName?: Maybe<Scalars['String']>;
+  /** The unique email address of the user. */
+  email?: Maybe<Scalars['String']>;
+  /** User account is active. */
+  isActive?: Maybe<Scalars['Boolean']>;
+  /** A note about the user. */
+  note?: Maybe<Scalars['String']>;
+  /** URL of a view where users should be redirected to set the password. URL in RFC 1808 format. */
+  redirectUrl?: Maybe<Scalars['String']>;
+};
+
+export type UserPermission = {
+  __typename?: 'UserPermission';
+  /** Internal code for permission. */
+  code: PermissionEnum;
+  /** Describe action(s) allowed to do by permission. */
+  name: Scalars['String'];
+  /** List of user permission groups which contains this permission. */
+  sourcePermissionGroups?: Maybe<Array<Group>>;
+};
+
+export type UserPermissionSourcePermissionGroupsArgs = {
+  userId: Scalars['ID'];
+};
+
+export enum UserSortField {
+  /** Sort users by first name. */
+  FirstName = 'FIRST_NAME',
+  /** Sort users by last name. */
+  LastName = 'LAST_NAME',
+  /** Sort users by email. */
+  Email = 'EMAIL',
+  /** Sort users by order count. */
+  OrderCount = 'ORDER_COUNT'
+}
+
+export type UserSortingInput = {
+  /** Specifies the direction in which to sort products. */
+  direction: OrderDirection;
+  /** Sort users by the selected field. */
+  field: UserSortField;
+};
+
+/** Updates metadata for user. */
+export type UserUpdateMeta = {
+  __typename?: 'UserUpdateMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  accountErrors: Array<AccountError>;
+  user?: Maybe<User>;
+};
+
+/** Updates private metadata for user. */
+export type UserUpdatePrivateMeta = {
+  __typename?: 'UserUpdatePrivateMeta';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  accountErrors: Array<AccountError>;
+  user?: Maybe<User>;
+};
+
+/** Assign an image to a product variant. */
+export type VariantImageAssign = {
+  __typename?: 'VariantImageAssign';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productVariant?: Maybe<ProductVariant>;
+  image?: Maybe<ProductImage>;
+  productErrors: Array<ProductError>;
+};
+
+/** Unassign an image from a product variant. */
+export type VariantImageUnassign = {
+  __typename?: 'VariantImageUnassign';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  productVariant?: Maybe<ProductVariant>;
+  image?: Maybe<ProductImage>;
+  productErrors: Array<ProductError>;
+};
+
+/** Represents availability of a variant in the storefront. */
+export type VariantPricingInfo = {
+  __typename?: 'VariantPricingInfo';
+  /** Whether it is in sale or not. */
+  onSale?: Maybe<Scalars['Boolean']>;
+  /** The discount amount if in sale (null otherwise). */
+  discount?: Maybe<TaxedMoney>;
+  /** The discount amount in the local currency. */
+  discountLocalCurrency?: Maybe<TaxedMoney>;
+  /** The price, with any discount subtracted. */
+  price?: Maybe<TaxedMoney>;
+  /** The price without any discount. */
+  priceUndiscounted?: Maybe<TaxedMoney>;
+  /** The discounted price in the local currency. */
+  priceLocalCurrency?: Maybe<TaxedMoney>;
+};
+
+/** Represents a VAT rate for a country. */
+export type Vat = {
+  __typename?: 'VAT';
+  /** Country code. */
+  countryCode: Scalars['String'];
+  /** Standard VAT rate in percent. */
+  standardRate?: Maybe<Scalars['Float']>;
+  /** Country's VAT rate exceptions for specific types of goods. */
+  reducedRates: Array<Maybe<ReducedRate>>;
+};
+
+/** Verify JWT token. */
+export type VerifyToken = {
+  __typename?: 'VerifyToken';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** User assigned to token. */
+  user?: Maybe<User>;
+  /** Determine if token is valid or not. */
+  isValid: Scalars['Boolean'];
+  /** JWT payload. */
+  payload?: Maybe<Scalars['GenericScalar']>;
+  accountErrors: Array<AccountError>;
+};
+
+/**
+ * Vouchers allow giving discounts to particular customers on categories,
+ * collections or specific products. They can be used during checkout by providing
+ * valid voucher codes.
+ */
+export type Voucher = Node & {
+  __typename?: 'Voucher';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  name?: Maybe<Scalars['String']>;
+  /** Determines a type of voucher. */
+  type: VoucherTypeEnum;
+  code: Scalars['String'];
+  usageLimit?: Maybe<Scalars['Int']>;
+  used: Scalars['Int'];
+  startDate: Scalars['DateTime'];
+  endDate?: Maybe<Scalars['DateTime']>;
+  applyOncePerOrder: Scalars['Boolean'];
+  applyOncePerCustomer: Scalars['Boolean'];
+  /** Determines a type of discount for voucher - value or percentage */
+  discountValueType: DiscountValueTypeEnum;
+  discountValue: Scalars['Float'];
+  minSpent?: Maybe<Money>;
+  minCheckoutItemsQuantity?: Maybe<Scalars['Int']>;
+  /** List of categories this voucher applies to. */
+  categories?: Maybe<CategoryCountableConnection>;
+  /** List of collections this voucher applies to. */
+  collections?: Maybe<CollectionCountableConnection>;
+  /** List of products this voucher applies to. */
+  products?: Maybe<ProductCountableConnection>;
+  /** List of countries available for the shipping voucher. */
+  countries?: Maybe<Array<Maybe<CountryDisplay>>>;
+  /** Returns translated voucher fields for the given language code. */
+  translation?: Maybe<VoucherTranslation>;
+};
+
+/**
+ * Vouchers allow giving discounts to particular customers on categories,
+ * collections or specific products. They can be used during checkout by providing
+ * valid voucher codes.
+ */
+export type VoucherCategoriesArgs = {
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+};
+
+/**
+ * Vouchers allow giving discounts to particular customers on categories,
+ * collections or specific products. They can be used during checkout by providing
+ * valid voucher codes.
+ */
+export type VoucherCollectionsArgs = {
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+};
+
+/**
+ * Vouchers allow giving discounts to particular customers on categories,
+ * collections or specific products. They can be used during checkout by providing
+ * valid voucher codes.
+ */
+export type VoucherProductsArgs = {
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+};
+
+/**
+ * Vouchers allow giving discounts to particular customers on categories,
+ * collections or specific products. They can be used during checkout by providing
+ * valid voucher codes.
+ */
+export type VoucherTranslationArgs = {
+  languageCode: LanguageCodeEnum;
+};
+
+/** Adds products, categories, collections to a voucher. */
+export type VoucherAddCatalogues = {
+  __typename?: 'VoucherAddCatalogues';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Voucher of which catalogue IDs will be modified. */
+  voucher?: Maybe<Voucher>;
+  discountErrors: Array<DiscountError>;
+};
+
+/** Deletes vouchers. */
+export type VoucherBulkDelete = {
+  __typename?: 'VoucherBulkDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Returns how many objects were affected. */
+  count: Scalars['Int'];
+  discountErrors: Array<DiscountError>;
+};
+
+export type VoucherCountableConnection = {
+  __typename?: 'VoucherCountableConnection';
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  edges: Array<VoucherCountableEdge>;
+  /** A total count of items in the collection. */
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type VoucherCountableEdge = {
+  __typename?: 'VoucherCountableEdge';
+  /** The item at the end of the edge. */
+  node: Voucher;
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+};
+
+/** Creates a new voucher. */
+export type VoucherCreate = {
+  __typename?: 'VoucherCreate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  discountErrors: Array<DiscountError>;
+  voucher?: Maybe<Voucher>;
+};
+
+/** Deletes a voucher. */
+export type VoucherDelete = {
+  __typename?: 'VoucherDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  discountErrors: Array<DiscountError>;
+  voucher?: Maybe<Voucher>;
+};
+
+export enum VoucherDiscountType {
+  Fixed = 'FIXED',
+  Percentage = 'PERCENTAGE',
+  Shipping = 'SHIPPING'
+}
+
+export type VoucherFilterInput = {
+  status?: Maybe<Array<Maybe<DiscountStatusEnum>>>;
+  timesUsed?: Maybe<IntRangeInput>;
+  discountType?: Maybe<Array<Maybe<VoucherDiscountType>>>;
+  started?: Maybe<DateTimeRangeInput>;
+  search?: Maybe<Scalars['String']>;
+};
+
+export type VoucherInput = {
+  /** Voucher type: PRODUCT, CATEGORY SHIPPING or ENTIRE_ORDER. */
+  type?: Maybe<VoucherTypeEnum>;
+  /** Voucher name. */
+  name?: Maybe<Scalars['String']>;
+  /** Code to use the voucher. */
+  code?: Maybe<Scalars['String']>;
+  /** Start date of the voucher in ISO 8601 format. */
+  startDate?: Maybe<Scalars['DateTime']>;
+  /** End date of the voucher in ISO 8601 format. */
+  endDate?: Maybe<Scalars['DateTime']>;
+  /** Choices: fixed or percentage. */
+  discountValueType?: Maybe<DiscountValueTypeEnum>;
+  /** Value of the voucher. */
+  discountValue?: Maybe<Scalars['PositiveDecimal']>;
+  /** Products discounted by the voucher. */
+  products?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  /** Collections discounted by the voucher. */
+  collections?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  /** Categories discounted by the voucher. */
+  categories?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  /** Min purchase amount required to apply the voucher. */
+  minAmountSpent?: Maybe<Scalars['PositiveDecimal']>;
+  /** Minimal quantity of checkout items required to apply the voucher. */
+  minCheckoutItemsQuantity?: Maybe<Scalars['Int']>;
+  /** Country codes that can be used with the shipping voucher. */
+  countries?: Maybe<Array<Maybe<Scalars['String']>>>;
+  /** Voucher should be applied to the cheapest item or entire order. */
+  applyOncePerOrder?: Maybe<Scalars['Boolean']>;
+  /** Voucher should be applied once per customer. */
+  applyOncePerCustomer?: Maybe<Scalars['Boolean']>;
+  /** Limit number of times this voucher can be used in total. */
+  usageLimit?: Maybe<Scalars['Int']>;
+};
+
+/** Removes products, categories, collections from a voucher. */
+export type VoucherRemoveCatalogues = {
+  __typename?: 'VoucherRemoveCatalogues';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Voucher of which catalogue IDs will be modified. */
+  voucher?: Maybe<Voucher>;
+  discountErrors: Array<DiscountError>;
+};
+
+export enum VoucherSortField {
+  /** Sort vouchers by code. */
+  Code = 'CODE',
+  /** Sort vouchers by start date. */
+  StartDate = 'START_DATE',
+  /** Sort vouchers by end date. */
+  EndDate = 'END_DATE',
+  /** Sort vouchers by value. */
+  Value = 'VALUE',
+  /** Sort vouchers by type. */
+  Type = 'TYPE',
+  /** Sort vouchers by usage limit. */
+  UsageLimit = 'USAGE_LIMIT',
+  /** Sort vouchers by minimum spent amount. */
+  MinimumSpentAmount = 'MINIMUM_SPENT_AMOUNT'
+}
+
+export type VoucherSortingInput = {
+  /** Specifies the direction in which to sort products. */
+  direction: OrderDirection;
+  /** Sort vouchers by the selected field. */
+  field: VoucherSortField;
+};
+
+export type VoucherTranslatableContent = Node & {
+  __typename?: 'VoucherTranslatableContent';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  name?: Maybe<Scalars['String']>;
+  /** Returns translated voucher fields for the given language code. */
+  translation?: Maybe<VoucherTranslation>;
+  /**
+   * Vouchers allow giving discounts to particular customers on categories,
+   * collections or specific products. They can be used during checkout by
+   * providing valid voucher codes.
+   */
+  voucher?: Maybe<Voucher>;
+};
+
+export type VoucherTranslatableContentTranslationArgs = {
+  languageCode: LanguageCodeEnum;
+};
+
+/** Creates/Updates translations for Voucher. */
+export type VoucherTranslate = {
+  __typename?: 'VoucherTranslate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  translationErrors: Array<TranslationError>;
+  voucher?: Maybe<Voucher>;
+};
+
+export type VoucherTranslation = Node & {
+  __typename?: 'VoucherTranslation';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  name?: Maybe<Scalars['String']>;
+  /** Translation language. */
+  language: LanguageDisplay;
+};
+
+export enum VoucherTypeEnum {
+  Shipping = 'SHIPPING',
+  EntireOrder = 'ENTIRE_ORDER',
+  SpecificProduct = 'SPECIFIC_PRODUCT'
+}
+
+/** Updates a voucher. */
+export type VoucherUpdate = {
+  __typename?: 'VoucherUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  discountErrors: Array<DiscountError>;
+  voucher?: Maybe<Voucher>;
+};
+
+/** Represents warehouse. */
+export type Warehouse = Node & {
+  __typename?: 'Warehouse';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  slug: Scalars['String'];
+  companyName: Scalars['String'];
+  shippingZones: ShippingZoneCountableConnection;
+  address: Address;
+  email: Scalars['String'];
+};
+
+/** Represents warehouse. */
+export type WarehouseShippingZonesArgs = {
+  before?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+};
+
+export type WarehouseAddressInput = {
+  /** Address. */
+  streetAddress1: Scalars['String'];
+  /** Address. */
+  streetAddress2?: Maybe<Scalars['String']>;
+  /** City. */
+  city: Scalars['String'];
+  /** District. */
+  cityArea?: Maybe<Scalars['String']>;
+  /** Postal code. */
+  postalCode?: Maybe<Scalars['String']>;
+  /** Country. */
+  country: CountryCode;
+  /** State or province. */
+  countryArea?: Maybe<Scalars['String']>;
+  /** Phone number. */
+  phone?: Maybe<Scalars['String']>;
+};
+
+export type WarehouseCountableConnection = {
+  __typename?: 'WarehouseCountableConnection';
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  edges: Array<WarehouseCountableEdge>;
+  /** A total count of items in the collection. */
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type WarehouseCountableEdge = {
+  __typename?: 'WarehouseCountableEdge';
+  /** The item at the end of the edge. */
+  node: Warehouse;
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+};
+
+/** Creates new warehouse. */
+export type WarehouseCreate = {
+  __typename?: 'WarehouseCreate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  warehouseErrors: Array<WarehouseError>;
+  warehouse?: Maybe<Warehouse>;
+};
+
+export type WarehouseCreateInput = {
+  /** Warehouse slug. */
+  slug?: Maybe<Scalars['String']>;
+  /** Company name. */
+  companyName?: Maybe<Scalars['String']>;
+  /** The email address of the warehouse. */
+  email?: Maybe<Scalars['String']>;
+  /** Warehouse name. */
+  name: Scalars['String'];
+  /** Address of the warehouse. */
+  address: WarehouseAddressInput;
+  /** Shipping zones supported by the warehouse. */
+  shippingZones?: Maybe<Array<Maybe<Scalars['ID']>>>;
+};
+
+/** Deletes selected warehouse. */
+export type WarehouseDelete = {
+  __typename?: 'WarehouseDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  warehouseErrors: Array<WarehouseError>;
+  warehouse?: Maybe<Warehouse>;
+};
+
+export type WarehouseError = {
+  __typename?: 'WarehouseError';
+  /**
+   * Name of a field that caused the error. A value of `null` indicates that the
+   * error isn't associated with a particular field.
+   */
+  field?: Maybe<Scalars['String']>;
+  /** The error message. */
+  message?: Maybe<Scalars['String']>;
+  /** The error code. */
+  code: WarehouseErrorCode;
+};
+
+/** An enumeration. */
+export enum WarehouseErrorCode {
+  AlreadyExists = 'ALREADY_EXISTS',
+  GraphqlError = 'GRAPHQL_ERROR',
+  Invalid = 'INVALID',
+  NotFound = 'NOT_FOUND',
+  Required = 'REQUIRED',
+  Unique = 'UNIQUE'
+}
+
+export type WarehouseFilterInput = {
+  search?: Maybe<Scalars['String']>;
+  ids?: Maybe<Array<Maybe<Scalars['ID']>>>;
+};
+
+/** Add shipping zone to given warehouse. */
+export type WarehouseShippingZoneAssign = {
+  __typename?: 'WarehouseShippingZoneAssign';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  warehouseErrors: Array<WarehouseError>;
+  warehouse?: Maybe<Warehouse>;
+};
+
+/** Remove shipping zone from given warehouse. */
+export type WarehouseShippingZoneUnassign = {
+  __typename?: 'WarehouseShippingZoneUnassign';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  warehouseErrors: Array<WarehouseError>;
+  warehouse?: Maybe<Warehouse>;
+};
+
+export enum WarehouseSortField {
+  /** Sort warehouses by name. */
+  Name = 'NAME'
+}
+
+export type WarehouseSortingInput = {
+  /** Specifies the direction in which to sort products. */
+  direction: OrderDirection;
+  /** Sort warehouses by the selected field. */
+  field: WarehouseSortField;
+};
+
+/** Updates given warehouse. */
+export type WarehouseUpdate = {
+  __typename?: 'WarehouseUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  warehouseErrors: Array<WarehouseError>;
+  warehouse?: Maybe<Warehouse>;
+};
+
+export type WarehouseUpdateInput = {
+  /** Warehouse slug. */
+  slug?: Maybe<Scalars['String']>;
+  /** Company name. */
+  companyName?: Maybe<Scalars['String']>;
+  /** The email address of the warehouse. */
+  email?: Maybe<Scalars['String']>;
+  /** Warehouse name. */
+  name?: Maybe<Scalars['String']>;
+  /** Address of the warehouse. */
+  address?: Maybe<WarehouseAddressInput>;
+};
+
+/** Webhook. */
+export type Webhook = Node & {
+  __typename?: 'Webhook';
+  name: Scalars['String'];
+  targetUrl: Scalars['String'];
+  isActive: Scalars['Boolean'];
+  secretKey?: Maybe<Scalars['String']>;
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  /** List of webhook events. */
+  events: Array<WebhookEvent>;
+  /** @deprecated Use the `app` field instead. This field will be removed after 2020-07-31. */
+  serviceAccount: ServiceAccount;
+  app: App;
+};
+
+export type WebhookCountableConnection = {
+  __typename?: 'WebhookCountableConnection';
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  edges: Array<WebhookCountableEdge>;
+  /** A total count of items in the collection. */
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type WebhookCountableEdge = {
+  __typename?: 'WebhookCountableEdge';
+  /** The item at the end of the edge. */
+  node: Webhook;
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+};
+
+/** Creates a new webhook subscription. */
+export type WebhookCreate = {
+  __typename?: 'WebhookCreate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  webhookErrors: Array<WebhookError>;
+  webhook?: Maybe<Webhook>;
+};
+
+export type WebhookCreateInput = {
+  /** The name of the webhook. */
+  name?: Maybe<Scalars['String']>;
+  /** The url to receive the payload. */
+  targetUrl?: Maybe<Scalars['String']>;
+  /** The events that webhook wants to subscribe. The CHECKOUT_QUANTITY_CHANGED is depreacted. It will be removed in Saleor 3.0 */
+  events?: Maybe<Array<Maybe<WebhookEventTypeEnum>>>;
+  /** DEPRECATED: Use the `app` field instead. This field will be removed after 2020-07-31. */
+  serviceAccount?: Maybe<Scalars['ID']>;
+  /** ID of the app to which webhook belongs. */
+  app?: Maybe<Scalars['ID']>;
+  /** Determine if webhook will be set active or not. */
+  isActive?: Maybe<Scalars['Boolean']>;
+  /** The secret key used to create a hash signature with each payload. */
+  secretKey?: Maybe<Scalars['String']>;
+};
+
+/** Deletes a webhook subscription. */
+export type WebhookDelete = {
+  __typename?: 'WebhookDelete';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  webhookErrors: Array<WebhookError>;
+  webhook?: Maybe<Webhook>;
+};
+
+export type WebhookError = {
+  __typename?: 'WebhookError';
+  /**
+   * Name of a field that caused the error. A value of `null` indicates that the
+   * error isn't associated with a particular field.
+   */
+  field?: Maybe<Scalars['String']>;
+  /** The error message. */
+  message?: Maybe<Scalars['String']>;
+  /** The error code. */
+  code: WebhookErrorCode;
+};
+
+/** An enumeration. */
+export enum WebhookErrorCode {
+  GraphqlError = 'GRAPHQL_ERROR',
+  Invalid = 'INVALID',
+  NotFound = 'NOT_FOUND',
+  Required = 'REQUIRED',
+  Unique = 'UNIQUE'
+}
+
+/** Webhook event. */
+export type WebhookEvent = {
+  __typename?: 'WebhookEvent';
+  /** Internal name of the event type. */
+  eventType: WebhookEventTypeEnum;
+  /** Display name of the event. */
+  name: Scalars['String'];
+};
+
+/** An enumeration. */
+export enum WebhookEventTypeEnum {
+  AnyEvents = 'ANY_EVENTS',
+  OrderCreated = 'ORDER_CREATED',
+  OrderFullyPaid = 'ORDER_FULLY_PAID',
+  OrderUpdated = 'ORDER_UPDATED',
+  OrderCancelled = 'ORDER_CANCELLED',
+  OrderFulfilled = 'ORDER_FULFILLED',
+  InvoiceRequested = 'INVOICE_REQUESTED',
+  InvoiceDeleted = 'INVOICE_DELETED',
+  InvoiceSent = 'INVOICE_SENT',
+  CustomerCreated = 'CUSTOMER_CREATED',
+  ProductCreated = 'PRODUCT_CREATED',
+  ProductUpdated = 'PRODUCT_UPDATED',
+  CheckoutQuantityChanged = 'CHECKOUT_QUANTITY_CHANGED',
+  CheckoutCreated = 'CHECKOUT_CREATED',
+  CheckoutUpdated = 'CHECKOUT_UPDATED',
+  FulfillmentCreated = 'FULFILLMENT_CREATED'
+}
+
+export type WebhookFilterInput = {
+  search?: Maybe<Scalars['String']>;
+  isActive?: Maybe<Scalars['Boolean']>;
+};
+
+/** An enumeration. */
+export enum WebhookSampleEventTypeEnum {
+  OrderCreated = 'ORDER_CREATED',
+  OrderFullyPaid = 'ORDER_FULLY_PAID',
+  OrderUpdated = 'ORDER_UPDATED',
+  OrderCancelled = 'ORDER_CANCELLED',
+  OrderFulfilled = 'ORDER_FULFILLED',
+  InvoiceRequested = 'INVOICE_REQUESTED',
+  InvoiceDeleted = 'INVOICE_DELETED',
+  InvoiceSent = 'INVOICE_SENT',
+  CustomerCreated = 'CUSTOMER_CREATED',
+  ProductCreated = 'PRODUCT_CREATED',
+  ProductUpdated = 'PRODUCT_UPDATED',
+  CheckoutQuantityChanged = 'CHECKOUT_QUANTITY_CHANGED',
+  CheckoutCreated = 'CHECKOUT_CREATED',
+  CheckoutUpdated = 'CHECKOUT_UPDATED',
+  FulfillmentCreated = 'FULFILLMENT_CREATED'
+}
+
+export enum WebhookSortField {
+  /** Sort webhooks by name. */
+  Name = 'NAME',
+  /** Sort webhooks by service account. */
+  ServiceAccount = 'SERVICE_ACCOUNT',
+  /** Sort webhooks by target url. */
+  TargetUrl = 'TARGET_URL',
+  /** Sort webhooks by service account. */
+  App = 'APP'
+}
+
+export type WebhookSortingInput = {
+  /** Specifies the direction in which to sort products. */
+  direction: OrderDirection;
+  /** Sort webhooks by the selected field. */
+  field: WebhookSortField;
+};
+
+/** Updates a webhook subscription. */
+export type WebhookUpdate = {
+  __typename?: 'WebhookUpdate';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  webhookErrors: Array<WebhookError>;
+  webhook?: Maybe<Webhook>;
+};
+
+export type WebhookUpdateInput = {
+  /** The new name of the webhook. */
+  name?: Maybe<Scalars['String']>;
+  /** The url to receive the payload. */
+  targetUrl?: Maybe<Scalars['String']>;
+  /** The events that webhook wants to subscribe. The CHECKOUT_QUANTITY_CHANGED is depreacted. It will be removed in Saleor 3.0 */
+  events?: Maybe<Array<Maybe<WebhookEventTypeEnum>>>;
+  /** DEPRECATED: Use the `app` field instead. This field will be removed after 2020-07-31. */
+  serviceAccount?: Maybe<Scalars['ID']>;
+  /** ID of the app to which webhook belongs. */
+  app?: Maybe<Scalars['ID']>;
+  /** Determine if webhook will be set active or not. */
+  isActive?: Maybe<Scalars['Boolean']>;
+  /** Use to create a hash signature with each payload. */
+  secretKey?: Maybe<Scalars['String']>;
+};
+
+/** Represents weight value in a specific weight unit. */
+export type Weight = {
+  __typename?: 'Weight';
+  /** Weight unit. */
+  unit: WeightUnitsEnum;
+  /** Weight value. */
+  value: Scalars['Float'];
+};
+
+/** An enumeration. */
+export enum WeightUnitsEnum {
+  Kg = 'KG',
+  Lb = 'LB',
+  Oz = 'OZ',
+  G = 'G'
+}
