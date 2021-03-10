@@ -1,13 +1,16 @@
-import { useUserOrdersFactory, UseUserOrdersFactoryParams, Context } from '@vue-storefront/core';
-import { Order } from '../types/GraphQL';
+import {
+  useUserOrderFactory,
+  UseUserOrderFactoryParams,
+  Context
+} from '@vue-storefront/core';
 import { OrderSearchParams } from '../types';
+import { Order } from '@vue-storefront/saleor-api';
 
-const params: UseUserOrdersFactoryParams<Order[], OrderSearchParams> = {
-  searchOrders: async (context: Context, { customQuery, ...searchParams } = {}): Promise<Order[]> => {
-    const result = await context.$ct.api.getOrders(searchParams, customQuery);
-    const { results: data } = result.data?.me.orders || { results: [], total: 0 };
-    return data;
+const params: UseUserOrderFactoryParams<Order[], OrderSearchParams> = {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  searchOrders: async (context: Context, { customQuery }): Promise<Order[]> => {
+    return null;
   }
 };
 
-export default useUserOrdersFactory<Order[], OrderSearchParams>(params);
+export default useUserOrderFactory<Order[], OrderSearchParams>(params);

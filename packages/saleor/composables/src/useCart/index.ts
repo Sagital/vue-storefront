@@ -1,72 +1,123 @@
-import { ProductVariant, Cart, LineItem } from './../types/GraphQL';
-import loadCurrentCart from './currentCart';
-import {AgnosticCoupon, useCartFactory, UseCartFactoryParams, Context} from '@vue-storefront/core';
+import {
+  AgnosticCoupon,
+  Context,
+  useCartFactory,
+  UseCartFactoryParams
+} from '@vue-storefront/core';
+import {
+  Checkout,
+  CheckoutLine,
+  ProductVariant
+} from '@vue-storefront/saleor-api';
 
 const getBasketItemByProduct = ({ currentCart, product }) => {
-  return currentCart.lineItems.find((item) => item.productId === product._id);
+  return currentCart.lines?.find((item) => item.productId === product._id);
 };
 
-/** returns current cart or creates new one **/
-const getCurrentCart = async (context: Context, currentCart) => {
-  if (!currentCart) {
-    return loadCurrentCart(context);
-  }
+const params: UseCartFactoryParams<
+  Checkout,
+  CheckoutLine,
+  ProductVariant,
+  AgnosticCoupon
+> = {
+  load: async (context: Context) => {
+    const { $saleor } = context;
 
-  return currentCart;
-};
-
-const params: UseCartFactoryParams<Cart, LineItem, ProductVariant, AgnosticCoupon> = {
-  load: async (context: Context, { customQuery }) => {
-    const { $ct } = context;
-
-    const isGuest = await $ct.api.isGuest();
+    const isGuest = await $saleor.api.isGuest();
 
     if (isGuest) {
-      return null;
+      const guestCheckoutToken = await context.$saleor.config.getGuestCheckoutToken();
+
+      if (!guestCheckoutToken) {
+        return null;
+      }
+
+      return await context.$saleor.api.getCheckout(guestCheckoutToken);
+    } else {
+      const user = await context.$saleor.api.getMe();
+      return user.checkout;
+    }
+  },
+  addItem: async (context: Context, { currentCart, product, quantity }) => {
+    const isGuest = await context.$saleor.api.isGuest();
+
+    let existingCheckoutId = null;
+
+    if (currentCart) {
+      existingCheckoutId = currentCart.id;
+    } else if (isGuest) {
+      // new visit, take the checkout it from the local storage.
+      // TODO It shouldn't get here though, because the checkout is loaded along with the user
+      const guestCheckoutParams = await context.$saleor.config.getGuestCheckoutToken();
+      if (guestCheckoutParams) {
+        throw new Error('he has a checkout token but no current tokent');
+      }
     }
 
-    const { user } = customQuery ? customQuery() : { user: null };
+    // TODO set the totatl
+    if (existingCheckoutId) {
+      const checkoutLinesAdd = await context.$saleor.api.checkoutsLinesAdd(
+        existingCheckoutId,
+        product.id,
+        quantity
+      );
 
-    const { data: profileData } = await context.$ct.api.getMe({ customer: false }, user);
+      return checkoutLinesAdd.checkout;
+    } else {
+      const checkoutCreate = await context.$saleor.api.checkoutCreate(
+        product.id,
+        quantity
+      );
 
-    return profileData.me.activeCart;
+      if (isGuest) {
+        context.$saleor.config.setGuestCheckoutToken(
+          checkoutCreate.checkout.token
+        );
+      }
+
+      return checkoutCreate.checkout;
+    }
   },
-  addItem: async (context: Context, { currentCart, product, quantity, customQuery }) => {
-    const loadedCart = await getCurrentCart(context, currentCart);
-
-    const { data } = await context.$ct.api.addToCart(loadedCart, product, quantity, customQuery);
-    return data.cart;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  removeItem: async (_: Context, { currentCart }) => {
+    // const loadedCart = await getCurrentCart(context, currentCart);
+    //
+    // const { data } = await context.$saleor.api.removeFromCart(loadedCart, product, customQuery);
+    //    return data.cart;
+    return null;
   },
-  removeItem: async (context: Context, { currentCart, product, customQuery }) => {
-    const loadedCart = await getCurrentCart(context, currentCart);
-
-    const { data } = await context.$ct.api.removeFromCart(loadedCart, product, customQuery);
-    return data.cart;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  updateItemQty: async (_: Context, { currentCart }) => {
+    // const loadedCart = await getCurrentCart(context, currentCart);
+    //
+    // const { data } = await context.$saleor.api.updateCartQuantity(loadedCart, { ...product, quantity }, customQuery);
+    // return data.cart;
+    return null;
   },
-  updateItemQty: async (context: Context, { currentCart, product, quantity, customQuery }) => {
-    const loadedCart = await getCurrentCart(context, currentCart);
-
-    const { data } = await context.$ct.api.updateCartQuantity(loadedCart, { ...product, quantity }, customQuery);
-    return data.cart;
-  },
-  clear: async (context: Context, { currentCart }) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  clear: async (_: Context, { currentCart }) => {
     return currentCart;
   },
-  applyCoupon: async (context: Context, { currentCart, couponCode, customQuery }) => {
-    const loadedCart = await getCurrentCart(context, currentCart);
-
-    const { data } = await context.$ct.api.applyCartCoupon(loadedCart, couponCode, customQuery);
-    return { updatedCart: data.cart, updatedCoupon: couponCode };
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  applyCoupon: async (_: Context, { currentCart, couponCode, customQuery }) => {
+    // No coupon yet
+    return null;
   },
-  removeCoupon: async (context: Context, { currentCart, coupon, customQuery }) => {
-    const loadedCart = await getCurrentCart(context, currentCart);
-
-    const { data } = await context.$ct.api.removeCartCoupon(loadedCart, { id: coupon.id, typeId: 'discount-code' }, customQuery);
-    return { updatedCart: data.cart };
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  removeCoupon: async (_: Context, { currentCart, coupon, customQuery }) => {
+    // No coupon yet
+    return null;
   },
-  isOnCart: (context: Context, { currentCart, product }) => {
-    return Boolean(currentCart && getBasketItemByProduct({ currentCart, product }));
+  isInCart: (context: Context, { currentCart, product }): boolean => {
+    return Boolean(
+      currentCart && getBasketItemByProduct({ currentCart, product })
+    );
   }
 };
 
-export default useCartFactory<Cart, LineItem, ProductVariant, AgnosticCoupon>(params);
+export default useCartFactory<
+  Checkout,
+  CheckoutLine,
+  ProductVariant,
+  AgnosticCoupon
+>(params);

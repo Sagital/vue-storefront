@@ -1,28 +1,51 @@
 /* eslint-disable */
-import { mapConfigToSetupObject, CT_TOKEN_COOKIE_NAME } from '@vue-storefront/commercetools/nuxt/helpers'
-import { integrationPlugin } from '@vue-storefront/core'
+import {
+  mapConfigToSetupObject,
+  SALEOR_TOKEN_COOKIE_NAME,
+  SALEOR_GUEST_CHECKOUT_TOKEN_COOKIE_NAME
+} from '@vue-storefront/saleor/nuxt/helpers';
+import { integrationPlugin } from '@vue-storefront/core';
 
 const moduleOptions = JSON.parse('<%= JSON.stringify(options) %>');
 
 export default integrationPlugin(({ app, integration }) => {
   const onTokenChange = (newToken) => {
     try {
-      const currentToken = app.$cookies.get(CT_TOKEN_COOKIE_NAME);
+      const currentToken = app.$cookies.get(SALEOR_TOKEN_COOKIE_NAME);
 
-      if (!currentToken || currentToken.access_token !== newToken.access_token) {
-        app.$cookies.set(CT_TOKEN_COOKIE_NAME, newToken);
+      // TODO change token here
+
+      if (
+        !currentToken ||
+        currentToken.access_token !== newToken.access_token
+      ) {
+        app.$cookies.set(SALEOR_TOKEN_COOKIE_NAME, newToken);
       }
     } catch (e) {
       // Cookies on is set after request has sent.
     }
   };
 
+  const setGuestCheckoutToken = (checkoutToken) => {
+    app.$cookies.set(SALEOR_GUEST_CHECKOUT_TOKEN_COOKIE_NAME, checkoutToken);
+  };
+
+  const removeGuestCheckoutToken = () => {
+    app.$cookies.remove(SALEOR_GUEST_CHECKOUT_TOKEN_COOKIE_NAME);
+  };
+
+  const getGuestCheckoutToken = () => {
+    return app.$cookies.get(SALEOR_GUEST_CHECKOUT_TOKEN_COOKIE_NAME);
+  };
+
   const onTokenRemove = () => {
-    app.$cookies.remove(CT_TOKEN_COOKIE_NAME);
-  }
+    app.$cookies.remove(SALEOR_TOKEN_COOKIE_NAME);
+  };
 
   const onTokenRead = () => {
-    return app.$cookies.get(CT_TOKEN_COOKIE_NAME);
+    console.log('ON TOKEN READ');
+    console.log(process.browser);
+    return app.$cookies.get(SALEOR_TOKEN_COOKIE_NAME);
   };
 
   const settings = mapConfigToSetupObject({
@@ -33,9 +56,12 @@ export default integrationPlugin(({ app, integration }) => {
         onTokenChange,
         onTokenRead,
         onTokenRemove
-      }
+      },
+      setGuestCheckoutToken,
+      getGuestCheckoutToken,
+      removeGuestCheckoutToken
     }
-  })
+  });
 
-  integration.configure('ct', settings)
+  integration.configure('saleor', settings);
 });

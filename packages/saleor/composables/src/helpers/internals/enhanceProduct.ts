@@ -1,47 +1,36 @@
-import { ApolloQueryResult } from 'apollo-client';
-import { Context } from '@vue-storefront/core';
-import { ProductQueryResult } from './../../types/GraphQL';
+import {
+  ProductCountableConnection,
+  ProductVariant
+} from '@vue-storefront/saleor-api';
 
-interface ProductData {
-    products: ProductQueryResult;
-}
+const enhanceProduct = (
+  productResponse: ProductCountableConnection
+): ProductVariant[] => {
+  return productResponse.edges.flatMap((edge) => {
+    const product = edge.node;
 
-const getTranslated = (rawAttribute, context) => {
-  const { locale } = context.$ct.config;
-  if (rawAttribute.attributeDefinition.type.name === 'ltext') {
-    return rawAttribute.value[locale];
-  }
+    return product.variants.map((variant) => {
+      const result: ProductVariant = {
+        meta: undefined,
+        privateMeta: undefined,
+        quantity: 0,
+        stockQuantity: 0,
+        attributes: product.attributes.concat(variant.attributes),
+        quantityAvailable: 10,
+        id: variant.id,
+        name: product.name,
+        images: product.images,
+        sku: variant.sku,
+        pricing: variant.pricing,
+        privateMetadata: [],
+        metadata: [],
+        product: product,
+        trackInventory: true
+      };
 
-  if (rawAttribute.attributeDefinition.type.name === 'lenum') {
-    return rawAttribute.value.label[locale];
-  }
-
-  return rawAttribute.value;
-};
-
-const enhanceProduct = (productResponse: ApolloQueryResult<ProductData>, context: Context): ApolloQueryResult<ProductData> => {
-  (productResponse.data as any)._variants = productResponse.data.products.results
-    .map((product) => {
-      const current = product.masterData.current;
-
-      return current.allVariants.map((variant) => ({
-        ...variant,
-        attributesRaw: variant.attributesRaw.map((raw) => ({
-          ...raw,
-          _translated: getTranslated(raw, context)
-        })),
-        _name: current.name,
-        _slug: current.slug,
-        _id: product.id,
-        _master: current.masterVariant.id === variant.id,
-        _description: current.description,
-        _categoriesRef: current.categoriesRef.map((cr) => cr.id),
-        _rating: (product as any).reviewRatingStatistics
-      }));
-    })
-    .reduce((prev, curr) => [...prev, ...curr], []);
-
-  return productResponse;
+      return result;
+    });
+  });
 };
 
 export default enhanceProduct;

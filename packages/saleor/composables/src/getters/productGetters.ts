@@ -1,31 +1,52 @@
-import { ProductGetters, AgnosticMediaGalleryItem, AgnosticAttribute, AgnosticPrice } from '@vue-storefront/core';
-import { ProductVariant, Image } from './../types/GraphQL';
-import { formatAttributeList, getVariantByAttributes, createPrice } from './_utils';
+import {
+  ProductGetters,
+  AgnosticMediaGalleryItem,
+  AgnosticAttribute,
+  AgnosticPrice
+} from '@vue-storefront/core';
+import {
+  formatAttributeList,
+  getVariantByAttributes,
+  createPrice
+} from './_utils';
+import { ProductImage, ProductVariant } from '@vue-storefront/saleor-api';
 
 interface ProductVariantFilters {
-    master?: boolean;
-    attributes?: Record<string, string>;
+  master?: boolean;
+  attributes?: Record<string, string>;
 }
 
-export const getProductName = (product: ProductVariant | Readonly<ProductVariant>): string => (product as any)?._name || '';
+export const getProductName = (
+  product: ProductVariant | Readonly<ProductVariant>
+): string => (product as any)?.name || '';
 
-export const getProductSlug = (product: ProductVariant | Readonly<ProductVariant>): string => (product as any)?._slug || '';
+export const getProductSlug = (
+  product: ProductVariant | Readonly<ProductVariant>
+): string => product.product.slug || '';
 
-export const getProductPrice = (product: ProductVariant | Readonly<ProductVariant>): AgnosticPrice => createPrice(product);
+export const getProductPrice = (
+  product: ProductVariant | Readonly<ProductVariant>
+): AgnosticPrice => createPrice(product);
 
-export const getProductGallery = (product: ProductVariant): AgnosticMediaGalleryItem[] => {
+export const getProductGallery = (
+  product: ProductVariant
+): AgnosticMediaGalleryItem[] => {
   const images = product?.images || [];
 
-  return images.map((image: Image) => ({
+  return images.map((image: ProductImage) => ({
     small: image.url,
     big: image.url,
     normal: image.url
   }));
 };
 
-export const getProductCoverImage = (product: ProductVariant): string => product?.images?.[0]?.url || '';
+export const getProductCoverImage = (product: ProductVariant): string =>
+  product?.product.thumbnail?.url || '';
 
-export const getProductFiltered = (products: ProductVariant[], filters: ProductVariantFilters | any = {}): ProductVariant[] => {
+export const getProductFiltered = (
+  products: ProductVariant[],
+  filters: ProductVariantFilters | any = {}
+): ProductVariant[] => {
   if (!products) {
     return [];
   }
@@ -35,25 +56,39 @@ export const getProductFiltered = (products: ProductVariant[], filters: ProductV
   }
 
   if (filters.master) {
-    return products.filter((product) => (product as any)._master);
+    return products.filter((productVariant) => {
+      return productVariant.id === productVariant.product.defaultVariant?.id;
+    });
   }
 
   return products;
 };
 
-export const getProductAttributes = (products: ProductVariant[] | ProductVariant, filterByAttributeName?: string[]): Record<string, AgnosticAttribute | string> => {
+export const getProductAttributes = (
+  products: ProductVariant[] | ProductVariant,
+  filterByAttributeName?: string[]
+): Record<string, AgnosticAttribute | string> => {
   const isSingleProduct = !Array.isArray(products);
-  const productList = (isSingleProduct ? [products] : products) as ProductVariant[];
+  const productList = (isSingleProduct
+    ? [products]
+    : products) as ProductVariant[];
 
   if (!products || productList.length === 0) {
     return {} as any;
   }
 
+  // TODO this no longer works and the characters are empty
   const formatAttributes = (product: ProductVariant): AgnosticAttribute[] =>
-    formatAttributeList(product.attributesRaw).filter((attribute) => filterByAttributeName ? filterByAttributeName.includes(attribute.name) : attribute);
+    formatAttributeList(product.attributes || []).filter((attribute) =>
+      filterByAttributeName
+        ? filterByAttributeName.includes(attribute.name)
+        : attribute
+    );
 
   const reduceToUniques = (prev, curr) => {
-    const isAttributeExist = prev.some((el) => el.name === curr.name && el.value === curr.value);
+    const isAttributeExist = prev.some(
+      (el) => el.name === curr.name && el.value === curr.value
+    );
 
     if (!isAttributeExist) {
       return [...prev, curr];
@@ -64,13 +99,15 @@ export const getProductAttributes = (products: ProductVariant[] | ProductVariant
 
   const reduceByAttributeName = (prev, curr) => ({
     ...prev,
-    [curr.name]: isSingleProduct ? curr.value : [
-      ...(prev[curr.name] || []),
-      {
-        value: curr.value,
-        label: curr.label
-      }
-    ]
+    [curr.name]: isSingleProduct
+      ? curr.value
+      : [
+        ...(prev[curr.name] || []),
+        {
+          value: curr.value,
+          label: curr.label
+        }
+      ]
   });
 
   return productList
@@ -80,17 +117,28 @@ export const getProductAttributes = (products: ProductVariant[] | ProductVariant
     .reduce(reduceByAttributeName, {});
 };
 
-export const getProductDescription = (product: ProductVariant): any => (product as any)?._description || '';
+export const getProductDescription = (product: ProductVariant): any =>
+  (product as any)?.description || '';
 
-export const getProductCategoryIds = (product: ProductVariant): string[] => (product as any)?._categoriesRef || '';
+export const getProductCategoryIds = (product: ProductVariant): string[] => {
+  if (!product) {
+    // TODO is this legit ?
+    return [''];
+  } else {
+    return [product.product.category.id];
+  }
+};
 
-export const getProductId = (product: ProductVariant): string => (product as any)?._id || '';
+export const getProductId = (product: ProductVariant): string =>
+  (product as any)?.product.id || '';
 
-export const getFormattedPrice = (price: number) => price as any as string;
+export const getFormattedPrice = (price: number) => (price as any) as string;
 
-export const getTotalReviews = (product: ProductVariant): number => (product as any)?._rating?.count || 0;
+export const getTotalReviews = (product: ProductVariant): number =>
+  (product as any)?._rating?.count || 0;
 
-export const getAverageRating = (product: ProductVariant): number => (product as any)?._rating?.averageRating || 0;
+export const getAverageRating = (product: ProductVariant): number =>
+  (product as any)?._rating?.averageRating || 0;
 
 const productGetters: ProductGetters<ProductVariant, ProductVariantFilters> = {
   getName: getProductName,

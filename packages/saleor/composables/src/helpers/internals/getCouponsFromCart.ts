@@ -1,15 +1,16 @@
-import { Cart } from './../../types/GraphQL';
 import { AgnosticCoupon } from '@vue-storefront/core';
+import { Checkout } from '@vue-storefront/saleor-api';
 
-export default (cart: Cart): AgnosticCoupon[] => {
-  const coupons = cart?.discountCodes;
-  if (!coupons) {
-    return;
-  }
-  return coupons.map(coupon => ({
-    id: coupon.discountCode.id,
-    name: coupon.discountCode.name,
-    code: coupon.discountCode.code,
-    value: null
-  }));
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export default (checkout: Checkout): AgnosticCoupon[] => {
+  return null;
+
+  // TODO
+  // return coupons.map(coupon => ({
+  //   id: coupon.discountCode.id,
+  //   name: coupon.discountCode.name,
+  //   code: coupon.discountCode.code,
+  //   value: null
+  // })
+  // );
 };

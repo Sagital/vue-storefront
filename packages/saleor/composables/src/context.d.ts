@@ -1,8 +1,8 @@
 import { IntegrationContext } from '@vue-storefront/core';
-import { ClientInstance, ApiInstance, Config } from '@vue-storefront/commercetools-api';
+import { ClientInstance, ApiInstance, Config } from '@vue-storefront/saleor-api';
 
 declare module '@vue-storefront/core' {
-    export interface Context {
-        $ct: IntegrationContext<ClientInstance, Config, ApiInstance>;
-    }
+  export interface Context {
+    $saleor: IntegrationContext<ClientInstance, Config, ApiInstance>;
+  }
 }

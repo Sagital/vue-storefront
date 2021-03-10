@@ -1,34 +1,39 @@
 import { UserOrderGetters, AgnosticOrderStatus } from '@vue-storefront/core';
-import { Order, OrderState, LineItem } from './../types/GraphQL';
+import { Order, OrderLine, OrderStatus } from '@vue-storefront/saleor-api';
 
-export const getOrderDate = (order: Order): string => order?.createdAt || '';
+export const getOrderDate = (order: Order): string => order?.created || '';
 
 export const getOrderId = (order: Order): string => order?.id || '';
 
 const orderStatusMap = {
-  [OrderState.Open]: AgnosticOrderStatus.Open,
-  [OrderState.Confirmed]: AgnosticOrderStatus.Confirmed,
-  [OrderState.Complete]: AgnosticOrderStatus.Complete,
-  [OrderState.Cancelled]: AgnosticOrderStatus.Cancelled
+  [OrderStatus.Draft]: AgnosticOrderStatus.Open,
+  [OrderStatus.Unfulfilled]: AgnosticOrderStatus.Confirmed,
+  [OrderStatus.Fulfilled]: AgnosticOrderStatus.Complete,
+  [OrderStatus.Canceled]: AgnosticOrderStatus.Cancelled
 };
 
-export const getOrderStatus = (order: Order): AgnosticOrderStatus | '' => order?.orderState ? orderStatusMap[order.orderState] : '';
+export const getOrderStatus = (order: Order): AgnosticOrderStatus | '' =>
+  order?.status ? orderStatusMap[order.status] : '';
 
-export const getOrderPrice = (order: Order): number => order ? order.totalPrice.centAmount / 100 : 0;
+export const getOrderPrice = (order: Order): number =>
+  order ? order.total.gross.amount : 0;
 
-export const getOrderItems = (order: Order): LineItem[] => order?.lineItems || [];
+export const getOrderItems = (order: Order): OrderLine[] => order?.lines || [];
 
-export const getOrderItemSku = (item: LineItem): string => item?.productId || '';
+export const getOrderItemSku = (item: OrderLine): string =>
+  item?.variant.id || '';
 
-export const getOrderItemName = (item: LineItem): string => item?.name || '';
+export const getOrderItemName = (item: OrderLine): string =>
+  item?.variant.name || '';
 
-export const getOrderItemQty = (item: LineItem): number => item?.quantity || 0;
+export const getOrderItemQty = (item: OrderLine): number => item?.quantity || 0;
 
-export const getOrderItemPrice = (item: LineItem): number => item ? item.price.value.centAmount / 100 : 0;
+export const getOrderItemPrice = (item: OrderLine): number =>
+  item ? item.variant.price.amount : 0;
 
-export const getFormattedPrice = (price: number) => price as any as string;
+export const getFormattedPrice = (price: number) => (price as any) as string;
 
-const orderGetters: UserOrderGetters<Order, LineItem> = {
+const orderGetters: UserOrderGetters<Order, OrderLine> = {
   getDate: getOrderDate,
   getId: getOrderId,
   getStatus: getOrderStatus,

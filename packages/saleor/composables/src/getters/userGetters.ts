@@ -1,15 +1,16 @@
 import { UserGetters } from '@vue-storefront/core';
-import { Customer } from './../types/GraphQL';
+import { User } from '@vue-storefront/saleor-api';
 
-export const getUserFirstName = (user: Customer): string => user?.firstName || '';
+export const getUserFirstName = (user: User): string => user?.firstName || '';
 
-export const getUserLastName = (user: Customer): string => user?.lastName || '';
+export const getUserLastName = (user: User): string => user?.lastName || '';
 
-export const getUserFullName = (user: Customer): string => user ? `${user.firstName} ${user.lastName}` : '';
+export const getUserFullName = (user: User): string =>
+  user ? `${user.firstName} ${user.lastName}` : '';
 
-export const getUserEmailAddress = (user: Customer): string => user?.email || '';
+export const getUserEmailAddress = (user: User): string => user?.email || '';
 
-const userGetters: UserGetters<Customer> = {
+const userGetters: UserGetters<User> = {
   getFirstName: getUserFirstName,
   getLastName: getUserLastName,
   getFullName: getUserFullName,

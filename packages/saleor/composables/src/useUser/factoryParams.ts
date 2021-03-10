@@ -1,64 +1,103 @@
-import { UseUserFactoryParams, Context, UseCart, AgnosticCoupon } from '@vue-storefront/core';
-import { Cart, Customer, LineItem, ProductVariant } from '../types/GraphQL';
-import { authenticate } from './authenticate';
+import {
+  UseUserFactoryParams,
+  Context,
+  UseCart,
+  AgnosticCoupon,
+  Logger
+} from '@vue-storefront/core';
+
 import useCart from '../useCart';
+import {
+  Checkout,
+  CheckoutLine,
+  ProductVariant,
+  User
+} from '@vue-storefront/saleor-api';
 
-type UserContext = UseCart<Cart, LineItem, ProductVariant, AgnosticCoupon> & Context;
+type UserContext = UseCart<
+  Checkout,
+  CheckoutLine,
+  ProductVariant,
+  AgnosticCoupon
+> &
+  Context;
 
-const load = async (context: Context) => {
-
-  const isGuest = await context.$ct.api.isGuest();
-
+const load = async (context: Context): Promise<User> => {
+  const isGuest = await context.$saleor.api.isGuest();
   if (isGuest) {
     return null;
   }
 
-  const profile = await context.$ct.api.getMe({ customer: true });
-  return profile.data.me.customer;
+  return await context.$saleor.api.getMe();
 };
 
-const getCurrentUser = async (context: Context, currentUser) => {
-  if (!currentUser) {
-    return load(context);
-  }
-
-  return currentUser;
-};
-
-export const params: UseUserFactoryParams<Customer, any, any> = {
+export const params: UseUserFactoryParams<User, any, any> = {
   provide() {
     return useCart();
   },
   load,
   logOut: async (context: UserContext) => {
-    await context.$ct.api.customerSignOut();
+    await context.$saleor.api.tokenRemove();
     context.setCart(null);
   },
-  updateUser: async (context: UserContext, { currentUser, updatedUserData }) => {
-    const loadedUser = await getCurrentUser(context, currentUser);
-    const { user } = await context.$ct.api.customerUpdateMe(loadedUser, updatedUserData);
+  updateUser: async (
+    context: UserContext,
+    { updatedUserData }
+  ): Promise<User> => {
+    // TODO change email?
+    const accountInput = {
+      firstName: updatedUserData.firstName,
+      lastName: updatedUserData.lastName
+    };
 
-    return user;
-  },
-  register: async (context: UserContext, { email, password, firstName, lastName }) => {
-    const { customer, cart } = await authenticate({email, password, firstName, lastName}, context.$ct.api.customerSignMeUp);
-    context.setCart(cart);
+    const accountUpdate = await context.$saleor.api.accountUpdate(accountInput);
 
-    return customer;
+    return accountUpdate.user;
   },
-  logIn: async (context: UserContext, { username, password }) => {
-    const customerLogin = { email: username, password };
-    const { customer, cart } = await authenticate(customerLogin, context.$ct.api.customerSignMeIn);
-    context.setCart(cart);
+  register: async (
+    context: UserContext,
+    { email, password }
+  ): Promise<User> => {
+    try {
+      const accountRegister = await context.$saleor.api.accountRegister(
+        email,
+        password
+      );
 
-    return customer;
+      return accountRegister.user;
+    } catch (err) {
+      // TODO : do we ever catch this ?
+      err.message = err?.graphQLErrors?.[0]?.message || err.message;
+      Logger.error('useUser.authenticate', err.message);
+      throw err;
+    }
   },
-  changePassword: async function changePassword(context: UserContext, { currentUser, currentPassword, newPassword }) {
-    const loadedUser = await getCurrentUser(context, currentUser);
-    const userResponse = await context.$ct.api.customerChangeMyPassword(loadedUser.version, currentPassword, newPassword);
-    // we do need to re-authenticate user to acquire new token - otherwise all subsequent requests will fail as unauthorized
-    await this.logOut(context);
-    return await params.logIn(context, { username: userResponse.data.user.email, password: newPassword });
+
+  logIn: async (
+    context: UserContext,
+    { username, password }
+  ): Promise<User> => {
+    try {
+      const tokenCreateResponse = await context.$saleor.api.tokenCreate(
+        username,
+        password
+      );
+
+      const user = tokenCreateResponse.user;
+
+      if (user.checkout) {
+        context.setCart(user.checkout);
+      }
+      return user;
+    } catch (err) {
+      err.message = err?.graphQLErrors?.[0]?.message || err.message;
+      Logger.error('useUser.authenticate', err.message);
+      throw err;
+    }
+  },
+  changePassword: async function changePassword(context: UserContext) {
+    // TODO change password
+    await context.$saleor.api.tokenRemove();
+    return null;
   }
 };
-

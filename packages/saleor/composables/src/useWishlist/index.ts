@@ -1,9 +1,14 @@
 /* istanbul ignore file */
 
-import { useWishlistFactory, UseWishlistFactoryParams, Context } from '@vue-storefront/core';
+import {
+  useWishlistFactory,
+  UseWishlistFactoryParams,
+  Context
+} from '@vue-storefront/core';
 import { ref, Ref } from '@vue/composition-api';
-import { ProductVariant, LineItem } from './../types/GraphQL';
+import { CheckoutLine, ProductVariant } from '@vue-storefront/saleor-api';
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Wishlist {}
 
 export const wishlist: Ref<Wishlist> = ref(null);
@@ -11,27 +16,33 @@ export const wishlist: Ref<Wishlist> = ref(null);
 // @todo: implement wishlist
 // https://github.com/DivanteLtd/vue-storefront/issues/4420
 
-const params: UseWishlistFactoryParams<Wishlist, LineItem, ProductVariant> = {
+const params: UseWishlistFactoryParams<
+  Wishlist,
+  CheckoutLine,
+  ProductVariant
+> = {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  load: async (context: Context) => {
+  load: async (_: Context) => {
     return {};
   },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  addItem: async (context: Context, { currentWishlist, product }) => {
+  addItem: async (_: Context, { currentWishlist, product }) => {
     return {};
   },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  removeItem: async (context: Context, { currentWishlist, product }) => {
+  removeItem: async (_: Context, { currentWishlist, product }) => {
     return {};
   },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  clear: async (context: Context, { currentWishlist }) => {
+  clear: async (_: Context, { currentWishlist }) => {
     return {};
   },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  isOnWishlist: (context: Context, { currentWishlist }) => {
+  isInWishlist: (_: Context, { currentWishlist }) => {
     return false;
   }
 };
 
-export default useWishlistFactory<Wishlist, LineItem, ProductVariant>(params);
+export default useWishlistFactory<Wishlist, CheckoutLine, ProductVariant>(
+  params
+);

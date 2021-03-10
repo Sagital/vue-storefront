@@ -1,37 +1,38 @@
-import { useUserShippingFactory, UseUserShippingFactoryParams, Context } from '@vue-storefront/core';
+import {
+  useUserShippingFactory,
+  UseUserShippingFactoryParams,
+  Context
+} from '@vue-storefront/core';
 
 const addresses: any[] = [
   {
-    id: '_1231231253623423',
+    id: 1,
     firstName: 'John',
     lastName: 'Doe',
-    streetName: 'Warsawska',
-    streetNumber: '193A',
-    apartment: '193A',
+    streetAddress1: 'Warsawska',
+    streetAddress2: '24',
     city: 'Phoenix',
-    state: null,
-    postalCode: '26-620',
-    country: 'US',
-    phone: '560123456',
-    email: '',
-    company: null,
-    isDefault: true
+    postalCode: '85001',
+    countryArea: 'AZ',
+    country: {
+      code: 'US'
+    },
+    phone: '+16027313183'
   },
   {
-    id: '_245463456456356',
+    id: 2,
     firstName: 'Jonatan',
     lastName: 'Doe',
-    streetName: 'Starachowicka',
-    streetNumber: '193A',
+    streetAddress1: 'Starachowicka',
+    streetAddress2: '20',
     apartment: '193A',
     city: 'Atlanta',
-    state: null,
-    postalCode: '53-603',
-    country: 'US',
-    phone: '560123456',
-    email: '',
-    company: null,
-    isDefault: true
+    countryArea: 'GA',
+    postalCode: '30301',
+    country: {
+      code: 'US'
+    },
+    phone: '+1560123456'
   }
 ];
 
@@ -39,10 +40,11 @@ const shipping = {
   addresses
 };
 
-const findBiggestId = () => addresses.reduce((highest, { id }) => Math.max(highest, id), 0);
+const findBiggestId = () =>
+  addresses.reduce((highest, { id }) => Math.max(highest, id), 0);
 
 const disableOldDefault = () => {
-  const oldDefault = addresses.find(address => address.isDefault);
+  const oldDefault = addresses.find((address) => address.isDefault);
   if (oldDefault) {
     oldDefault.isDefault = false;
   }
@@ -79,7 +81,9 @@ const params: UseUserShippingFactoryParams<any, any> = {
   deleteAddress: async (context: Context, params?) => {
     console.log('Mocked: deleteAddress', params);
 
-    const indexToRemove = addresses.findIndex(address => address.id === params.address.id);
+    const indexToRemove = addresses.findIndex(
+      (address) => address.id === params.address.id
+    );
     if (indexToRemove < 0) {
       return Promise.reject('This address does not exist');
     }
@@ -91,12 +95,15 @@ const params: UseUserShippingFactoryParams<any, any> = {
   updateAddress: async (context: Context, params?) => {
     console.log('Mocked: updateAddress', params);
 
-    const indexToUpdate = addresses.findIndex(address => address.id === params.address.id);
+    const indexToUpdate = addresses.findIndex(
+      (address) => address.id === params.address.id
+    );
     if (indexToUpdate < 0) {
       return Promise.reject('This address does not exist');
     }
 
-    const isNewDefault = params.address.isDefault && addresses[0].id !== params.address.id;
+    const isNewDefault =
+      params.address.isDefault && addresses[0].id !== params.address.id;
 
     if (isNewDefault) {
       disableOldDefault();
@@ -111,26 +118,30 @@ const params: UseUserShippingFactoryParams<any, any> = {
   },
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  load: async (context: Context, params?) => {
+  load: async (_: Context) => {
     console.log('Mocked: load');
+
     return Promise.resolve(shipping);
   },
 
-  setDefaultAddress: async (context: Context, params?) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  setDefaultAddress: async (context: Context, { address }) => {
     console.log('Mocked: setDefaultAddress');
-    const isDefault = id => addresses[0].id === id;
+    // const isDefault = (id) => addresses[0].id === id;
 
-    if (!isDefault(params.address.id)) {
-      const indexToUpdate = addresses.findIndex(address => address.id === params.address.id);
-      if (indexToUpdate < 0) {
-        return Promise.reject('This address does not exist');
-      }
-      disableOldDefault();
-      addresses[indexToUpdate].isDefault = true;
-      addresses.sort(sortDefaultAtTop);
-    }
+    // if (!isDefault(params.address.id)) {
+    //   const indexToUpdate = addresses.findIndex(
+    //     (address) => address.id === params.address.id
+    //   );
+    //   if (indexToUpdate < 0) {
+    //     return Promise.reject('This address does not exist');
+    //   }
+    //   disableOldDefault();
+    //   addresses[indexToUpdate].isDefault = true;
+    //   addresses.sort(sortDefaultAtTop);
+    // }
 
-    return Promise.resolve(shipping);
+    return Promise.resolve(null);
   }
 };
 

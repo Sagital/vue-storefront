@@ -1,32 +1,44 @@
-import { CartGetters, AgnosticCoupon, AgnosticPrice, AgnosticTotals, AgnosticDiscount } from '@vue-storefront/core';
-import { Cart, LineItem } from './../types/GraphQL';
+import {
+  CartGetters,
+  AgnosticCoupon,
+  AgnosticPrice,
+  AgnosticTotals,
+  AgnosticDiscount
+} from '@vue-storefront/core';
 import { getProductAttributes } from './productGetters';
 import { createPrice } from './_utils';
 import { getCouponsFromCart } from '../helpers/internals';
-
-export const getCartItems = (cart: Cart): LineItem[] => {
-  if (!cart) {
+import { Checkout, CheckoutLine } from '@vue-storefront/saleor-api';
+export const getCartItems = (checkout: Checkout): CheckoutLine[] => {
+  if (!checkout) {
     return [];
   }
 
-  return cart.lineItems;
+  return checkout.lines;
 };
 
-export const getCartItemName = (product: LineItem): string => product.name;
+export const getCartItemName = (product: CheckoutLine): string =>
+  product.variant.name;
 
-export const getCartItemImage = (product: LineItem): string => product.variant.images[0].url;
+export const getCartItemImage = (product: CheckoutLine): string =>
+  product.variant.product.thumbnail.url;
 
-export const getCartItemPrice = (product: LineItem): AgnosticPrice => createPrice(product);
+export const getCartItemPrice = (product: CheckoutLine): AgnosticPrice =>
+  createPrice(product.variant);
 
-export const getCartItemQty = (product: LineItem): number => product.quantity;
+export const getCartItemQty = (product: CheckoutLine): number =>
+  product.quantity;
 
-export const getCartItemAttributes = (product: LineItem, filterByAttributeName?: string[]) =>
-  getProductAttributes(product.variant, filterByAttributeName);
+export const getCartItemAttributes = (
+  product: CheckoutLine,
+  filterByAttributeName?: Array<string>
+) => getProductAttributes(product.variant, filterByAttributeName);
 
-export const getCartItemSku = (product: LineItem): string => product.variant.sku;
+export const getCartItemSku = (product: CheckoutLine): string =>
+  product.variant.sku;
 
-export const getCartTotals = (cart: Cart): AgnosticTotals => {
-  if (!cart) {
+export const getCartTotals = (checkout: Checkout): AgnosticTotals => {
+  if (!checkout) {
     return {
       total: 0,
       subtotal: 0,
@@ -34,38 +46,43 @@ export const getCartTotals = (cart: Cart): AgnosticTotals => {
     };
   }
 
-  const subtotalPrice = cart.totalPrice.centAmount;
-  const shipping = cart.shippingInfo ? cart.shippingInfo.price.centAmount : 0;
-
+  // TODO calculate
   return {
-    total: (shipping + subtotalPrice) / 100,
-    subtotal: subtotalPrice / 100,
+    total: 0,
+    subtotal: 0,
     special: 0
   };
 };
 
-export const getCartShippingPrice = (cart: Cart): number => cart && cart.shippingInfo ? cart.shippingInfo.price.centAmount / 100 : 0;
+// TODO net or gross
+export const getCartShippingPrice = (checkout: Checkout): number =>
+  checkout && checkout.shippingPrice
+    ? checkout.shippingPrice.net.amount / 100
+    : 0;
 
-export const getCartTotalItems = (cart: Cart): number => {
-  if (!cart) {
+export const getCartTotalItems = (cart: Checkout): number => {
+  if (!cart || !cart.lines) {
     return 0;
   }
 
-  return cart.lineItems.reduce((previous, current) => previous + current.quantity, 0);
+  return cart.lines.reduce(
+    (previous, current) => previous + current.quantity,
+    0
+  );
 };
 
-export const getFormattedPrice = (price: number) => price as any as string;
+export const getFormattedPrice = (price: number) => (price as any) as string;
 
-export const getCoupons = (cart: Cart): AgnosticCoupon[] => {
-  return getCouponsFromCart(cart);
+export const getCoupons = (checkout: Checkout): AgnosticCoupon[] => {
+  return getCouponsFromCart(checkout);
 };
 
 // eslint-disable-next-line
-export const getDiscounts = (cart: Cart): AgnosticDiscount[] => {
+export const getDiscounts = (_: Checkout): AgnosticDiscount[] => {
   return [];
 };
 
-const cartGetters: CartGetters<Cart, LineItem> = {
+const cartGetters: CartGetters<Checkout, CheckoutLine> = {
   getTotals: getCartTotals,
   getShippingPrice: getCartShippingPrice,
   getItems: getCartItems,

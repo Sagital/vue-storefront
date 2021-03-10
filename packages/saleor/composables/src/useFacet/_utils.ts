@@ -1,4 +1,4 @@
-import { SearchData } from './../types';
+import { SearchData } from '../types';
 
 const buildBreadcrumbsList = (rootCat, bc) => {
   const newBc = [...bc, { text: rootCat.name, link: rootCat.slug }];

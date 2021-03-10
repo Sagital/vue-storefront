@@ -3,9 +3,9 @@
 1. Open `nuxt.config.js`
 2. At the bottom of `buildModules` add:
 ```js
-['@vue-storefront/commercetools/nuxt', {
+['@vue-storefront/saleor/nuxt', {
     api: {
-        uri: 'https://api.commercetools.com/<your-api>/graphql',
+        uri: 'https://api.saleor.com/<your-api>/graphql',
         authHost: 'https://auth.sphere.io',
         projectKey: 'vsf-ct-dev',
         clientId: '<id>',
@@ -51,9 +51,9 @@
 ```
 
 ## Generate token middleware 
-Commercetools nuxt module injects [middleware](https://github.com/DivanteLtd/vue-storefront/blob/next/packages/commercetools/composables/nuxt/token-middleware.js) that is responsible for createing/refreshing token if needed - when user refreshes page. In some rare case, you might want to disable [this middleware](https://github.com/DivanteLtd/vue-storefront/blob/next/packages/commercetools/composables/nuxt/token-middleware.js). If so, add `disableGenerateTokenMiddleware` to the `@vue-storefront/commercetools/nuxt`'s options module in `buildModules`:
+saleor nuxt module injects [middleware](https://github.com/DivanteLtd/vue-storefront/blob/next/packages/saleor/composables/nuxt/token-middleware.js) that is responsible for createing/refreshing token if needed - when user refreshes page. In some rare case, you might want to disable [this middleware](https://github.com/DivanteLtd/vue-storefront/blob/next/packages/saleor/composables/nuxt/token-middleware.js). If so, add `disableGenerateTokenMiddleware` to the `@vue-storefront/saleor/nuxt`'s options module in `buildModules`:
 ```js
-['@vue-storefront/commercetools/nuxt', {
+['@vue-storefront/saleor/nuxt', {
   // ...
   disableGenerateTokenMiddleware: true
   // ...

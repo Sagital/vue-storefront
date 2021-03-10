@@ -1,89 +1,84 @@
 import { AgnosticAttribute, AgnosticPrice } from '@vue-storefront/core';
-import { ProductVariant, ProductPrice, DiscountedProductPriceValue, LineItem } from './../types/GraphQL';
-import { DiscountedLineItemPrice } from '../types/GraphQL';
+import {
+  Attribute,
+  ProductVariant,
+  SelectedAttribute
+} from '@vue-storefront/saleor-api';
 
-export const getAttributeValue = (attribute) => {
-  switch (attribute.attributeDefinition.type.name) {
-    case 'text':
-    case 'boolean':
-    case 'number':
-    case 'date':
-    case 'time':
-    case 'datetime':
-    case 'money':
-      return attribute.value;
-
-    case 'lenum':
-    case 'enum':
-      return attribute.value.key;
-
-    case 'reference':
-      return { typeId: attribute.value.typeId, id: attribute.value.id };
-
-    case 'ltext':
-      return attribute.value;
-
-    default:
-      return null;
-  }
+export const getAttributeValue = (attribute: Attribute) => {
+  // TODO array?
+  return attribute.values ? attribute.values[0] : '';
 };
 
-export const formatAttributeList = (attributes: any[]): AgnosticAttribute[] =>
+export const formatAttributeList = (
+  attributes: Array<SelectedAttribute>
+): AgnosticAttribute[] =>
   attributes.map((attr) => {
-    const attrValue = getAttributeValue(attr);
+    const attrValue = getAttributeValue(attr.attribute);
     return {
-      name: attr.name,
+      name: attr.attribute.name,
       value: attrValue,
-      label: attr._translated
+      label: attr.attribute.name
     };
   });
 
-export const getVariantByAttributes = (products: ProductVariant[] | Readonly<ProductVariant[]>, attributes: any): ProductVariant => {
+export const getVariantByAttributes = (
+  products: ProductVariant[] | Readonly<ProductVariant[]>,
+  attributes: any
+): ProductVariant => {
+  console.log(attributes);
+
   if (!products || products.length === 0) {
     return null;
   }
 
-  const configurationKeys = Object.keys(attributes);
+  // TODO
 
-  return products.find((product) => {
-    const currentAttributes = formatAttributeList(product.attributesRaw);
+  // const configurationKeys = Object.keys(attributes);
 
-    return configurationKeys.every((attrName) =>
-      currentAttributes.find(({ name, value }) => attrName === name && attributes[attrName] === value)
-    );
+  return products.find((productVariant: ProductVariant) => {
+    console.log(productVariant);
+    // const currentAttributes = formatAttributeList(product.attributesRaw);
+    //
+    // return configurationKeys.every((attrName) =>
+    //   currentAttributes.find(({ name, value }) => attrName === name && attributes[attrName] === value)
+    // );
   });
 };
 
-const getPrice = (price: ProductPrice | DiscountedProductPriceValue | DiscountedLineItemPrice) => price ? price.value.centAmount / 100 : null;
+// const getPrice = (price: Money) => (price ? price.amount : null);
 
-const getDiscount = (product: ProductVariant | LineItem) => product.price?.discounted;
+// const getDiscount = (_: ProductVariant | CheckoutLine) => 0;
 
-const getSpecialPrice = (product: ProductVariant | LineItem) => {
-  const discount = getDiscount(product);
+// const getSpecialPrice = (product: ProductVariant | CheckoutLine) => {
+//   const discount = getDiscount(product);
+//
+//   // TODO
+//   // if (product.__typename === 'LineItem') {
+//   //   const { discountedPricePerQuantity } = product;
+//   //   const discountsLength = discountedPricePerQuantity.length;
+//   //
+//   //   if (discountsLength > 0) {
+//   //     return getPrice(
+//   //       discountedPricePerQuantity[discountsLength - 1].discountedPrice
+//   //     );
+//   //   }
+//   // }
+//   //
+//   // if (discount?.discount.isActive) {
+//   //   return getPrice(discount);
+//   // }
+//
+//   return null;
+// };
 
-  if (product.__typename === 'LineItem') {
-    const { discountedPricePerQuantity } = product;
-    const discountsLength = discountedPricePerQuantity.length;
-
-    if (discountsLength > 0) {
-      return getPrice(discountedPricePerQuantity[discountsLength - 1].discountedPrice);
-    }
-  }
-
-  if (discount?.discount.isActive) {
-    return getPrice(discount);
-  }
-
-  return null;
-};
-
-export const createPrice = (product: ProductVariant | LineItem): AgnosticPrice => {
+export const createPrice = (product: ProductVariant): AgnosticPrice => {
   if (!product) {
     return { regular: null, special: null };
   }
 
-  const regularPrice = getPrice(product.price);
-  const specialPrice = getSpecialPrice(product);
+  const regularPrice = (product as ProductVariant).pricing.price.net.amount;
+  const specialPrice = (product as ProductVariant).pricing.discount?.net.amount;
 
   return {
     regular: regularPrice,

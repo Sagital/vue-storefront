@@ -1,10 +1,18 @@
-import { ProductVariant, Attribute } from '../../types/GraphQL';
 import { getAttributeValue } from '../../getters/_utils';
-import { Filter, FilterOption } from '@vue-storefront/commercetools-api';
+import {
+  Attribute,
+  Filter,
+  FilterOption,
+  ProductVariant
+} from '@vue-storefront/saleor-api';
 
-const extractAttributes = (product: ProductVariant): Attribute[] => product.attributesRaw;
+const extractAttributes = (product: ProductVariant): Attribute[] =>
+  product.attributes.map((a) => a.attribute);
 
-const flattenAttributes = (prev: Attribute[], curr: Attribute[]): Attribute[] => [...prev, ...(curr || [])];
+const flattenAttributes = (
+  prev: Attribute[],
+  curr: Attribute[]
+): Attribute[] => [...prev, ...(curr || [])];
 
 const getFilterFromAttribute = (attribute: Attribute, prev) => {
   const attrValue = getAttributeValue(attribute);
@@ -13,11 +21,15 @@ const getFilterFromAttribute = (attribute: Attribute, prev) => {
     options: []
   };
   const option: FilterOption = {
-    value: attrValue,
-    label: (attribute as any).label || (typeof attrValue === 'string' ? attrValue : null),
+    value: attrValue.toString(),
+    label:
+      (attribute as any).label ||
+      (typeof attrValue === 'string' ? attrValue : null),
     selected: false
   };
-  const hasSuchOption = filter.options.some(opt => opt.value === option.value);
+  const hasSuchOption = filter.options.some(
+    (opt) => opt.value === option.value
+  );
   hasSuchOption || filter.options.push(option);
   return filter;
 };
@@ -27,8 +39,11 @@ export default (products: ProductVariant[]): Record<string, Filter> => {
     return {};
   }
 
-  return products.map(extractAttributes).reduce(flattenAttributes, []).reduce((prev, attribute) => {
-    prev[attribute.name] = getFilterFromAttribute(attribute, prev);
-    return prev;
-  }, {});
+  return products
+    .map(extractAttributes)
+    .reduce(flattenAttributes, [])
+    .reduce((prev, attribute) => {
+      prev[attribute.name] = getFilterFromAttribute(attribute, prev);
+      return prev;
+    }, {});
 };

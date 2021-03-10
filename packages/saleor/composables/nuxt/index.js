@@ -28,7 +28,7 @@ export default function (moduleOptions) {
   }
 
   this.extendBuild(config => {
-    config.resolve.alias['@vue-storefront/commercetools-api$'] = require.resolve('@vue-storefront/commercetools-api');
+    config.resolve.alias['@vue-storefront/saleor-api$'] = require.resolve('@vue-storefront/saleor-api');
   });
 
   this.addPlugin({

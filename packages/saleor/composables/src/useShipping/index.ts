@@ -1,33 +1,43 @@
-import { useShippingFactory, UseShippingParams, Context } from '@vue-storefront/core';
+import {
+  useShippingFactory,
+  UseShippingParams,
+  Context
+} from '@vue-storefront/core';
 import useCart from '../useCart';
-import { cartActions } from '@vue-storefront/commercetools-api';
-import { Address } from './../types/GraphQL';
-
-const params: UseShippingParams<Address, {}> = {
+import { AddressInput, CountryCode } from '@vue-storefront/saleor-api';
+import convertAddressToAddressInput from '../helpers/internals/convertAddressToAddressInput';
+import { usePersonalDetails } from '../index';
+const params: UseShippingParams<AddressInput, {}> = {
   provide() {
+    const { personalDetails } = usePersonalDetails();
+    const { cart } = useCart();
+
     return {
-      cart: useCart()
+      cart,
+      personalDetails
     };
   },
-  load: async (context: Context, { customQuery }) => {
-    if (!context.cart.cart?.value?.shippingAddress) {
-      await context.cart.load({ customQuery });
+  load: async (context: Context): Promise<AddressInput> => {
+    if (!context.cart?.value?.shippingAddress) {
+      return {
+        firstName: context.personalDetails.value.firstName,
+        lastName: context.personalDetails.value.lastName,
+        country: CountryCode.Us
+      };
+    } else {
+      return convertAddressToAddressInput(context.cart.value.shippingAddress);
     }
-    return context.cart.cart.value.shippingAddress;
   },
-  save: async (context: Context, { shippingDetails, customQuery }) => {
-    const cartResponse = await context.$ct.api.updateCart({
-      id: context.cart.cart.value.id,
-      version: context.cart.cart.value.version,
-      actions: [
-        cartActions.setShippingMethodAction(),
-        cartActions.setShippingAddressAction(shippingDetails)
-      ]
-    }, customQuery);
+  save: async (context: Context, { shippingDetails }) => {
+    const response = await context.$saleor.api.checkoutShippingAddressUpdate(
+      context.cart.value.id,
+      shippingDetails
+    );
 
-    context.cart.setCart(cartResponse.data.cart);
-    return context.cart.cart.value.shippingAddress;
+    context.cart.value.shippingAddress = response.checkout.shippingAddress;
+
+    return convertAddressToAddressInput(response.checkout.shippingAddress);
   }
 };
 
-export default useShippingFactory<Address, {}>(params);
+export default useShippingFactory<AddressInput, {}>(params);
