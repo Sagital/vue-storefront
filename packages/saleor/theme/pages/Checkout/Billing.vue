@@ -1,23 +1,29 @@
 <template>
-  <ValidationObserver v-slot="{ handleSubmit, dirty, reset }">
+
+  <ValidationObserver v-slot="{ handleSubmit }">
     <SfHeading
       :level="3"
-      :title="$t('Shipping')"
+      :title="$t('Billing')"
       class="sf-heading--left sf-heading--no-underline title"
     />
-    <form
-      @submit.prevent="
-        handleSubmit(handleAddressSubmit(reset))
-      "
-    >
-      <UserShippingAddresses
-        v-if="isAuthenticated && hasSavedShippingAddress"
+    <form @submit.prevent="handleSubmit(() => handleFormSubmit(billingDetails))">
+
+      <UserBillingAddresses
+        v-if="isAuthenticated "
         v-model="setAsDefault"
         :currentAddressId="currentAddressId || NOT_SELECTED_ADDRESS"
         @setCurrentAddress="handleSetCurrentAddress"
       />
-      <div class="form">
 
+      <SfCheckbox
+        :selected="sameAsShipping"
+        @change="handleCheckSameAddress"
+        label="Copy address data from shipping"
+        name="copyShippingAddress"
+        class="form__element"
+      />
+
+      <div class="form" >
         <ValidationProvider
           name="firstName"
           rules="required|min:2"
@@ -25,7 +31,7 @@
           slim
         >
           <SfInput
-            v-model="shippingDetails.firstName"
+            v-model="billingDetails.firstName"
             label="First name"
             name="firstName"
             class="form__element form__element--half"
@@ -41,8 +47,7 @@
           slim
         >
           <SfInput
-            :value="shippingDetails.lastName"
-            @input="lastName => changeShippingDetails('lastName', lastName)"
+            v-model="billingDetails.lastName"
             label="Last name"
             name="lastName"
             class="form__element form__element--half form__element--half-even"
@@ -59,8 +64,7 @@
           slim
         >
           <SfInput
-            :value="shippingDetails.phone"
-            @input="phone => changeShippingDetails('phone', phone)"
+            v-model="billingDetails.phone"
             label="Phone number"
             name="phone"
             class="form__element form__element--half"
@@ -70,7 +74,7 @@
           />
         </ValidationProvider>
 
-        <div   class="sf-input form__element form__element--half form__element--half-even" >&nbsp;</div>
+        <div class="sf-input form__element form__element--half form__element--half-even">&nbsp;</div>
 
         <ValidationProvider
           name="streetName"
@@ -79,8 +83,7 @@
           slim
         >
           <SfInput
-            :value="shippingDetails.streetAddress1"
-            @input="streetAddress1 => changeShippingDetails('streetAddress1', streetAddress1)"
+            v-model="billingDetails.streetAddress1"
             label="Street address 1"
             name="streetAddress1"
             class="form__element form__element--half"
@@ -96,8 +99,7 @@
           slim
         >
           <SfInput
-            :value="shippingDetails.streetAddress2"
-            @input="streetAddress2 => changeShippingDetails('streetAddress2', streetAddress2)"
+            v-model="billingDetails.streetAddress2"
             label="Street Address 2"
             name="streetAddress2"
             class="form__element form__element--half form__element--half-even"
@@ -115,8 +117,7 @@
         >
 
           <SfSelect
-            :value="shippingDetails.countryArea"
-            @input="countryArea => changeShippingDetails('countryArea', countryArea)"
+            v-model="billingDetails.countryArea"
             label="State"
             name="state"
             class="form__element form__element--half form__select sf-select--underlined"
@@ -142,8 +143,7 @@
           slim
         >
           <SfInput
-            :value="shippingDetails.city"
-            @input="city => changeShippingDetails('city', city)"
+            v-model="billingDetails.city"
             label="City"
             name="city"
             class="form__element form__element--half form__element--half-even"
@@ -159,8 +159,7 @@
           slim
         >
           <SfSelect
-            :value="shippingDetails.country"
-            @input="country => changeShippingDetails('country', country)"
+            v-model="billingDetails.country"
             label="Country"
             name="country"
             class="form__element form__element--half form__select sf-select--underlined"
@@ -184,41 +183,32 @@
           slim
         >
           <SfInput
-            :value="shippingDetails.postalCode"
-            @input="postalCode => changeShippingDetails('postalCode', postalCode)"
-            :label="$t('Zip code')"
+            v-model="billingDetails.postalCode"
+            label="Zip-code"
             name="zipCode"
             class="form__element form__element--half form__element--half-even"
             :valid="!errors[0]"
             :errorMessage="errors[0]"
           />
         </ValidationProvider>
-
       </div>
-      <SfButton
-        v-if="!canAddNewAddress"
-        class="color-light form__action-button form__action-button--add-address"
-        type="submit"
-        @click.native="handleAddNewAddressBtnClick"
-      >
-        {{ $t('Add new address') }}
-      </SfButton>
       <div class="form">
         <div class="form__action">
           <SfButton
+            class="sf-button color-secondary form__back-button"
+            type="button"
+            @click="$router.push('/checkout/shipping')"
+          >
+            {{ $t('Go back') }}
+          </SfButton>
+          <SfButton
             class="form__action-button"
             type="submit"
-            :disabled="loading"
-            v-if="!(isShippingDetailsStepCompleted && !dirty)"
           >
-            {{ $t('Select shipping method') }}
+            {{ $t('Continue to payment') }}
           </SfButton>
         </div>
       </div>
-      <VsfShippingProvider
-        v-if="isShippingDetailsStepCompleted && !dirty"
-        @submit="$router.push('billing')"
-      />
     </form>
   </ValidationObserver>
 </template>
@@ -228,17 +218,23 @@ import {
   SfHeading,
   SfInput,
   SfButton,
-  SfSelect
+  SfSelect,
+  SfRadio,
+  SfCheckbox
 } from '@storefront-ui/vue';
-import {useUserShipping, userShippingGetters, useUser, useShipping} from '@vue-storefront/saleor';
-import {ValidationProvider, ValidationObserver, extend} from 'vee-validate';
-import {required, min, digits} from 'vee-validate/dist/rules';
-import {ref, watch, computed, onMounted} from '@vue/composition-api';
+import {onMounted, ref} from '@vue/composition-api';
 import {onSSR} from '@vue-storefront/core';
+import {
+  useBilling,
+  userBillingGetters,
+  useUser,
+  useUserBilling
+} from '@vue-storefront/saleor';
+import {required, min, digits} from 'vee-validate/dist/rules';
+import {ValidationProvider, ValidationObserver, extend} from 'vee-validate';
+
 import {countries} from '../../config';
 import convertAddressToAddressInput from '@vue-storefront/saleor/src/helpers/internals/convertAddressToAddressInput';
-
-const NOT_SELECTED_ADDRESS = '';
 
 extend('required', {
   ...required,
@@ -254,41 +250,43 @@ extend('digits', {
 });
 
 export default {
-  name: 'Shipping',
+  name: 'Billing',
   components: {
     SfHeading,
     SfInput,
     SfButton,
     SfSelect,
+    SfRadio,
+    SfCheckbox,
     ValidationProvider,
     ValidationObserver,
-    UserShippingAddresses: () => import('@/components/Checkout/UserShippingAddresses'),
-    VsfShippingProvider: () => import('@/components/Checkout/VsfShippingProvider')
+    UserBillingAddresses: () => import('@/components/Checkout/UserBillingAddresses')
   },
-  setup() {
-    const {shipping: address, loading, load, save} = useShipping();
+  setup(props, context) {
+    const {billingDetails, copyFromShipping, saveBillingDetails} = useBilling();
+
     const {isAuthenticated} = useUser();
 
-    const {shipping: userShipping, load: loadUserShipping, setDefaultAddress} = useUserShipping();
+    const setAsDefault = ref(false);
+    const {billing: userBilling, load: loadUserBilling} = useUserBilling();
 
-    const shippingDetails = ref(address.value || {});
+    const NOT_SELECTED_ADDRESS = '';
     const currentAddressId = ref(NOT_SELECTED_ADDRESS);
 
-    const setAsDefault = ref(false);
     const canAddNewAddress = ref(true);
 
-    const isShippingDetailsStepCompleted = ref(false);
+    const handleSetCurrentAddress = address => {
 
-    const hasSavedShippingAddress = computed(() => {
-      if (!isAuthenticated.value || !userShipping.value) {
-        return false;
-      }
-      const addresses = userShippingGetters.getAddresses(userShipping.value);
-      return Boolean(addresses?.length);
-    });
+      billingDetails.value = convertAddressToAddressInput(address);
+
+      currentAddressId.value = address.id;
+      canAddNewAddress.value = false;
+    };
+
+    const sameAsShipping = ref(false);
 
     const getCountryStates = () => {
-      const code = shippingDetails.value.country;
+      const code = billingDetails.value.country;
 
       const country = countries.find(c => c.code === code);
 
@@ -300,74 +298,55 @@ export default {
     };
 
     const getCountries = () => {
-      return countries.map(c => ({ code: c.code, name: c.name}));
+      return countries.map(c => ({code: c.code, name: c.name}));
 
     };
 
-    const handleAddressSubmit = (reset) => async () => {
-      const addressId = currentAddressId.value;
-      await save({shippingDetails: shippingDetails.value});
-      if (addressId !== NOT_SELECTED_ADDRESS && setAsDefault.value) {
-        const chosenAddress = userShippingGetters.getAddresses(userShipping.value, {id: addressId});
-        if (chosenAddress && chosenAddress.length) {
-          await setDefaultAddress({address: chosenAddress[0]});
-        }
+    const handleCheckSameAddress = () => {
+      sameAsShipping.value = !sameAsShipping.value;
+      if (sameAsShipping.value) {
+        copyFromShipping();
       }
-      reset();
-      isShippingDetailsStepCompleted.value = true;
+
     };
 
-    const handleAddNewAddressBtnClick = () => {
-      currentAddressId.value = NOT_SELECTED_ADDRESS;
-      canAddNewAddress.value = true;
+    const handleFormSubmit = async (aa) => {
+
+      console.log('in handle form submit');
+      console.log(billingDetails);
+      console.log(aa);
+
+      await saveBillingDetails(aa);
+      context.root.$router.push('/checkout/payment');
     };
 
-    const handleSetCurrentAddress = address => {
+    onSSR(async () => {
 
-      shippingDetails.value = convertAddressToAddressInput(address);
+      if (isAuthenticated.value) {
+        await loadUserBilling();
+      }
 
-      currentAddressId.value = address.id;
-      canAddNewAddress.value = false;
-      isShippingDetailsStepCompleted.value = false;
-    };
-
-    const changeShippingDetails = (field, value) => {
-      shippingDetails.value[field] = value;
-      isShippingDetailsStepCompleted.value = false;
-      currentAddressId.value = NOT_SELECTED_ADDRESS;
-    };
+    });
 
     const selectDefaultAddress = () => {
-      const defaultAddress = userShippingGetters.getAddresses(userShipping.value, {isDefault: true});
+
+      const defaultAddress = userBillingGetters.getAddresses(userBilling.value, {isDefault: true});
       if (defaultAddress && defaultAddress.length) {
         handleSetCurrentAddress(defaultAddress[0]);
       }
+
     };
 
-    // Update local state if we have new address' response from the backend
-    watch(address, addr => {
-      shippingDetails.value = addr || {};
-    });
-
-    onSSR(async () => {
-      console.log('shipping on ssr');
-      console.log(process.server);
-      await load();
-      if (isAuthenticated.value) {
-        await loadUserShipping();
-      }
-    });
-
     onMounted(async () => {
-      if (!userShipping.value?.addresses && isAuthenticated.value) {
-        await loadUserShipping();
+      if (!userBilling.value?.addresses && isAuthenticated.value) {
+        await loadUserBilling();
       }
-      const shippingAddresses = userShippingGetters.getAddresses(userShipping.value);
-      if (!shippingAddresses || !shippingAddresses.length) {
+      const billingAddresses = userBillingGetters.getAddresses(userBilling.value);
+      if (!billingAddresses || !billingAddresses.length) {
         return;
       }
-      const hasEmptyShippingDetails = !shippingDetails.value || Object.keys(shippingDetails.value).length === 0;
-      if (hasEmptyShippingDetails) {
+      const hasEmptyBillingDetails = !billingDetails.value || Object.keys(billingDetails.value).length === 0;
+      if (hasEmptyBillingDetails) {
         selectDefaultAddress();
         return;
       }
@@ -377,44 +356,28 @@ export default {
 
     return {
       NOT_SELECTED_ADDRESS,
-
-      isAuthenticated,
-      shippingDetails,
-      address,
-      getCountries,
-      getCountryStates,
       setAsDefault,
       canAddNewAddress,
-      currentAddressId,
-
-      hasSavedShippingAddress,
-
-      handleAddressSubmit,
-      handleAddNewAddressBtnClick,
+      billingDetails,
       handleSetCurrentAddress,
-      changeShippingDetails,
-      loading,
-
-      isShippingDetailsStepCompleted
+      currentAddressId,
+      countries,
+      sameAsShipping,
+      isAuthenticated,
+      getCountries,
+      getCountryStates,
+      handleCheckSameAddress,
+      handleFormSubmit
     };
-
-  },
-
-  async asyncData() {
-
-    return {
-      countries
-    };
-
   }
-
 };
 </script>
-
 <style lang="scss" scoped>
-  .form {
-    --button-width: 100%;
+  .title {
+    margin: var(--spacer-xl) 0 var(--spacer-base) 0;
+  }
 
+  .form {
     &__select {
       display: flex;
       align-items: center;
@@ -433,7 +396,6 @@ export default {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      --button-width: auto;
     }
 
     &__element {
@@ -455,6 +417,11 @@ export default {
       }
     }
 
+    &__group {
+      display: flex;
+      align-items: center;
+    }
+
     &__action {
       @include for-desktop {
         flex: 0 0 100%;
@@ -462,10 +429,18 @@ export default {
       }
     }
 
+    &__action-button, &__back-button {
+      --button-width: 100%;
+      @include for-desktop {
+        --button-width: auto;
+      }
+    }
+
     &__action-button {
       &--secondary {
         @include for-desktop {
           order: -1;
+          --button-margin: 0;
           text-align: left;
         }
       }
@@ -484,28 +459,48 @@ export default {
       margin: var(--spacer-xl) 0 var(--spacer-sm);
 
       &:hover {
-        color: var(--c-white);
+        color: white;
       }
 
       @include for-desktop {
         margin: 0 var(--spacer-xl) 0 0;
       }
     }
+
+    &__back-button {
+      margin: 0 0 var(--spacer-sm) 0;
+      @include for-desktop {
+        margin: 0 var(--spacer-xl) 0 0;
+      }
+    }
   }
 
-  .shipping {
-    &__label {
+  .payment-methods {
+    @include for-desktop {
       display: flex;
-      justify-content: space-between;
-    }
-
-    &__description {
-      --radio-description-margin: 0;
-      --radio-description-font-size: var(--font-xs);
+      padding: var(--spacer-lg) 0;
+      border: 1px solid var(--c-light);
+      border-width: 1px 0;
     }
   }
 
-  .title {
-    margin: var(--spacer-xl) 0 var(--spacer-base) 0;
+  .payment-method {
+    --radio-container-align-items: center;
+    --ratio-content-margin: 0 0 0 var(--spacer-base);
+    --radio-label-font-size: var(--font-base);
+    --radio-background: transparent;
+    white-space: nowrap;
+    border: 1px solid var(--c-light);
+    border-width: 1px 0 0 0;
+
+    &:last-child {
+      border-width: 1px 0;
+    }
+
+    --radio-background: transparent;
+    @include for-desktop {
+      border: 0;
+      --radio-border-radius: 4px;
+    }
   }
 </style>

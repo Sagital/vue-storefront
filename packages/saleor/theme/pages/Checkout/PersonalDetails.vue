@@ -1,92 +1,78 @@
 <template>
   <div>
     <div class="log-in desktop-only">
-      <SfButton class="log-in__button color-secondary" @click="toggleLoginModal">
-        {{ $t('Log into your account') }}
-      </SfButton>
+      <SfButton data-cy="personal-details-btn_login" class="log-in__button color-secondary"
+        >{{ $t('Log into your account') }}</SfButton
+      >
       <p class="log-in__info">{{ $t('or fill the details below') }}:</p>
     </div>
     <SfHeading :level="3" title="Personal details" class="sf-heading--left sf-heading--no-underline title" />
-    <ValidationObserver v-slot="{ handleSubmit }">
-      <form class="form" @submit.prevent="handleSubmit(handleFormSubmit)">
-        <ValidationProvider name="firstName" rules="required|min:2" v-slot="{ errors }" slim>
-          <SfInput
-            :value="personalDetails.firstName"
-            @input="firstName => setPersonalDetails({ firstName })"
-            label="First name"
-            name="firstName"
-            class="form__element form__element--half"
-            required
-            :valid="!errors[0]"
-            :errorMessage="errors[0]"
-          />
-        </ValidationProvider>
-        <ValidationProvider name="lastName" rules="required|min:2" v-slot="{ errors }" slim>
-          <SfInput
-            :value="personalDetails.lastName"
-            @input="lastName =>  setPersonalDetails({ lastName })"
-            label="Last name"
-            name="lastName"
-            class="form__element form__element--half form__element--half-even"
-            required
-            :valid="!errors[0]"
-            :errorMessage="errors[0]"
-          />
-        </ValidationProvider>
-        <ValidationProvider name="email" rules="required|email" v-slot="{ errors }" slim>
-          <SfInput
-            :value="personalDetails.email"
-            @input="email => setPersonalDetails({ email })"
-            label="Your email"
-            name="email"
-            class="form__element"
-            required
-            :valid="!errors[0]"
-            :errorMessage="errors[0]"
-          />
-        </ValidationProvider>
-        <div class="info">
-          <p class="info__heading">
-            {{ $t('Enjoy your free account') }}
-          </p>
-          <SfCharacteristic
-            v-for="(characteristic, key) in characteristics"
-            :key="key"
-            :description="characteristic.description"
-            :icon="characteristic.icon"
-            size-icon="1rem"
-            class="info__characteristic"
-          />
-        </div>
-        <div class="form__element form__group">
-          <SfCheckbox
-            v-model="createAccount"
-            name="createAccount"
-            label="I want to create an account"
-          />
-        </div>
-        <transition name="fade">
-          <ValidationProvider v-if="createAccount" name="email" rules="required" v-slot="{ errors }" slim>
-            <SfInput
-              :value="personalDetails.password"
-              @input="password => setPersonalDetails({ password })"
-              type="password"
-              label="Create Password"
-              class="form__element"
-              required
-              :valid="!errors[0]"
-              :errorMessage="errors[0]"
-            />
-          </ValidationProvider>
-        </transition>
-        <div class="form__action">
-          <nuxt-link to="/" class="sf-button color-secondary form__back-button">{{ $t('Go back') }}</nuxt-link>
-          <SfButton class="form__action-button" type="submit" :disabled="loading.personalDetails">
-            {{ $t('Continue to shipping') }}
-          </SfButton>
-        </div>
-      </form>
-    </ValidationObserver>
+    <div class="form">
+      <SfInput
+        data-cy="personal-details-input_firstName"
+        v-model="personalDetails.firstName"
+        label="First name"
+        name="firstName"
+        class="form__element form__element--half"
+        required
+      />
+      <SfInput
+        data-cy="personal-details-input_lastName"
+        v-model="personalDetails.lastName"
+        label="Last name"
+        name="lastName"
+        class="form__element form__element--half form__element--half-even"
+        required
+      />
+      <SfInput
+        data-cy="personal-details-input_email"
+        v-model="personalDetails.email"
+        label="Your email"
+        name="email"
+        class="form__element"
+        required
+      />
+      <div class="info">
+        <p class="info__heading">
+          {{ $t('Enjoy your free account') }}
+        </p>
+        <SfCharacteristic
+          v-for="(characteristic, key) in characteristics"
+          :key="key"
+          :description="characteristic.description"
+          :icon="characteristic.icon"
+          size-icon="24px"
+          class="info__characteristic"
+        />
+      </div>
+      <div class="form__element form__group">
+        <SfCheckbox
+          v-model="createAccount"
+          name="createAccount"
+          label="I want to create an account"
+        />
+      </div>
+      <transition name="fade">
+        <SfInput
+          data-cy="personal-details-input_password"
+          v-if="createAccount"
+          v-model="personalDetails.password"
+          type="password"
+          label="Create Password"
+          class="form__element"
+          required
+        />
+      </transition>
+      <div class="form__action">
+        <!-- TODO: add nuxt link for returning to home page -->
+        <SfButton data-cy="personal-details-btn_go-back" class="color-secondary form__back-button">
+          {{ $t('Go back') }}
+        </SfButton>
+        <SfButton data-cy="personal-details-btn_continue" class="form__action-button" @click="handleClickNext">
+          {{ $t('Continue to shipping') }}
+        </SfButton>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -99,25 +85,9 @@ import {
   SfModal,
   SfCharacteristic
 } from '@storefront-ui/vue';
-import { ref, watch } from '@vue/composition-api';
-import { ValidationProvider, ValidationObserver, extend } from 'vee-validate';
-import { required, min, email } from 'vee-validate/dist/rules';
-import { useUiState } from '~/composables';
-import { useCheckout, useUser } from '@vue-storefront/commercetools';
-import { onSSR } from '@vue-storefront/core';
+import { ref } from '@vue/composition-api';
+import { usePersonalDetails } from '@vue-storefront/saleor';
 
-extend('required', {
-  ...required,
-  message: 'This field is required'
-});
-extend('min', {
-  ...min,
-  message: 'The field should have at least {length} characters'
-});
-extend('email', {
-  ...email,
-  message: 'Invalid email'
-});
 export default {
   name: 'PersonalDetails',
   components: {
@@ -126,41 +96,25 @@ export default {
     SfButton,
     SfHeading,
     SfModal,
-    SfCharacteristic,
-    ValidationObserver,
-    ValidationProvider
+    SfCharacteristic
   },
   setup(props, context) {
-    const { toggleLoginModal } = useUiState();
-    const { register, isAuthenticated } = useUser();
-    const { loadDetails, personalDetails, setPersonalDetails, loading } = useCheckout();
+
+    const { personalDetails, saveCheckoutEmail } = usePersonalDetails();
     const accountBenefits = ref(false);
     const createAccount = ref(false);
-    onSSR(async () => {
-      await loadDetails();
-    });
-    const handleFormSubmit = async () => {
-      if (createAccount.value) {
-        await register({ user: personalDetails.value });
-        context.root.$router.push('/checkout/shipping');
-        return;
-      }
-      await setPersonalDetails(personalDetails.value, { save: true });
-      context.root.$router.push('/checkout/shipping');
+
+    const handleClickNext = async () => {
+      await saveCheckoutEmail(personalDetails.value.email);
+      context.emit('nextStep');
     };
-    watch(isAuthenticated, () => {
-      if (isAuthenticated.value) {
-        context.root.$router.push('/checkout/shipping');
-      }
-    });
+
     return {
-      loading,
       personalDetails,
+      saveCheckoutEmail,
       accountBenefits,
       createAccount,
-      setPersonalDetails,
-      handleFormSubmit,
-      toggleLoginModal,
+      handleClickNext,
       characteristics: [
         { description: 'Faster checkout',
           icon: 'clock' },
@@ -174,6 +128,7 @@ export default {
     };
   }
 };
+
 </script>
 
 <style lang="scss" scoped>
@@ -265,9 +220,6 @@ export default {
   &__back-button {
     @include for-desktop {
       margin: 0 var(--spacer-xl) 0 0;
-      &:hover {
-        color: var(--c-white);
-      }
     }
   }
   &__button {

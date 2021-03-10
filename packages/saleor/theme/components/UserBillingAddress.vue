@@ -27,7 +27,7 @@ export default {
   },
 
   setup(props) {
-    const { $ct: { config } } = useVSFContext();
+    const { $saleor: { config } } = useVSFContext();
     const address = toRef(props, 'address');
 
     const street = computed(() => {

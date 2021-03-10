@@ -1,14 +1,10 @@
 module.exports = {
   integrations: {
-    ct: {
-      location: '@vue-storefront/commercetools-api/server',
+    saleor: {
+      location: '@vue-storefront/saleor-api/server',
       configuration: {
         api: {
-          uri: 'https://api.commercetools.com/vsf-ct-dev/graphql',
-          authHost: 'https://auth.sphere.io',
-          projectKey: 'vsf-ct-dev',
-          clientId: 'RT4iJGDbDzZe4b2E6RyeNe9s',
-          clientSecret: '5eBt3yfZJWw1j7V6kXjfKXpuFP-YQXpg',
+          uri: 'http://localhost:8000/graphql/',
           scopes: [
             'manage_products:vsf-ct-dev',
             'create_anonymous_token:vsf-ct-dev',
