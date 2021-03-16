@@ -38,7 +38,7 @@
     "test:ayc:composables": "cd packages/about-you/composables && yarn test",
     "test:ct:api-client": "cd packages/commercetools/api-client && yarn test",
     "test:ct:composables": "cd packages/commercetools/composables && yarn test",
-    "build:saleor:tools": "yarn build:core && yarn build:saleor:api-client && yarn build:saleor:composables",
+    "build:saleor:tools": "yarn build:core && yarn build:middleware && yarn build:saleor:api-client && yarn build:saleor:composables",
     "build:saleor:api-client": "cd packages/saleor/api-client && yarn build",
     "build:saleor:composables": "cd packages/saleor/composables && yarn build",
     "build:saleor:theme": "cd packages/saleor/theme && yarn build",
