@@ -24,7 +24,7 @@ jobs:
         with:
           name: registry.sagital.ro/vue-storefront:${{ github.sha }}
           registry: registry.sagital.ro
-          username: ${{ secrets.AGITAL_REGISTRY_PASSWORD }}
-          password: ${{ secrets.SAGITAL_REGISTRY_USERNAME }}
+          username: ${{ secrets.SAGITAL_REGISTRY_USERNAME }}
+          password: ${{ secrets.SAGITAL_REGISTRY_PASSWORD }}
           dockerfile: dev/docker/Dockerfile
           buildoptions: "--compress"
