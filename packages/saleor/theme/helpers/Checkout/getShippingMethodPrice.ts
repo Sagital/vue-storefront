@@ -1,3 +1,3 @@
-import { ShippingMethod } from '@vue-storefront/commercetools-api';
+import { ShippingMethod } from '@vue-storefront/saleor-api';
 
-export default (shippingMethod: ShippingMethod) => shippingMethod.zoneRates[0].shippingRates[0].price.centAmount / 100;
+export default (shippingMethod: ShippingMethod) => shippingMethod.price.amount;

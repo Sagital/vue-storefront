@@ -224,7 +224,7 @@ import {
   SfRadio,
   SfCheckbox
 } from '@storefront-ui/vue';
-import { useUserShipping, userShippingGetters, useUser, useShipping } from '@vue-storefront/commercetools';
+import { useUserShipping, userShippingGetters, useUser, useShipping } from '@vue-storefront/saleor';
 import { ValidationProvider, ValidationObserver, extend } from 'vee-validate';
 import { required, min, digits } from 'vee-validate/dist/rules';
 import { useVSFContext } from '@vue-storefront/core';
