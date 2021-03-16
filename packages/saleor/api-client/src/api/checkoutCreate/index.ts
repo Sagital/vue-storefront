@@ -27,7 +27,7 @@ const checkoutCreate = async (
     fetchPolicy: 'no-cache'
   });
 
-  if (response.data.checkoutCreate.checkout.email === 'dummy@example.com') {
+  if (response.data.checkoutCreate.checkout?.email === 'dummy@example.com') {
     // we don't report the dummy email to the client
     response.data.checkoutCreate.checkout.email = null;
   }

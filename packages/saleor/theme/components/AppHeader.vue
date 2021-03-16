@@ -13,9 +13,10 @@
       </nuxt-link>
     </template>
     <template #navigation>
-      <SfHeaderNavigationItem class="nav-item" data-cy="app-header-url_accessories" label="ACCESSORIES" :link="localePath('/c/accessories')" />
-      <SfHeaderNavigationItem class="nav-item" data-cy="app-header-url_groceries" label="GROCERIES" :link="localePath('/c/groceries')" />
-      <SfHeaderNavigationItem class="nav-item" data-cy="app-header-url_apparel" label="APPAREL" :link="localePath('/c/apparel')" />
+      <SfHeaderNavigationItem class="nav-item" data-cy="app-header-url_accessories" label="Conectica Audio" :link="localePath('/c/conectica-audio')" />
+      <SfHeaderNavigationItem class="nav-item" data-cy="app-header-url_apparel" label="Cabluri Audio" :link="localePath('/c/cabluri-audio')" />
+      <SfHeaderNavigationItem class="nav-item" data-cy="app-header-url_groceries" label="Cabluri Video" :link="localePath('/c/cabluri-video-multimedia')" />
+
     </template>
     <template #aside>
       <LocaleSelector class="smartphone-only" />

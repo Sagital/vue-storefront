@@ -1,346 +1,370 @@
 <template>
-  <div>
+  <ValidationObserver v-slot="{ handleSubmit }">
     <SfHeading
-      :level="3"
-      title="Order details"
-      class="sf-heading--left sf-heading--no-underline title"
+            :level="3"
+            :title="$t('Billing')"
+            class="sf-heading--left sf-heading--no-underline title"
     />
-    <SfAccordion first-open class="accordion smartphone-only">
-      <SfAccordionItem header="Personal Details">
-        <div class="accordion__item">
-          <div class="accordion__content">
-            <p class="content">
-              {{ personalDetails.firstName }} {{ personalDetails.lastName }}<br />
-            </p>
-            <p class="content">
-              {{ personalDetails.email }}
-            </p>
-          </div>
-          <SfButton data-cy="order-review-btn_personal-edit" class="sf-button--text color-secondary accordion__edit" @click="$emit('click:edit', 0)">{{ $t('Edit') }}</SfButton>
-        </div>
-      </SfAccordionItem>
-      <SfAccordionItem header="Shipping address">
-        <div class="accordion__item">
-          <div class="accordion__content">
-            <p class="content">
-              <span class="content__label">{{ checkoutGetters.getShippingMethodName(chosenShippingMethod) }}</span><br />
-              {{ shippingDetails.streetName }} {{ shippingDetails.apartment }},
-              {{ shippingDetails.zipCode }}<br />
-              {{ shippingDetails.city }}, {{ shippingDetails.country }}
-            </p>
-            <p class="content">{{ shippingDetails.phoneNumber }}</p>
-          </div>
-          <SfButton data-cy="order-review-btn_shippin-edit" class="sf-button--text color-secondary accordion__edit" @click="$emit('click:edit', 1)">{{ $t('Edit') }}</SfButton
+    <form @submit.prevent="handleSubmit(handleFormSubmit)">
+      <div class="form">
+        <ValidationProvider
+                name="firstName"
+                rules="required|min:2"
+                v-slot="{ errors }"
+                slim
+        >
+          <SfInput
+                  v-model="form.firstName"
+                  label="First name"
+                  name="firstName"
+                  class="form__element form__element--half"
+                  required
+                  :valid="!errors[0]"
+                  :errorMessage="errors[0]"
+          />
+        </ValidationProvider>
+        <ValidationProvider
+                name="lastName"
+                rules="required|min:2"
+                v-slot="{ errors }"
+                slim
+        >
+          <SfInput
+                  v-model="form.lastName"
+                  label="Last name"
+                  name="lastName"
+                  class="form__element form__element--half form__element--half-even"
+                  required
+                  :valid="!errors[0]"
+                  :errorMessage="errors[0]"
+          />
+        </ValidationProvider>
+        <ValidationProvider
+                name="streetName"
+                rules="required|min:2"
+                v-slot="{ errors }"
+                slim
+        >
+          <SfInput
+                  v-model="form.streetName"
+                  label="Street name"
+                  name="streetName"
+                  class="form__element form__element--half"
+                  required
+                  :valid="!errors[0]"
+                  :errorMessage="errors[0]"
+          />
+        </ValidationProvider>
+        <ValidationProvider
+                name="apartment"
+                rules="required|min:2"
+                v-slot="{ errors }"
+                slim
+        >
+          <SfInput
+                  v-model="form.apartment"
+                  label="House/Apartment number"
+                  name="apartment"
+                  class="form__element form__element--half form__element--half-even"
+                  required
+                  :valid="!errors[0]"
+                  :errorMessage="errors[0]"
+          />
+        </ValidationProvider>
+        <ValidationProvider
+                name="city"
+                rules="required|min:2"
+                v-slot="{ errors }"
+                slim
+        >
+          <SfInput
+                  v-model="form.city"
+                  label="City"
+                  name="city"
+                  class="form__element form__element--half"
+                  required
+                  :valid="!errors[0]"
+                  :errorMessage="errors[0]"
+          />
+        </ValidationProvider>
+        <ValidationProvider
+                name="state"
+                slim
+        >
+          <SfInput
+                  v-model="form.state"
+                  label="State/Province"
+                  name="state"
+                  class="form__element form__element--half form__element--half-even"
+          />
+        </ValidationProvider>
+        <ValidationProvider
+                name="country"
+                rules="required|min:2"
+                v-slot="{ errors }"
+                slim
+        >
+          <SfSelect
+                  v-model="form.country"
+                  label="Country"
+                  name="country"
+                  class="form__element form__element--half form__select sf-select--underlined"
+                  required
+                  :valid="!errors[0]"
+                  :errorMessage="errors[0]"
           >
-        </div>
-      </SfAccordionItem>
-      <SfAccordionItem header="Billing address">
-        <div class="accordion__item">
-          <div class="accordion__content">
-            <p v-if="billingSameAsShipping" class="content">
-              {{ $t('Same as shipping address') }}
-            </p>
-            <template v-else>
-              <p class="content">
-                <span class="content__label">{{ chosenPaymentMethod.label }}</span><br />
-                {{ billingDetails.streetName }} {{ billingDetails.apartment }},
-                {{ billingDetails.zipCode }}<br />
-                {{ billingDetails.city }}, {{ billingDetails.country }}
-              </p>
-              <p class="content">{{ billingDetails.phoneNumber }}</p>
-            </template>
-          </div>
-          <SfButton data-cy="order-review-btn_billing-edit" class="sf-button--text color-secondary accordion__edit" @click="$emit('click:edit', 2)">{{ $t('Edit') }}</SfButton>
-        </div>
-      </SfAccordionItem>
-      <SfAccordionItem header="Payment method">
-        <div class="accordion__item">
-          <div class="accordion__content">
-            <p class="content">{{ chosenPaymentMethod.label }}</p>
-          </div>
-          <SfButton data-cy="order-review-btn_payment-edit2" class="sf-button--text color-secondary accordion__edit" @click="$emit('click:edit', 2)">Edit</SfButton>
-        </div>
-      </SfAccordionItem>
-    </SfAccordion>
-    <SfTable class="sf-table--bordered table desktop-only">
-      <SfTableHeading class="table__row">
-        <SfTableHeader class="table__header">{{ $t('Item') }}</SfTableHeader>
-        <SfTableHeader
-          v-for="tableHeader in tableHeaders"
-          :key="tableHeader"
-          class="table__header"
-          :class="{ table__description: tableHeader === 'Description' }"
+            <SfSelectOption
+                    v-for="countryOption in countries"
+                    :key="countryOption.key"
+                    :value="countryOption.key"
+            >
+              {{ countryOption.label }}
+            </SfSelectOption>
+          </SfSelect>
+        </ValidationProvider>
+        <ValidationProvider
+                name="zipCode"
+                rules="required|min:2"
+                v-slot="{ errors }"
+                slim
         >
-          {{ tableHeader }}
-        </SfTableHeader>
-      </SfTableHeading>
-      <SfTableRow
-        v-for="(product, index) in products"
-        :key="index"
-        class="table__row"
-      >
-        <SfTableData class="table__image">
-          <SfImage :src="cartGetters.getItemImage(product)" :alt="cartGetters.getItemName(product)" />
-        </SfTableData>
-        <SfTableData class="table__data table__description table__data">
-          <div class="product-title">{{ cartGetters.getItemName(product) }}</div>
-          <div class="product-sku">{{ cartGetters.getItemSku(product) }}</div>
-        </SfTableData>
-        <SfTableData
-          class="table__data" v-for="(value, key) in cartGetters.getItemAttributes(product, ['size', 'color'])"
-          :key="key"
+          <SfInput
+                  v-model="form.postalCode"
+                  label="Zip-code"
+                  name="zipCode"
+                  class="form__element form__element--half form__element--half-even"
+                  required
+                  :valid="!errors[0]"
+                  :errorMessage="errors[0]"
+          />
+        </ValidationProvider>
+        <ValidationProvider
+                name="phone"
+                rules="required|digits:9"
+                v-slot="{ errors }"
+                slim
         >
-          {{ value }}
-        </SfTableData>
-        <SfTableData class="table__data">{{ cartGetters.getItemQty(product) }}</SfTableData>
-        <SfTableData class="table__data price">
-          <SfPrice
-            :regular="$n(cartGetters.getItemPrice(product).regular, 'currency')"
-            :special="cartGetters.getItemPrice(product).special && $n(cartGetters.getItemPrice(product).special, 'currency')"
-            class="product-price"
+          <SfInput
+                  v-model="form.phone"
+                  label="Phone number"
+                  name="phone"
+                  class="form__element form__element--half"
+                  required
+                  :valid="!errors[0]"
+                  :errorMessage="errors[0]"
           />
-        </SfTableData>
-      </SfTableRow>
-    </SfTable>
-    <div class="summary">
-      <div class="summary__group">
-        <div class="summary__total">
-          <SfProperty
-            name="Subtotal"
-            :value="$n(totals.subtotal, 'currency')"
-            class="sf-property--full-width property"
-          />
-          <SfProperty
-            name="Shipping"
-            :value="$n(checkoutGetters.getShippingMethodPrice(chosenShippingMethod), 'currency')"
-            class="sf-property--full-width property"
-          />
-        </div>
-        <SfDivider />
-        <SfProperty
-          name="Total price"
-          :value="$n(totals.total, 'currency')"
-          class="sf-property--full-width sf-property--large summary__property-total"
-        />
-        <SfCheckbox v-model="terms" name="terms" class="summary__terms">
-          <template #label>
-            <div class="sf-checkbox__label">
-              {{ $t('I agree to') }} <SfLink href="#">{{ $t('Terms and conditions') }}</SfLink>
-            </div>
-          </template>
-        </SfCheckbox>
-          <div class="summary__action">
-          <!-- TODO: add nuxt link for navigating back and forward -->
-          <SfButton data-cy="order-review-btn_summary-back" class="color-secondary summary__back-button">
+        </ValidationProvider>
+      </div>
+      <div class="form">
+        <div class="form__action">
+          <SfButton
+                  class="sf-button color-secondary form__back-button"
+                  type="button"
+                  @click="$router.push('/checkout/shipping')"
+          >
             {{ $t('Go back') }}
           </SfButton>
-          <SfButton data-cy="order-review-btn_summary-conitnue" class="summary__action-button" @click="processOrder">
-            {{ $t('Continue to shipping') }}
+          <SfButton
+                  class="form__action-button"
+                  type="submit"
+          >
+            {{ $t('Continue to payment') }}
           </SfButton>
         </div>
       </div>
-    </div>
-
-  </div>
+    </form>
+  </ValidationObserver>
 </template>
 
 <script>
 import {
   SfHeading,
-  SfTable,
-  SfCheckbox,
+  SfInput,
   SfButton,
-  SfDivider,
-  SfImage,
-  SfIcon,
-  SfPrice,
-  SfProperty,
-  SfAccordion,
-  SfLink
+  SfSelect,
+  SfRadio,
+  SfCheckbox
 } from '@storefront-ui/vue';
-import { ref, computed } from '@vue/composition-api';
+import { ref } from '@vue/composition-api';
 import { onSSR } from '@vue-storefront/core';
-import { useCheckout, useMakeOrder, useCart, cartGetters, checkoutGetters } from '<%= options.generate.replace.composables %>';
+import { useBilling } from '<%= options.generate.replace.composables %>';
+import { required, min, digits } from 'vee-validate/dist/rules';
+import { ValidationProvider, ValidationObserver, extend } from 'vee-validate';
+
+const COUNTRIES = [
+  { key: 'US', label: 'United States' },
+  { key: 'UK', label: 'United Kingdom' },
+  { key: 'IT', label: 'Italy' },
+  { key: 'PL', label: 'Poland' }
+];
+
+extend('required', {
+  ...required,
+  message: 'This field is required'
+});
+extend('min', {
+  ...min,
+  message: 'The field should have at least {length} characters'
+});
+extend('digits', {
+  ...digits,
+  message: 'Please provide a valid phone number'
+});
 
 export default {
-  name: 'ReviewOrder',
+  name: 'Billing',
   components: {
     SfHeading,
-    SfTable,
-    SfCheckbox,
+    SfInput,
     SfButton,
-    SfDivider,
-    SfImage,
-    SfIcon,
-    SfPrice,
-    SfProperty,
-    SfAccordion,
-    SfLink
+    SfSelect,
+    SfRadio,
+    SfCheckbox,
+    ValidationProvider,
+    ValidationObserver
   },
   setup(props, context) {
-    context.emit('changeStep', 3);
-    const billingSameAsShipping = ref(false);
-    const terms = ref(false);
-    const { cart, removeItem, load: loadCart } = useCart();
-    const products = computed(() => cartGetters.getItems(cart.value));
-    const totals = computed(() => cartGetters.getTotals(cart.value));
-    const {
-      personalDetails,
-      shippingDetails,
-      billingDetails,
-      chosenShippingMethod,
-      chosenPaymentMethod
-    } = useCheckout();
-    const { make } = useMakeOrder();
+    const { load, save } = useBilling();
 
-    onSSR(async () => {
-      await loadCart();
+    const form = ref({
+      firstName: '',
+      lastName: '',
+      streetName: '',
+      apartment: '',
+      city: '',
+      state: '',
+      country: '',
+      postalCode: '',
+      phone: null
     });
 
-    const processOrder = async () => {
-      await make();
-      context.emit('nextStep');
+    const handleFormSubmit = async () => {
+      await save({ billingDetails: form.value });
+      context.root.$router.push('/checkout/payment');
     };
 
+    onSSR(async () => {
+      await load();
+    });
+
     return {
-      products,
-      personalDetails,
-      shippingDetails,
-      billingDetails,
-      chosenShippingMethod,
-      chosenPaymentMethod,
-      billingSameAsShipping,
-      terms,
-      totals,
-      removeItem,
-      processOrder,
-      tableHeaders: ['Description', 'Colour', 'Size', 'Quantity', 'Amount'],
-      cartGetters,
-      checkoutGetters
+      form,
+      countries: COUNTRIES,
+      handleFormSubmit
     };
   }
 };
-
 </script>
-
 <style lang="scss" scoped>
-.title {
-  margin: var(--spacer-xl) 0 var(--spacer-base) 0;
-}
-.table {
-  margin: 0 0 var(--spacer-base) 0;
-  &__row {
-    justify-content: space-between;
+  .title {
+    margin: var(--spacer-xl) 0 var(--spacer-base) 0;
   }
-  @include for-desktop {
-    &__header {
-      text-align: center;
-      &:first-child {
-        margin-right: var(--spacer-xl);
-      }
-      &:last-child {
-        text-align: right;
+  .form {
+    &__select {
+      display: flex;
+      align-items: center;
+      --select-option-font-size: var(--font-size--lg);
+      ::v-deep .sf-select__dropdown {
+        font-size: var(--font-size--lg);
+        margin: 0;
+        color: var(--c-text);
+        font-family: var(--font-family--secondary);
+        font-weight: var(--font-weight--normal);
       }
     }
-    &__data {
-      text-align: center;
-    }
-    &__description {
-      text-align: left;
-      flex: 0 0 12rem;
-    }
-    &__image {
-      --image-width: 5.125rem;
-      text-align: left;
-      margin-right: var(--spacer-xs);
-    }
-  }
-}
-
-.product-sku {
-  color: var(--c-text-muted);
-  font-size: var(--font-size--sm);
-}
-.product-price {
-  --price-font-size: var(--font-size--base);
-}
-.summary {
-  &__group {
-    @include for-desktop {
-      margin: 0 0 var(--spacer-2xl) 0;
-    }
-  }
-  &__terms {
-    margin: var(--spacer-base) 0 0 0;
-  }
-  &__total {
-    margin: 0 0 var(--spacer-sm) 0;
-    flex: 0 0 16.875rem;
-  }
-  &__action {
     @include for-desktop {
       display: flex;
-      margin: var(--spacer-xl) 0 0 0;
+      flex-wrap: wrap;
+      align-items: center;
     }
-  }
-  &__action-button {
-    margin: 0;
-    width: 100%;
-    margin: var(--spacer-sm) 0 0 0;
-    @include for-desktop {
-      margin: 0 var(--spacer-xl) 0 0;
-      width: auto;
-    }
-    &--secondary {
+    &__element {
+      margin: 0 0 var(--spacer-xl) 0;
       @include for-desktop {
-        text-align: right;
+        flex: 0 0 100%;
+      }
+      &--half {
+        @include for-desktop {
+          flex: 1 1 50%;
+        }
+        &-even {
+          @include for-desktop {
+            padding: 0 0 0 var(--spacer-xl);
+          }
+        }
+      }
+    }
+    &__group {
+      display: flex;
+      align-items: center;
+    }
+    &__action {
+      @include for-desktop {
+        flex: 0 0 100%;
+        display: flex;
+      }
+    }
+    &__action-button, &__back-button {
+      --button-width: 100%;
+      @include for-desktop {
+        --button-width: auto;
+      }
+    }
+    &__action-button {
+      &--secondary {
+        @include for-desktop {
+          order: -1;
+          --button-margin: 0;
+          text-align: left;
+        }
+      }
+      &--add-address {
+        width: 100%;
+        margin: 0;
+        @include for-desktop {
+          margin: 0 0 var(--spacer-lg) 0;
+          width: auto;
+        }
+      }
+    }
+    &__back-button {
+      margin: var(--spacer-xl) 0 var(--spacer-sm);
+      &:hover {
+        color:  white;
+      }
+      @include for-desktop {
+        margin: 0 var(--spacer-xl) 0 0;
+      }
+    }
+    &__back-button {
+      margin: 0 0 var(--spacer-sm) 0;
+      @include for-desktop {
+        margin: 0 var(--spacer-xl) 0 0;
       }
     }
   }
-  &__back-button {
-    margin: var(--spacer-xl) 0 0 0;
-    width: 100%;
+  .payment-methods {
     @include for-desktop {
-      margin: 0 var(--spacer-xl) 0 0;
-      width: auto;
-    }
-    color:  var(--c-white);
-    &:hover {
-      color:  var(--c-white);
+      display: flex;
+      padding: var(--spacer-lg) 0;
+      border: 1px solid var(--c-light);
+      border-width: 1px 0;
     }
   }
-  &__property-total {
-    margin: var(--spacer-xl) 0 0 0;
+  .payment-method {
+    --radio-container-align-items: center;
+    --ratio-content-margin: 0 0 0 var(--spacer-base);
+    --radio-label-font-size: var(--font-base);
+    --radio-background: transparent;
+    white-space: nowrap;
+    border: 1px solid var(--c-light);
+    border-width: 1px 0 0 0;
+    &:last-child {
+      border-width: 1px 0;
+    }
+    --radio-background: transparent;
+    @include for-desktop {
+      border: 0;
+      --radio-border-radius: 4px;
+    }
   }
-}
-.property {
-  margin: 0 0 var(--spacer-sm) 0;
-  &__name {
-    color: var(--c-text-muted);
-  }
-}
-.accordion {
-  margin: 0 0 var(--spacer-xl) 0;
-  &__item {
-    display: flex;
-    align-items: flex-start;
-  }
-  &__content {
-    flex: 1;
-  }
-  &__edit {
-    flex: unset;
-  }
-}
-.content {
-  margin: 0 0 var(--spacer-xl) 0;
-  color: var(--c-text);
-  &:last-child {
-    margin: 0;
-  }
-  &__label {
-    font-weight: var(--font-weight--normal);
-  }
-}
-
 </style>

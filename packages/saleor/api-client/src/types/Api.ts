@@ -22,8 +22,10 @@ import {
   CheckoutEmailUpdate,
   CheckoutPaymentCreate,
   CheckoutShippingAddressUpdate,
-  CheckoutShippingMethodUpdate
+  CheckoutShippingMethodUpdate,
+  Product
 } from './GraphQL';
+import { ProductsSearchParams } from '@vue-storefront/core';
 
 export interface ApiInstance {
   accountRegister(email: string, password: string): Promise<AccountRegister>;
@@ -71,7 +73,13 @@ export interface ApiInstance {
 
   getPaymentGateways(checkoutToken: string): Promise<PaymentGateway[]>;
 
-  getProduct(params): Promise<ProductCountableConnection>;
+  getProduct(params): Promise<Product>;
+
+  queryProducts(
+    params: ProductsSearchParams
+  ): Promise<ProductCountableConnection>;
+
+  queryProductVariants(productId: string): Promise<Product>;
 
   getShippingMethods(checkoutToken: string): Promise<ShippingMethod[]>;
 
@@ -86,21 +94,23 @@ export interface ApiInstance {
 
 export interface BaseSearch {
   limit?: number;
+  first?: number;
+  endCursor?: string;
   offset?: number;
   sort?: string[];
-}
-
-export interface ProductWhereSearch extends BaseSearch {
-  catId?: string | string[];
-  skus?: string[];
-  slug?: string;
-  id?: string;
-  filters?: Filter[];
 }
 
 export interface Filter {
   name: string;
   value: any;
+}
+
+export interface ProductWhereSearch extends BaseSearch {
+  catId?: string;
+  skus?: string[];
+  slug?: string;
+  id?: string;
+  filters?: Filter[];
 }
 
 export interface FilterOption {

@@ -1,4 +1,9 @@
-import { Category, Filter, ProductVariant } from '@vue-storefront/saleor-api';
+import {
+  Category,
+  Filter,
+  PageInfo,
+  ProductCountableConnection
+} from '@vue-storefront/saleor-api';
 import { FacetSearchResult } from '@vue-storefront/core';
 
 export type OrderSearchParams = {
@@ -10,8 +15,10 @@ export type OrderSearchParams = {
 export interface ProductsSearchParams {
   perPage?: number;
   page?: number;
+  first?: number;
   sort?: any;
   term?: any;
+  endCursor?: string;
   filters?: Record<string, Filter>;
   catId?: string | string[];
   skus?: string[];
@@ -20,8 +27,9 @@ export interface ProductsSearchParams {
 }
 
 export interface FacetResultsData {
-  products: ProductVariant[];
+  products: ProductCountableConnection;
   categories: Category[];
+  pageInfo: PageInfo;
   facets: Record<string, Filter>;
   total: number;
   perPageOptions: number[];

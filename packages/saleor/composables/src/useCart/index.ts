@@ -47,10 +47,10 @@ const params: UseCartFactoryParams<
       existingCheckoutId = currentCart.id;
     } else if (isGuest) {
       // new visit, take the checkout it from the local storage.
-      // TODO It shouldn't get here though, because the checkout is loaded along with the user
+      // if it reaches here it means that we have an invalid existingCheckoutId
       const guestCheckoutParams = await context.$saleor.config.getGuestCheckoutToken();
       if (guestCheckoutParams) {
-        throw new Error('he has a checkout token but no current tokent');
+        await context.$saleor.config.removeGuestCheckoutToken();
       }
     }
 
@@ -69,7 +69,7 @@ const params: UseCartFactoryParams<
         quantity
       );
 
-      if (isGuest) {
+      if (isGuest && checkoutCreate.checkout) {
         context.$saleor.config.setGuestCheckoutToken(
           checkoutCreate.checkout.token
         );

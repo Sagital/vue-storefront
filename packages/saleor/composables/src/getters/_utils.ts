@@ -72,13 +72,13 @@ export const getVariantByAttributes = (
 //   return null;
 // };
 
-export const createPrice = (product: ProductVariant): AgnosticPrice => {
-  if (!product) {
+export const createPrice = (variant: ProductVariant): AgnosticPrice => {
+  if (!variant || !variant.pricing) {
     return { regular: null, special: null };
   }
 
-  const regularPrice = (product as ProductVariant).pricing.price.net.amount;
-  const specialPrice = (product as ProductVariant).pricing.discount?.net.amount;
+  const regularPrice = variant.pricing.price.net.amount || 0;
+  const specialPrice = variant.pricing?.discount?.net?.amount || 0;
 
   return {
     regular: regularPrice,

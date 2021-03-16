@@ -25,6 +25,7 @@ export const handleAfterAuth = async ({ auth, apolloReq, response }) => {
   return null;
 };
 
-export const handleRetry = () => () => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const handleRetry = (_) => () => {
   return false;
 };

@@ -22,6 +22,28 @@ export default gql`
           quantity
           variant {
             ...DefaultProductVariantFragment
+            product {
+              id
+              id
+              name
+              thumbnail {
+                url
+                alt
+              }
+              attributes {
+                attribute {
+                  name
+                }
+                values {
+                  name
+                }
+              }
+              images {
+                id
+                url
+                alt
+              }
+            }
           }
         }
         shippingPrice {

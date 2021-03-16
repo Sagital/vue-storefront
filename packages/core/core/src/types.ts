@@ -12,6 +12,8 @@ export type ComposableFunctionArgs <T> = T & { customQuery?: CustomQuery }
 export interface ProductsSearchParams {
   perPage?: number;
   page?: number;
+  first: number;
+  endCursor?: string;
   sort?: any;
   term?: any;
   filters?: any;
@@ -495,7 +497,10 @@ export interface AgnosticSort {
 
 export interface AgnosticPagination {
   currentPage: number;
+  endCursor?: string;
+  startCursor?: string;
   totalPages: number;
+  hasNextPage?: boolean;
   totalItems: number;
   itemsPerPage: number;
   pageOptions: number[];
@@ -714,6 +719,6 @@ export interface ApiClientConfig {
 export type ApiClientMethods<T> = {
   [K in keyof T]:
     T[K] extends (...args: any) => any ?
-    (...args: [...Parameters<T[K]>, CustomQuery?]) => ReturnType<T[K]> :
+    (...args: any) => ReturnType<T[K]> :
     T[K]
 }

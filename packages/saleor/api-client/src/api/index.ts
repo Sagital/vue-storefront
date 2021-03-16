@@ -15,7 +15,7 @@ export { default as getCheckout } from './getCheckout';
 export { default as getMe } from './getMe';
 export { default as getOrders } from './getOrders';
 export { default as getPaymentGateways } from './getPaymentGateways';
-export { default as getProduct } from './getProduct';
+export { getProduct, queryProducts } from './getProduct';
 export { default as getShippingMethods } from './getShippingMethods';
 export { default as isGuest } from './isGuest';
 

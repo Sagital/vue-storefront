@@ -2,62 +2,142 @@
 
 describe('shopping path', () => {
   beforeEach(() => {
-    cy.visit('/p/38143c0c-c9b0-448c-93cd-60eb90d8da57/aspesi-shirt-h805-white').wait(2000);
-    cy.url().should('include', '/p/38143c0c-c9b0-448c-93cd-60eb90d8da57/aspesi-shirt-h805-white');
-    cy.get('[data-cy=product-cart_add]').click().wait(500);
-    cy.get('.sf-header__action').eq(2).click();
-    cy.get('[data-cy=cart-sidebar-btn_checkout]').click({ force: true });
-    cy.scrollTo('top');
+    // cy.visit(
+    //   '/p/38143c0c-c9b0-448c-93cd-60eb90d8da57/aspesi-shirt-h805-white'
+    // ).wait(2000);
+    // cy.url().should('include', '/p/38143c0c-c9b0-448c-93cd-60eb90d8da57/aspesi-shirt-h805-white');
+    // cy.get('[data-cy=product-cart_add]').click().wait(500);
+    // cy.get('.sf-header__action').eq(2).click();
+    // cy.get('[data-cy=cart-sidebar-btn_checkout]').click({ force: true });
+    // cy.scrollTo('top');
   });
   afterEach(() => {
-    cy.clearLocalStorage();
-    cy.clearCookies();
-    cy.reload(true);
+    // cy.clearLocalStorage();
+    // cy.clearCookies();
+    // cy.reload(true);
   });
-  it('Place an order as a guest', () => {
-    const firstName = cy.get('[data-cy=personal-details-input_firstName]');
-    const lastName = cy.get('[data-cy=personal-details-input_lastName]');
-    firstName.clear().type('John');
-    lastName.clear().type('Doe');
-    cy.get('[data-cy=personal-details-input_email]').clear().type('john@doe.com');
-    cy.get('[data-cy=personal-details-btn_continue]').click();
-    cy.wait(500);
+  it.skip('Place an order as a guest', () => {
+    cy.server();
 
-    cy.url().should('include', '/shipping');
-    cy.get('[data-cy=shipping-details-input_firstName]').type('John');
-    cy.get('[data-cy=shipping-details-input_lastName]').type('Doe');
-    cy.get('[data-cy=shipping-details-input_streetName]').type('Dmowskiego');
-    cy.get('[data-cy=shipping-details-input_apartmanet]').type('5');
-    cy.get('[data-cy=shipping-details-input_city]').type('Wrocław');
-    cy.get('[data-cy=shipping-details-input_postalCode]').type('50-500');
-    cy.get('[data-cy=shipping-details-input_state]').type('Dolnośląskie');
-    cy.get('[data-cy=shipping-details-input_phone]').type('666-666-666');
-    cy.get('[data-cy=shipping-details-select_country]').click().wait(500);
-    cy.get('.sf-select__options > :nth-child(2)').click();
-    cy.get('ul.sf-select__options').children().should((countryFormOptions) => {
-      expect(countryFormOptions).to.have.length(4);
-      expect(countryFormOptions.eq(0)).to.contain('United States');
-    });
-    cy.get('.form__radio-group').find('[name="shippingMethod"]').first().check({ force: true }).should('be.checked');
-    cy.get('[data-cy=shipping-btn_continue]').click({ force: true });
+    cy.route('POST', '/api/saleor/getProduct').as('getProduct');
+    cy.route('POST', '/api/saleor/checkoutCreate').as('checkoutCreate');
+    cy.route('POST', '/api/saleor/checkoutLinesAdd').as('checkoutLinesAdd');
+    cy.route('GET', '/api/saleor/isGuest').as('isGuest');
+    cy.route('POST', '/api/saleor/updateCheckoutShippingMethod').as(
+      'checkoutUpdateShippingMethod'
+    );
 
-    cy.url().should('include', '/payment');
-    cy.wait(1000);
-    cy.get('[name="copyShippingAddress"]').check({force: true}).should('be.checked');
-    cy.get('[data-cy="payment-radio_paymentMethod"]').eq(0).click().should('have.class', 'sf-radio--is-active');
-    cy.get('[data-cy=payment-btn_review]').click({ force: true });
+    cy.visit('/c/accessories');
 
-    cy.url().should('include', '/order-review');
-    cy.wait(1000);
-    cy.get('[name="terms"]').check({force: true}).should('be.checked');
-    cy.get('[data-cy=order-review-btn_summary-conitnue]').click();
+    cy.contains('Colored Parrot Cushion').click();
 
-    cy.url().should('include', '/thank-you');
-    cy.get('.checkout__main').contains('thank you page');
+    cy.wait('@getProduct');
+
+    cy.contains('Add to cart').click();
+
+    cy.wait('@checkoutCreate');
+
+    cy.get('[data-cy=\'app-header-toggle-cart\']').click();
+    cy.contains('Go to checkout').click({ force: true });
+
+    cy.url().should('include', '/checkout/personal-details');
+
+    cy.get('input[id=firstName]')
+      .clear()
+      .type('John');
+    cy.get('input[id=lastName]')
+      .clear()
+      .type('Doe');
+    cy.get('input[id=email]')
+      .clear()
+      .type('john@doe.com');
+
+    cy.contains('button', 'Continue to shipping').click();
+
+    cy.url().should('include', '/checkout/shipping');
+
+    cy.get('input[name="streetName"]').type('Brannon Avenue');
+    cy.get('input[name="apartment"]').type('3232', { force: true });
+    cy.get('input[name="city"]').type('Jacksonville');
+    cy.get('input[name="postalCode"]').type('32208');
+    cy.get('select[id="Country"]').select('US');
+    cy.get('input[name="phone"]').type('9047105785');
+    cy.get('select[id="State"]').select('FL');
+
+    cy.contains('button', 'Select shipping method').click();
+
+    cy.contains('div', 'DHL').click();
+    cy.wait('@checkoutUpdateShippingMethod');
+
+    cy.contains('Continue to payment').click();
+
+    cy.url().should('include', '/checkout/payment');
+    cy.contains('Copy address data from shipping').click();
+    cy.contains('Select payment method').click();
+    cy.contains('button', 'Review my order').click();
+
+    cy.url().should('include', '/checkout/order-review');
+    cy.contains('Make an order').click();
+
+    cy.url().should('include', '/checkout/thank-you');
   });
-  it('Place an order for a Customer', () => {
-    cy.get('[data-cy=personal-details-btn_login]').click();
-    // cy.get('[data-testid=notificationMessage]').contains('You are logged in!');
-    // IN PROGRES...
+
+  it('Place an order as a customer', () => {
+    cy.server();
+
+    cy.route('POST', '/api/saleor/getProduct').as('getProduct');
+    cy.route('POST', '/api/saleor/checkoutCreate').as('checkoutCreate');
+    cy.route('POST', '/api/saleor/isGuest').as('isGuest');
+    cy.route('POST', '/api/saleor/tokenCreate').as('login');
+    cy.route('POST', '/api/saleor/updateCheckoutShippingMethod').as(
+      'checkoutUpdateShippingMethod'
+    );
+
+    cy.visit('/c/accessories');
+    cy.wait(3000);
+
+    cy.get('[data-cy=\'app-header-account\']').click();
+    // cy.get(`[data-cy='app-header-toggle-wishlist']`).click({ force: true });
+
+    cy.wait(1000);
+
+    cy.contains('login in to your account').click();
+
+    cy.get('[data-cy=\'login-input_email\']').type('admin@example.com');
+    cy.get('[data-cy=\'login-input_password\']').type('admin');
+    cy.get('[data-cy=\'login-btn_submit\']').click();
+
+    cy.wait('@login');
+
+    cy.contains('Colored Parrot Cushion').click();
+
+    cy.wait('@getProduct');
+
+    cy.contains('Add to cart').click();
+
+    cy.wait(1000);
+    cy.wait('@isGuest');
+    // TODO this needs to be done on cleancy.wait('@checkoutCreate');
+
+    cy.get('[data-cy=\'app-header-toggle-cart\']').click();
+    // need to be forced only when this is the first order
+    cy.contains('Go to checkout').click({ force: true });
+
+    cy.contains('button', 'Select shipping method').click();
+
+    cy.contains('div', 'DHL').click();
+    cy.wait('@checkoutUpdateShippingMethod');
+
+    cy.contains('Continue to payment').click();
+
+    cy.url().should('include', '/checkout/payment');
+    cy.contains('Copy address data from shipping').click();
+    cy.contains('Select payment method').click();
+    cy.contains('button', 'Review my order').click();
+
+    cy.url().should('include', '/checkout/order-review');
+    cy.contains('Make an order').click();
+
+    cy.url().should('include', '/checkout/thank-you');
   });
 });

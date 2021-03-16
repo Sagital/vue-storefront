@@ -4,12 +4,12 @@ import {
   AgnosticAttribute,
   AgnosticPrice
 } from '@vue-storefront/core';
+import { formatAttributeList, createPrice } from './_utils';
 import {
-  formatAttributeList,
-  getVariantByAttributes,
-  createPrice
-} from './_utils';
-import { ProductImage, ProductVariant } from '@vue-storefront/saleor-api';
+  Product,
+  ProductImage,
+  ProductVariant
+} from '@vue-storefront/saleor-api';
 
 interface ProductVariantFilters {
   master?: boolean;
@@ -17,21 +17,37 @@ interface ProductVariantFilters {
 }
 
 export const getProductName = (
-  product: ProductVariant | Readonly<ProductVariant>
+  product: Product | Readonly<ProductVariant>
 ): string => (product as any)?.name || '';
 
-export const getProductSlug = (
-  product: ProductVariant | Readonly<ProductVariant>
-): string => product.product.slug || '';
+export const getProductSlug = (product: Product): string => product.slug || '';
 
-export const getProductPrice = (
-  product: ProductVariant | Readonly<ProductVariant>
-): AgnosticPrice => createPrice(product);
+export const getProductPrice = (product: Product): AgnosticPrice =>
+  createPrice(product.defaultVariant);
+
+export const getProductVariantPrice = (
+  variant: ProductVariant
+): AgnosticPrice => {
+  return createPrice(variant);
+};
+
+export const getVariantGallery = (
+  product: Product,
+  variantId = null
+): AgnosticMediaGalleryItem[] => {
+  const variant = product.variants.find((v) => v.id === variantId);
+  const images = variant.images.length ? variant.images : product.images;
+  return images.map((image: ProductImage) => ({
+    small: image.url,
+    big: image.url,
+    normal: image.url
+  }));
+};
 
 export const getProductGallery = (
-  product: ProductVariant
+  product: Product
 ): AgnosticMediaGalleryItem[] => {
-  const images = product?.images || [];
+  const images = product.images || [];
 
   return images.map((image: ProductImage) => ({
     small: image.url,
@@ -40,45 +56,31 @@ export const getProductGallery = (
   }));
 };
 
-export const getProductCoverImage = (product: ProductVariant): string =>
-  product?.product.thumbnail?.url || '';
+export const getProductCoverImage = (product: Product): string =>
+  product?.thumbnail?.url || '';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getProductFiltered = (
-  products: ProductVariant[],
-  filters: ProductVariantFilters | any = {}
-): ProductVariant[] => {
-  if (!products) {
-    return [];
-  }
-
-  if (filters.attributes && Object.keys(filters.attributes).length > 0) {
-    return [getVariantByAttributes(products, filters.attributes)];
-  }
-
-  if (filters.master) {
-    return products.filter((productVariant) => {
-      return productVariant.id === productVariant.product.defaultVariant?.id;
-    });
-  }
-
-  return products;
+  products: Product[],
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _: ProductVariantFilters | any = {}
+): Product[] => {
+  return [];
 };
 
 export const getProductAttributes = (
-  products: ProductVariant[] | ProductVariant,
+  products: Product[] | Product,
   filterByAttributeName?: string[]
 ): Record<string, AgnosticAttribute | string> => {
   const isSingleProduct = !Array.isArray(products);
-  const productList = (isSingleProduct
-    ? [products]
-    : products) as ProductVariant[];
+  const productList = (isSingleProduct ? [products] : products) as Product[];
 
   if (!products || productList.length === 0) {
     return {} as any;
   }
 
   // TODO this no longer works and the characters are empty
-  const formatAttributes = (product: ProductVariant): AgnosticAttribute[] =>
+  const formatAttributes = (product: Product): AgnosticAttribute[] =>
     formatAttributeList(product.attributes || []).filter((attribute) =>
       filterByAttributeName
         ? filterByAttributeName.includes(attribute.name)
@@ -117,30 +119,29 @@ export const getProductAttributes = (
     .reduce(reduceByAttributeName, {});
 };
 
-export const getProductDescription = (product: ProductVariant): any =>
-  (product as any)?.description || '';
+export const getProductDescription = (product: Product): any =>
+  product.descriptionJson || product.description;
 
-export const getProductCategoryIds = (product: ProductVariant): string[] => {
+export const getProductCategoryIds = (product: Product): string[] => {
   if (!product) {
     // TODO is this legit ?
     return [''];
   } else {
-    return [product.product.category.id];
+    return [product.category.id];
   }
 };
 
-export const getProductId = (product: ProductVariant): string =>
-  (product as any)?.product.id || '';
+export const getProductId = (product: Product): string => product.id || '';
 
 export const getFormattedPrice = (price: number) => (price as any) as string;
 
-export const getTotalReviews = (product: ProductVariant): number =>
-  (product as any)?._rating?.count || 0;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const getTotalReviews = (product: Product): number => 0;
 
-export const getAverageRating = (product: ProductVariant): number =>
-  (product as any)?._rating?.averageRating || 0;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const getAverageRating = (product: Product): number => 0;
 
-const productGetters: ProductGetters<ProductVariant, ProductVariantFilters> = {
+const productGetters: ProductGetters<Product, ProductVariantFilters> = {
   getName: getProductName,
   getSlug: getProductSlug,
   getPrice: getProductPrice,
@@ -153,6 +154,8 @@ const productGetters: ProductGetters<ProductVariant, ProductVariantFilters> = {
   getId: getProductId,
   getFormattedPrice,
   getTotalReviews,
+  getProductVariantPrice,
+  getVariantGallery,
   getAverageRating
 };
 

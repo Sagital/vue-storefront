@@ -1,8 +1,12 @@
 import { useProductFactory } from '../../src/factories';
 import { UseProduct } from '../../src/types';
 
-const useProduct: (cacheId: string) => UseProduct<any, any> = useProductFactory<any, any>({
-  productsSearch: (searchParams) => Promise.resolve([{ name: 'product ' + searchParams.slug }])
+const useProduct: (cacheId: string) => UseProduct<any, any> = useProductFactory<
+  any,
+  any
+>({
+  productsSearch: (searchParams) =>
+    Promise.resolve([{ name: 'product ' + searchParams.slug }])
 });
 
 const factoryParams = {
@@ -24,7 +28,7 @@ describe('[CORE - factories] useProductFactory', () => {
 
     await search({ slug: 'product-slug' });
 
-    expect(products.value).toEqual([{name: 'product product-slug' }]);
+    expect(products.value).toEqual([{ name: 'product product-slug' }]);
   });
 
   it('returns product response with ssr', async () => {
@@ -32,7 +36,7 @@ describe('[CORE - factories] useProductFactory', () => {
 
     await search({ slug: 'product-slug' });
 
-    expect(products.value).toEqual([{name: 'product product-slug' }]);
+    expect(products.value).toEqual([{ name: 'product product-slug' }]);
   });
 
   it('should set error if factory method throwed', async () => {

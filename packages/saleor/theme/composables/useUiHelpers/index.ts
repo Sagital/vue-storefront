@@ -22,7 +22,9 @@ const getFiltersDataFromUrl = (context, onlyFilters) => {
   const { query } = context.$router.history.current;
 
   return Object.keys(query)
-    .filter(f => onlyFilters ? !nonFilters.includes(f) : nonFilters.includes(f))
+    .filter((f) =>
+      onlyFilters ? !nonFilters.includes(f) : nonFilters.includes(f)
+    )
     .reduce(reduceFilters(query), {});
 };
 
@@ -31,7 +33,10 @@ const useUiHelpers = () => {
 
   const getFacetsFromURL = () => {
     const { query, params } = instance.$router.history.current;
-    const categorySlug = Object.keys(params).reduce((prev, curr) => params[curr] || prev, params.slug_1);
+    const categorySlug = Object.keys(params).reduce(
+      (prev, curr) => params[curr] || prev,
+      params.slug_1
+    );
 
     return {
       rootCatSlug: params.slug_1,
@@ -39,7 +44,8 @@ const useUiHelpers = () => {
       page: parseInt(query.page, 10) || 1,
       sort: query.sort || 'latest',
       filters: getFiltersDataFromUrl(instance, true),
-      itemsPerPage: parseInt(query.itemsPerPage, 10) || 20,
+      // TODO change 10 to something bigger, multiple of 4. We are using this for testing pagination purposes
+      itemsPerPage: parseInt(query.itemsPerPage, 10) || 10,
       term: query.term
     };
   };

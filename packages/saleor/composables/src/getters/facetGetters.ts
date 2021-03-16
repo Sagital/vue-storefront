@@ -1,5 +1,4 @@
 import {
-  FacetsGetters,
   AgnosticCategoryTree,
   AgnosticGroupedFacet,
   AgnosticPagination,
@@ -7,7 +6,6 @@ import {
   AgnosticBreadcrumb,
   AgnosticFacet
 } from '@vue-storefront/core';
-import { getProductFiltered } from './productGetters';
 import { getCategoryTree as buildCategoryTree } from './categoryGetters';
 import {
   buildBreadcrumbs,
@@ -15,8 +13,8 @@ import {
   reduceForGroupedFacets,
   reduceForFacets
 } from '../useFacet/_utils';
-import { FacetResultsData, SearchData } from '../types';
-import { ProductVariant } from '@vue-storefront/saleor-api';
+import { SearchData } from '../types';
+import { Category, ProductVariant } from '@vue-storefront/saleor-api';
 
 const getAll = (searchData: SearchData, criteria?: string[]): AgnosticFacet[] =>
   buildFacets(searchData, reduceForFacets, criteria);
@@ -27,7 +25,8 @@ const getGrouped = (
 ): AgnosticGroupedFacet[] =>
   buildFacets(searchData, reduceForGroupedFacets, criteria);
 
-const getSortOptions = (searchData: SearchData): AgnosticSort => {
+// we might want to adapt this for different product type
+const getSortOptions = (): AgnosticSort => {
   const options = [
     { type: 'sort', id: 'latest', value: 'Latest', count: null },
     {
@@ -42,12 +41,9 @@ const getSortOptions = (searchData: SearchData): AgnosticSort => {
       value: 'Price from high to low',
       count: null
     }
-  ].map((o) => ({ ...o, selected: o.id === searchData.input.sort }));
+  ];
 
-  const selected =
-    options.find((o) => o.id === searchData.input.sort)?.id || 'latest';
-
-  return { options, selected };
+  return { options, selected: null };
 };
 
 const getCategoryTree = (searchData: SearchData): AgnosticCategoryTree => {
@@ -58,8 +54,9 @@ const getCategoryTree = (searchData: SearchData): AgnosticCategoryTree => {
   return buildCategoryTree(searchData.data.categories[0]);
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const getProducts = (searchData: SearchData): ProductVariant[] => {
-  return getProductFiltered(searchData.data.products, { master: true });
+  return null;
 };
 
 const getPagination = (searchData: SearchData): AgnosticPagination => {
@@ -69,6 +66,8 @@ const getPagination = (searchData: SearchData): AgnosticPagination => {
 
   return {
     currentPage: searchData.input.page,
+    endCursor: searchData.data.pageInfo?.endCursor,
+    hasNextPage: searchData.data.pageInfo?.hasNextPage,
     totalPages: Math.ceil(searchData.data.total / searchData.data.itemsPerPage),
     totalItems: searchData.data.total,
     itemsPerPage: searchData.input.itemsPerPage,
@@ -76,21 +75,21 @@ const getPagination = (searchData: SearchData): AgnosticPagination => {
   };
 };
 
-const getBreadcrumbs = (searchData: SearchData): AgnosticBreadcrumb[] => {
-  if (!searchData.data) {
+const getBreadcrumbs = (category: Category): AgnosticBreadcrumb[] => {
+  if (!category) {
     return [];
   }
 
   return [
     { text: 'Home', link: '/' },
-    ...buildBreadcrumbs(searchData.data.categories[0]).map((b) => ({
+    ...buildBreadcrumbs(category).map((b) => ({
       ...b,
       link: `/c${b.link}`
     }))
   ];
 };
 
-const facetGetters: FacetsGetters<FacetResultsData, ProductVariant[]> = {
+const facetGetters = {
   getSortOptions,
   getGrouped,
   getAll,

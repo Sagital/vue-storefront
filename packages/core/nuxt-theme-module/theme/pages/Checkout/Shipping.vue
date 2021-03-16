@@ -155,7 +155,7 @@ const COUNTRIES = [
 ];
 
 export default {
-  name: 'PersonalDetails',
+  name: 'Shipping',
   components: {
     SfHeading,
     SfInput,

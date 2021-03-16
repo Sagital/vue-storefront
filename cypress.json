@@ -1,7 +1,6 @@
 {
-    "baseUrl": "https://lovecrafts-demo.storefrontcloud.io/",
+    "baseUrl": "http://localhost:3000/",
     "viewportWidth": 1280,
     "viewportHeight": 1024
 
   }
-  

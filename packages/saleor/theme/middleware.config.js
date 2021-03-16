@@ -4,7 +4,7 @@ module.exports = {
       location: '@vue-storefront/saleor-api/server',
       configuration: {
         api: {
-          uri: 'http://localhost:8000/graphql/',
+          uri: 'https://api.cablu.io/graphql/',
           scopes: [
             'manage_products:vsf-ct-dev',
             'create_anonymous_token:vsf-ct-dev',

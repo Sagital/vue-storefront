@@ -18,7 +18,7 @@ export const getCartItems = (checkout: Checkout): CheckoutLine[] => {
 };
 
 export const getCartItemName = (product: CheckoutLine): string =>
-  product.variant.name;
+  product.variant.product.name;
 
 export const getCartItemImage = (product: CheckoutLine): string =>
   product.variant.product.thumbnail.url;
@@ -30,9 +30,9 @@ export const getCartItemQty = (product: CheckoutLine): number =>
   product.quantity;
 
 export const getCartItemAttributes = (
-  product: CheckoutLine,
+  checkoutLine: CheckoutLine,
   filterByAttributeName?: Array<string>
-) => getProductAttributes(product.variant, filterByAttributeName);
+) => getProductAttributes(checkoutLine.variant.product, filterByAttributeName);
 
 export const getCartItemSku = (product: CheckoutLine): string =>
   product.variant.sku;

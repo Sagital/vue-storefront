@@ -23,6 +23,8 @@ export const DefaultGuestCheckoutFragment = gql`
           }
         }
         product {
+          id
+          name
           attributes {
             attribute {
               id
@@ -140,7 +142,6 @@ export const DefaultUserFragment = gql`
 export const DefaultProductVariantFragment = gql`
   fragment DefaultProductVariantFragment on ProductVariant {
     id
-    id
     name
     sku
     attributes {
@@ -153,22 +154,6 @@ export const DefaultProductVariantFragment = gql`
         name
       }
     }
-    product {
-      attributes {
-        attribute {
-          id
-          name
-        }
-        values {
-          id
-          name
-        }
-      }
-      thumbnail {
-        url
-        alt
-      }
-    }
     images {
       id
       url
@@ -177,6 +162,12 @@ export const DefaultProductVariantFragment = gql`
     pricing {
       price {
         net {
+          amount
+        }
+      }
+      discount {
+        net {
+          currency
           amount
         }
       }

@@ -1,18 +1,35 @@
-import { UseBilling, Context, FactoryParams, UseBillingErrors, CustomQuery } from '../types';
+import {
+  UseBilling,
+  Context,
+  FactoryParams,
+  UseBillingErrors,
+  CustomQuery
+} from '../types';
 import { Ref, computed } from '@vue/composition-api';
 import { sharedRef, Logger, configureFactoryParams } from '../utils';
 
-export interface UseBillingParams<BILLING, BILLING_PARAMS> extends FactoryParams {
-  load: (context: Context, params: { customQuery?: CustomQuery }) => Promise<BILLING>;
-  save: (context: Context, params: { params: BILLING_PARAMS; billingDetails: BILLING; customQuery?: CustomQuery }) => Promise<BILLING>;
+export interface UseBillingParams<BILLING, BILLING_PARAMS>
+  extends FactoryParams {
+  load: (
+    context: Context,
+    params: { customQuery?: CustomQuery }
+  ) => Promise<BILLING>;
+  save: (
+    context: Context,
+    params: {
+      params: BILLING_PARAMS;
+      billingDetails: BILLING;
+      customQuery?: CustomQuery;
+    }
+  ) => Promise<BILLING>;
 }
 
 export const useBillingFactory = <BILLING, BILLING_PARAMS>(
   factoryParams: UseBillingParams<BILLING, BILLING_PARAMS>
 ) => {
-  return function useBilling (): UseBilling<BILLING, BILLING_PARAMS> {
+  return function useBilling(): UseBilling<BILLING, BILLING_PARAMS> {
     const loading: Ref<boolean> = sharedRef(false, 'useBilling-loading');
-    const billing: Ref<BILLING> = sharedRef(null, 'useBilling-billing');
+    const billing: Ref<BILLING> = sharedRef({}, 'useBilling-billing');
     const _factoryParams = configureFactoryParams(factoryParams);
     const error: Ref<UseBillingErrors> = sharedRef({}, 'useBilling-error');
 
